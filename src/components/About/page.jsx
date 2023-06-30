@@ -15,8 +15,8 @@ export default function About() {
           {about.map((elem) => (
             <motion.div
               key={elem.id}
-              initial={{ x: elem.id % 2 === 0 ? 200 : -200, opasity: 0 }}
-              whileInView={{ x: 0, opasity: 1 }}
+              initial={{ x: elem.id % 2 === 0 ? 200 : -200,  }}
+              whileInView={{ x: 0,  }}
               transition={{ duration: 1 }}
               viewport={{ once: true }}
               className="cardWrapper">

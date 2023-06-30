@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Wix+Madefor+Text&display=swap');
+
+* {
+    padding: 0;
+    margin: 0;
+    border: 0;
+    font-family: 'Wix Madefor Text', sans-serif;
+    box-sizing: border-box;
+    transition: all 50ms ease-in-out;
+    scroll-behavior: smooth;
+}
+
+body {
+    background: linear-gradient(0,  hsl(51, 100%, 82%), #ffffff);
+
+}
+
+body::-webkit-scrollbar {
+    width: 12px;
+    /* ширина scrollbar */
+}
+
+body::-webkit-scrollbar-track {
+    background: black;
+    opacity: 0;
+    /* цвет дорожки */
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: yellow;
+    /* цвет плашки */
+    border-radius: 20px;
+    /* закругления плашки */
+    border: 3px solid black;
+    /* padding вокруг плашки */
+
+}
+
+body::-webkit-scrollbar-thumb:focus {
+    background-color: rgb(157, 157, 0);
+}
+

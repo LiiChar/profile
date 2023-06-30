@@ -1,0 +1,44 @@
+.able {
+    display: flex;
+    flex-wrap: wrap;
+    height: 100%;
+    margin: 0 10% 0 10%;
+    justify-content: space-around;
+}
+
+.wrapAbout {
+    display: flex;
+    justify-content: center;
+    margin: 0 30px 0 30px;
+    margin-bottom: 20px;
+}
+
+.ABOUT {
+    font-size: 28px;
+}
+
+#about {
+    margin: 50px 0 50px 0;
+    
+}
+
+.cardWrapper {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    
+    margin: 10px 0;
+    justify-content: center ;
+}
+
+.card {
+    width: min(25vw, 220px); 
+    height: min-content;
+}
+
+.image {
+    z-index: -1;
+    width: min(25vw, 220px);;
+    height: min(25vw, 220px);;
+    position: relative;
+}

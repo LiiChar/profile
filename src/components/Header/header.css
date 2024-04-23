@@ -1,0 +1,55 @@
+.header {
+    background-color: black;
+    width: 100%;
+    position: sticky;
+    top: 0px;
+    height: 30px;
+    z-index: 1000000;
+}
+
+.links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+}
+
+.wrapHeader {
+    color: wheat;
+    width: 70%;
+    flex-direction: row;
+    display: flex;
+    justify-content: space-around;
+}
+
+.link {
+    text-decoration: none;
+    color: white;
+    scroll-behavior: smooth;
+}
+
+.pickLink {
+    color: yellow;
+}
+
+.unPickLink {
+    color: white;
+}
+
+.link:hover {
+    color: yellow;
+}
+
+.barAll {
+    height: 3px;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: rgb(255, 196, 0);
+    /* transition-property: transform;
+    transition-duration: 2000ms;
+    transition-timing-function: ease-in-out; */
+    position: sticky;
+    transform-origin: 0%;
+}
+

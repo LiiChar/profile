@@ -1,0 +1,41 @@
+.aboutMeWrapper {
+	margin-top: 40px;
+	padding: 0 10vw 0 15vw;
+}
+
+.aboutMeTitle {
+	display: flex;
+	justify-content: center;
+	margin-bottom: 20px;
+}
+
+.aboutMe {
+	height: max(25vw, 270px);
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+}
+
+.minePhoto {
+	height: 270px;
+	width: 270px;
+	z-index: -1;
+	position: relative;
+}
+
+.techInfo {
+	display: flex;
+	flex-direction: column;
+}
+
+.progressBar {
+	height: 10px;
+	background: linear-gradient(90deg, yellow, orange);
+	/* background: linear-gradient(0,  hsl(51, 100%, 82%), #ffffff); */
+}
+
+.barsProgress {
+	width: 45vw;
+}

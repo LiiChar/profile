@@ -1,0 +1,51 @@
+{
+	"page": {
+		"main": {
+			"hero": {
+				"title": "Hello, I'm Maksim 👨‍💻",
+				"description": "Frontend / Fullstack developer focused on React, Next.js, Tailwind, WebSocket, and Node.js",
+				"button1": "View Projects",
+				"button2": "Contact Me"
+			},
+			"description": {
+				"title": "About Me",
+				"paragraf1": "I'm a frontend developer with a focus on React, Next.js, Tailwind, WebSocket, and Node.js. I'm also familiar with backend: Node.js (NestJS), express, PostgreSQL.",
+				"paragraf2": "I'm looking for a job as a frontend developer."
+			},
+			"portfolio": {
+				"title": "Portfolio",
+				"items": []
+			},
+			"projects": {
+				"title": "Projects",
+				"items": [
+					{
+						"title": "Interactive Markdown Editor",
+						"description": "A full-featured markdown editor with support for emojis, GIFs, live preview, and custom infographics. Built with React, Zustand, and the Giphy API."
+					},
+					{
+						"title": "Visual DSL Editor",
+						"description": "A block-based editor for building object behavior, featuring drag-and-drop, JSON export, and a built-in interpreter."
+					}
+				]
+			}
+		},
+        "project": {
+          "title": "Projects"
+        }
+	},
+	"layout": {
+		"header": {
+			"links": {
+				"portfolio": "Portfolio",
+				"projects": "Projects",
+				"blog": "Blog",
+				"contacts": "Contacts",
+				"about": "About"
+			}
+		},
+		"footer": {
+			"text": "Maksim | Site made with Next.js, Tailwind, and framer-motion"
+		}
+	}
+}

@@ -1,0 +1,33 @@
+1. Добавить эффект стекла, добавить на задний фон размый силуаэт свечения - https://brittanychiang.com/
+2. Добавить анимационные переходы между страницами
+3. Сделайть начальную страницу более дизайнерской
+4. Добавить список моих работ
+5. На будущее добавить отзывы (опционально)
+6. Добавить куки
+7. Покрыть тестами сайтэ
+8. Добавить боковую меню для статей
+
+
+Вдохновение:
+1. Использовать 3d
+2. Бегушая страка
+3. Добавить мышку как на сайте 
+4. Изменит курсор
+5. Необычный текст приветствия - https://www.codewonders.dev/
+6. Добавить иконки
+7. Средства для связи и кнопка прокручивания как на сайте https://www.tim-gesemann.dev/, почту можно сделать справа https://brittanychiang.com/
+8. Добавить анимированную начальную загрузку
+9. Добавить онлайн чат как на сайте https://chaseohlson.com/ и соеденить с телеграммом
+10. Пролистывание в виде слайдов https://dvlpr.pro/#home
+
+Сайты для вдохновление?
+   - https://bepatrickdavid.com/
+   - https://adriengervaix.com/index.html
+   - https://mattwilldev.com/
+   - https://www.codewonders.dev/
+   - https://www.carlgordonmedia.com/#about
+
+Страницы:
+1. Опыт работы - https://brittanychiang.com/#experience, https://www.tim-gesemann.dev/#experience
+2. Проекты - https://www.codewonders.dev/projects, https://www.stereocreative.com/projects-grid
+3. Блог - https://wesbos.com/blog, https://kentcdodds.com/blog, https://diogotc.com/blog/, https://www.cassie.codes/writing/

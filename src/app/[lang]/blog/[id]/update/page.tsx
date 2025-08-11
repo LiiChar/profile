@@ -2,7 +2,6 @@ import { BlogUpdatePage } from '@/components/page/BlogUpdate';
 import { db } from '@/db/db';
 import { blogs } from '@/db/schema';
 import { eq } from 'drizzle-orm';
-import { Suspense } from 'react';
 
 export default async function UpdateBlog({
 	params,
@@ -21,9 +20,5 @@ export default async function UpdateBlog({
 		return 'Not found';
 	}
 
-	return (
-		<Suspense fallback={<div>Loading...</div>}>
-			<BlogUpdatePage blog={blog} />
-		</Suspense>
-	);
+	return <BlogUpdatePage blog={blog} />;
 }

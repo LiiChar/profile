@@ -1,25 +1,24 @@
-import { BlogLangField, BlogType } from '@/db/tables/blog';
-import { Dictionary, Lang } from '@/types/i18n';
+import { Dictionary, EntityLangField, FieldLangs, Lang } from '@/types/i18n';
 import { Leaves } from '@/types/utils';
 
-export const getBlogLang = (
-	blog: BlogType,
-	field: keyof BlogLangField,
+export const getFieldLang = <T extends EntityLangField & { lang: FieldLangs }>(
+	data: T,
+	field: keyof EntityLangField,
 	lang: Lang = 'en'
 ) => {
-	const blogField = blog[field]!;
+	const dataField = data[field]!;
 
 	if (lang == 'ru') {
-		return blogField;
+		return dataField;
 	}
-	if (!blog['lang']) {
-		return blogField;
+	if (!data['lang']) {
+		return dataField;
 	}
-	if (!blog['lang'][lang][field]) {
-		return blogField;
+	if (!data['lang'][lang][field]) {
+		return dataField;
 	}
 
-	return blog['lang'][lang][field];
+	return data['lang'][lang][field];
 };
 
 export const getFromDict = (dict: any, path: string): any => {

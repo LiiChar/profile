@@ -33,7 +33,11 @@ export const blogsRelation = relations(blogs, ({ one, many }) => ({
 	likes: many(likes),
 }));
 
-export type BlogLangField = { content: string; tags: string; title: string };
+export type BlogLangField = {
+	content: string;
+	tags: string | null;
+	title: string;
+};
 export type BlogLanguages = 'en';
 export type BlogType = typeof blogs.$inferSelect;
 export type BlogInsert = typeof blogs.$inferInsert;

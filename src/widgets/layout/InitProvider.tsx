@@ -5,6 +5,7 @@ import { useFullPageScroll } from '@/hooks/useFullPageScroll';
 
 export const InitProvider = ({ children }: PropsWithChildren) => {
 	useFullPageScroll();
+
 	return (
 		<>
 			{children}

@@ -1,6 +1,5 @@
-import { BlogLangField, BlogType } from '@/db/tables/blog';
 import { defaultLocale } from '@/dictionaries/dictionaries';
-import { Lang } from '@/types/i18n';
+import { EntityLangField, FieldLangs, Lang } from '@/types/i18n';
 import { headers } from 'next/headers';
 
 export const updateLanugagePath = (
@@ -61,22 +60,24 @@ export const getLang = async () => {
 	return lang;
 };
 
-export const getBlogLang = (
-	blog: BlogType,
-	field: keyof BlogLangField,
+export const getFieldLang = <
+	T extends EntityLangField & { lang?: FieldLangs | null }
+>(
+	data: T,
+	field: keyof EntityLangField,
 	lang: Lang = 'en'
 ) => {
-	const blogField = blog[field]!;
+	const dataField = data[field]!;
 
 	if (lang == 'ru') {
-		return blogField;
+		return dataField;
 	}
-	if (!blog['lang']) {
-		return blogField;
+	if (!data['lang']) {
+		return dataField;
 	}
-	if (!blog['lang'][lang][field]) {
-		return blogField;
+	if (!data['lang'][lang][field]) {
+		return dataField;
 	}
 
-	return blog['lang'][lang][field];
+	return data['lang'][lang][field];
 };

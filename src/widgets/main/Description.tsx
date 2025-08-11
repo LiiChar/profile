@@ -10,14 +10,14 @@ export const Description = () => {
 	return (
 		// <section className=' h-[calc(100vh-100px)] flex flex-col justify-center'>
 		<section className=''>
-			<h2 className=''>
+			<h2 className='mb-8'>
 				<Text text='page.main.description.title' />
 			</h2>
 			<TextType
 				text={
 					getText('page.main.description.paragraf1', dict!) +
 					'\n\n' +
-					getText('page.main.description.paragraf1', dict!)
+					getText('page.main.description.paragraf2', dict!)
 				}
 				typingSpeed={15}
 			/>

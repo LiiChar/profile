@@ -29,3 +29,8 @@ export function joinUrl(...parts: string[]): string {
 		.filter(Boolean)
 		.join('/');
 }
+
+export const validateUrl = (url: string | undefined | null): boolean => {
+	if (!url) return false;
+	return url.startsWith('http://') || url.startsWith('https://');
+};

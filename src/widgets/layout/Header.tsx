@@ -31,7 +31,7 @@ export const Header = async () => {
 						/>
 					</Link>
 				</div>
-				<div className='flex gap-4 items-center relative'>
+				<nav id='nav' className='flex gap-4 items-center relative'>
 					<div className='absolute  top-0 left-0 right-0 h-full w-full bg-secondary/20 backdrop-blur-[10px] scale-125 rounded-lg'>
 						<ScrollProgressBorder />
 					</div>
@@ -58,7 +58,7 @@ export const Header = async () => {
 					>
 						<Text text='layout.header.links.blog' />
 					</Link>
-				</div>
+				</nav>
 				<div className='flex items-center z-10 justify-end gap-4 w-1/6'>
 					<ChangeTheme />
 				</div>

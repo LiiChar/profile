@@ -11,8 +11,8 @@ import { Markdown } from '@/components/ui/markdown';
 import { CommentsList } from '@/components/comments/CommentsList';
 import { BlogLike } from '@/components/blog/BlogLike';
 import { Metadata } from 'next';
-import { getBlogLang, getLang } from '@/helpers/i18n';
-import {TagList} from "@/components/tag/TagList";
+import { getFieldLang, getLang } from '@/helpers/i18n';
+import { TagList } from '@/components/tag/TagList';
 
 export async function generateMetadata({
 	params,
@@ -75,7 +75,7 @@ export default async function Page({
 			<Card className=''>
 				<CardHeader className='px-4 sm:px-6 lg:px-8'>
 					<h1 className='text-4xl font-bold my-10  sm:text-5xl'>
-						{getBlogLang(blog, 'title', lang)}
+						{getFieldLang(blog, 'title', lang)}
 					</h1>
 					<div className='flex w-full justify-between items-center mt-4 gap-4'>
 						<div className='flex text-nowrap items-center space-x-2  text-foreground/60 text-sm'>
@@ -104,13 +104,13 @@ export default async function Page({
 				{/* Контент статьи */}
 				<CardContent className='px-4 sm:px-6 lg:px-8'>
 					<div className='prose prose-lg max-w-none '>
-						<Markdown>{getBlogLang(blog, 'content', lang)}</Markdown>
+						<Markdown>{getFieldLang(blog, 'content', lang)}</Markdown>
 					</div>
 				</CardContent>
 
 				{tags && (
 					<div className='flex gap-3 px-8 items-center text-sm mt-auto'>
-                        <TagList tags={tags} />
+						<TagList tags={tags} />
 						<Separator />
 						<BlogLike likes={blog.likes} userId={1} blogId={blog.id} />
 					</div>

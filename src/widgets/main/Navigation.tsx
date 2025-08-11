@@ -2,38 +2,46 @@
 
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
-import React, {ReactNode, useEffect, useLayoutEffect, useRef, useState} from 'react';
-import {
-    Monitor,
-    FileText,
-    Hammer,
-    LayoutDashboard,
-} from 'lucide-react';
+import React, {
+	ReactNode,
+	useEffect,
+	useLayoutEffect,
+	useRef,
+	useState,
+} from 'react';
+import { Monitor, FileText, Hammer, LayoutDashboard, Book } from 'lucide-react';
 
 const MainComponents = {
-    hero: {
-        title: 'Главная',
-        icon: <Monitor/>
-    },
-    description: {
-        title: 'Обо мне',
-        icon: <FileText />
-    },
-    projects: {
-        title: 'Проекты',
-        icon: <Hammer />
-    },
-    portfolio: {
-        title: 'Портфолио',
-        icon: <LayoutDashboard />
-    },
+	hero: {
+		title: 'Главная',
+		icon: <Monitor />,
+	},
+	description: {
+		title: 'Обо мне',
+		icon: <FileText />,
+	},
+	knowledge: {
+		title: 'Навыки',
+		icon: <Book />,
+	},
+	portfolio: {
+		title: 'Портфолио',
+		icon: <LayoutDashboard />,
+	},
+	projects: {
+		title: 'Проекты',
+		icon: <Hammer />,
+	},
 };
 
 type NavigationProps = {
-	components?: Record<keyof typeof MainComponents, {
-        title: string,
-        icon: ReactNode
-    }>;
+	components?: Record<
+		keyof typeof MainComponents,
+		{
+			title: string;
+			icon: ReactNode;
+		}
+	>;
 };
 
 export const Navigation = ({
@@ -128,19 +136,31 @@ export const Navigation = ({
 				)}
 
 				{Object.entries(components).map(([key, value]) => (
-                    <div key={key} onClick={() => scrollToSection(key)} className={'w-[48px] cursor-pointer text-end relative flex items-center justify-center'}>
-                        <div className={cn('absolute  w-[90px]  opacity-0 group-hover:opacity-100 group-hover:-translate-x-[calc(100%-10px)] transition-all text-nowrap', currentSection === key && 'text-primary ')}>{value.title}</div>
-					    <button
-					    	ref={el => (buttonRefs.current[key] = el as any) as any}
-					    	className={cn(
-					    		'relative z-10 rounded-full  text-foreground/50 hover:text-primary transition-colors duration-200',
-					    		currentSection === key && 'text-primary font-bold p-3'
-					    	)}
-
-					    >
-					    	{value.icon}
-					    </button>
-                    </div>
+					<div
+						key={key}
+						onClick={() => scrollToSection(key)}
+						className={
+							'w-[48px] cursor-pointer text-end relative flex items-center justify-center'
+						}
+					>
+						<div
+							className={cn(
+								'absolute  w-[90px]  opacity-0 group-hover:opacity-100 group-hover:-translate-x-[calc(100%-10px)] transition-all text-nowrap',
+								currentSection === key && 'text-primary '
+							)}
+						>
+							{value.title}
+						</div>
+						<button
+							ref={el => (buttonRefs.current[key] = el as any) as any}
+							className={cn(
+								'relative z-10 rounded-full  text-foreground/50 hover:text-primary transition-colors duration-200',
+								currentSection === key && 'text-primary font-bold p-3'
+							)}
+						>
+							{value.icon}
+						</button>
+					</div>
 				))}
 			</nav>
 		</>

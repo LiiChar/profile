@@ -7,13 +7,16 @@ export const projects = sqliteTable('projects', {
 	userId: int()
 		.notNull()
 		.references(() => users.id),
-    title: text('title').notNull(),
+	title: text('title').notNull(),
 	image: text('image'),
-    author: text('author').default('LiiChar').notNull(),
-    repoName: text('repo_name'),
+	author: text('author').default('LiiChar').notNull(),
+	repoName: text('repo_name'),
+	url: text('url'),
 	description: text('description'),
 	content: text('content').notNull(),
-	contentLang: text('content_lang', { mode: 'json' }),
+	lang: text('lang', {
+		mode: 'json',
+	}).$type<ProjectLang>(),
 	gallery: text('gallery', { mode: 'json' }),
 	tags: text(),
 	createdAt: text('created_at')
@@ -33,3 +36,11 @@ export const projectsRelation = relations(projects, ({ one }) => ({
 
 export type ProjectType = typeof projects.$inferSelect;
 export type ProjectInsert = typeof projects.$inferInsert;
+
+export type ProjectLangField = {
+	content: string;
+	tags: string | null;
+	title: string;
+};
+export type ProjectLanguages = 'en';
+export type ProjectLang = Record<'en', Partial<ProjectLangField>>;

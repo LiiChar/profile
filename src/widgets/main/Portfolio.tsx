@@ -93,7 +93,7 @@ export const PortfolioView = ({
 					{portfolio.map(p => (
 						<CarouselItem
 							key={p.id}
-							className='relative w-full p-0 basis-[calc(33%-34px)] first:mt-3 aspect-[16/9] rounded-lg overflow-hidden'
+							className='relative group w-full p-0 basis-[calc(33%-34px)] first:mt-3 aspect-[16/9] rounded-lg overflow-hidden'
 						>
 							<DialogZoom
 								className='min-w-[80vw] bg-transparent border-none p-0'
@@ -108,7 +108,7 @@ export const PortfolioView = ({
 										/>
 
 										{/* Подложка с текстом */}
-										<div className='absolute bottom-0 left-0 w-full'>
+										<div className='absolute group-hover:bottom-0 -bottom-12 transition-all left-0 w-full'>
 											<div className='bg-gradient-to-t from-black/70 to-transparent px-2 py-2'>
 												<p className='text-white mb-3 text-sm font-medium text-center shadow-md'>
 													{p.title}

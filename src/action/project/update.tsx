@@ -7,7 +7,9 @@ import translate from 'google-translate-api-x';
 // import translate from 'google-translate-api-x';
 
 export const updateProject = async (
-	data: Partial<Pick<ProjectType, 'id' | 'userId' | 'title' | 'content'>>
+	data: Partial<
+		Pick<ProjectType, 'id' | 'userId' | 'title' | 'content' | 'image'>
+	>
 ) => {
 	// TODO
 	// if (data.authorId != data.userId) {
@@ -21,6 +23,15 @@ export const updateProject = async (
 		throw Error(
 			'Вы не можете изменить статью так как не являетесь автором или модератором'
 		);
+	}
+
+	if (data.image) {
+		const fetchData = await fetch(data.image);
+		const buffer = await fetchData.arrayBuffer();
+		const stringifiedBuffer = Buffer.from(buffer).toString('base64');
+		const contentType = fetchData.headers.get('content-type');
+		const imageBase64 = `data:${contentType};base64,${stringifiedBuffer}`;
+		data.image = imageBase64;
 	}
 
 	const existedBlog = await db.query.projects.findFirst({

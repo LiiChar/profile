@@ -90,45 +90,51 @@ export const PortfolioView = ({
 				orientation='vertical'
 			>
 				<CarouselContent className='gap-3 h-[600px]'>
-					{portfolio.map(p => (
-						<CarouselItem
-							key={p.id}
-							className='relative group w-full p-0 basis-[calc(33%-34px)] first:mt-3 aspect-[16/9] rounded-lg overflow-hidden'
-						>
-							<DialogZoom
-								className='min-w-[80vw] bg-transparent border-none p-0'
-								title={p.title}
-								trigger={
-									<div className='relative w-full h-full group'>
-										<Image
-											fill
-											src={p.image}
-											alt={p.title}
-											className='object-cover rounded-lg group-hover:scale-110 duration-500'
-										/>
+					{portfolio &&
+						Array.isArray(portfolio) &&
+						portfolio.map(p => (
+							<CarouselItem
+								key={p.id}
+								className='relative group w-full p-0 basis-[calc(33%-34px)] first:mt-3 aspect-[16/9] rounded-lg overflow-hidden'
+							>
+								<DialogZoom
+									className='min-w-[80vw] bg-transparent border-none p-0'
+									title={p.title}
+									trigger={
+										<div className='relative w-full h-full group'>
+											{p.image && (
+												<Image
+													fill
+													src={p.image}
+													alt={p.title}
+													className='object-cover rounded-lg group-hover:scale-110 duration-500'
+												/>
+											)}
 
-										{/* Подложка с текстом */}
-										<div className='absolute group-hover:bottom-0 -bottom-12 transition-all left-0 w-full'>
-											<div className='bg-gradient-to-t from-black/70 to-transparent px-2 py-2'>
-												<p className='text-white mb-3 text-sm font-medium text-center shadow-md'>
-													{p.title}
-												</p>
+											{/* Подложка с текстом */}
+											<div className='absolute group-hover:bottom-0 -bottom-12 transition-all left-0 w-full'>
+												<div className='bg-gradient-to-t from-black/70 to-transparent px-2 py-2'>
+													<p className='text-white mb-3 text-sm font-medium text-center shadow-md'>
+														{p.title}
+													</p>
+												</div>
 											</div>
 										</div>
+									}
+								>
+									<div className=' w-full h-full relative rounded-sm overflow-hidden'>
+										{p.image && (
+											<Image
+												fill
+												src={p.image}
+												alt={p.title}
+												className='object-contain static!'
+											/>
+										)}
 									</div>
-								}
-							>
-								<div className=' w-full h-full relative rounded-sm overflow-hidden'>
-									<Image
-										fill
-										src={p.image}
-										alt={p.title}
-										className='object-contain static!'
-									/>
-								</div>
-							</DialogZoom>
-						</CarouselItem>
-					))}
+								</DialogZoom>
+							</CarouselItem>
+						))}
 				</CarouselContent>
 			</Carousel>
 		</div>

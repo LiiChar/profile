@@ -33,9 +33,9 @@ export const Hero = ({}) => {
 			>
 				<Text text='page.main.hero.description' />
 			</motion.p> */}
-			<p className='text-lg md:text-xl mb-4 text-foreground/70 px-8'>
+			<div className='text-lg mt-5 md:text-xl mb-4 text-foreground/70 px-8'>
 				<TextType text={[getText('page.main.hero.description', dict!)]} />
-			</p>
+			</div>
 
 			<motion.div
 				initial={{ opacity: 0 }}

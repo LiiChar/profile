@@ -18,7 +18,6 @@ import { updateProject } from '@/action/project/update';
 import { useRouter } from 'next/navigation';
 import { ProjectWithUser } from '@/types/project';
 import { MarkdownEditor } from '@/components/ui/markdown-editor';
-import Image from 'next/image';
 import { getDate } from '@/helpers/date';
 import { validateUrl } from '@/helpers/url';
 import { cn } from '@/lib/utils';
@@ -30,7 +29,7 @@ const formUpdateProjectSchema = z.object({
 	image: z.string().optional(),
 	author: z.string().min(1, { message: 'Автор обязателен' }),
 	repoName: z.string().optional(),
-	url: z.string().url({ message: 'Введите корректный URL' }).optional(),
+	url: z.string().optional(),
 	description: z.string().optional(),
 	content: z
 		.string()
@@ -142,23 +141,29 @@ export const ProjectUpdatePage = ({
 							render={({ field }) => (
 								<FormItem>
 									<FormControl>
-										<input
-											placeholder='Ссылка на изображение'
-											className='w-full p-2 border rounded'
-											{...field}
-										/>
-									</FormControl>
-									{field.value && (
-										<div className='mt-2'>
-											<Image
-												src={field.value}
-												alt='Обложка проекта'
-												width={800}
-												height={400}
-												className='rounded-lg object-cover'
+										<div className='relative'>
+											<input
+												className={cn(
+													'w-full p-2 border rounded',
+													field.value &&
+														'absolute ml-4 w-[calc(100%-32px)] bg-background bottom-4 z-30'
+												)}
+												{...field}
+												placeholder='Ссылка на изображение'
+												{...field}
 											/>
+											{field.value && (
+												<div className='mt-2'>
+													<img
+														src={field.value}
+														alt='Обложка проекта'
+														className='rounded-lg object-cover w-full h-full'
+													/>
+												</div>
+											)}
 										</div>
-									)}
+									</FormControl>
+
 									<FormMessage />
 								</FormItem>
 							)}

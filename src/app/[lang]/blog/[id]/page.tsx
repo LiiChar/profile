@@ -71,7 +71,7 @@ export default async function Page({
 	const { image, user, title, createdAt, tags } = blog;
 
 	return (
-		<div className='max-w-3xl mx-auto my-8 px-4 relative'>
+		<main className='max-w-3xl mx-auto my-8 px-4 relative'>
 			<Card className=''>
 				<CardHeader className='px-4 sm:px-6 lg:px-8'>
 					<h1 className='text-4xl font-bold my-10  sm:text-5xl'>
@@ -122,6 +122,6 @@ export default async function Page({
 				comments={blog.comments}
 				userId={1}
 			/>
-		</div>
+		</main>
 	);
 }

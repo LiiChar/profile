@@ -18,13 +18,13 @@ export default async function Home() {
 				<BlockIntersection id='description' height={1000}>
 					<Description />
 				</BlockIntersection>
-				<BlockIntersection id='knowledge' height={1000}>
+				<BlockIntersection id='knowledge' height={1000} threshold={0.6}>
 					<Knowledge />
 				</BlockIntersection>
-				<BlockIntersection id='portfolio' height={1200}>
+				<BlockIntersection id='portfolio' height={2400} threshold={0.1}>
 					<LinePortfolio projects={projects} />
 				</BlockIntersection>
-				<BlockIntersection id='projects' height={400}>
+				<BlockIntersection id='projects' height={1000}>
 					<Projects />
 				</BlockIntersection>
 			</Navigation>

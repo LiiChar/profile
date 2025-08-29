@@ -7,16 +7,18 @@ import { cn } from '@/lib/utils';
 
 type BlockIntersectionProps = {
 	height: number;
+	threshold?: number;
 } & HTMLAttributes<HTMLDivElement>;
 
 export const BlockIntersection = ({
 	children,
 	height,
 	className,
+	threshold = 0.5,
 	...props
 }: BlockIntersectionProps) => {
 	const { ref, entry } = useInView({
-		threshold: 0.5,
+		threshold: threshold,
 		triggerOnce: false,
 		trackVisibility: true,
 		delay: 100,

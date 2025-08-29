@@ -28,6 +28,7 @@ type TagListProps = {
 	separator?: ReactNode;
 	prefix?: ReactNode;
 	linkBase?: string;
+	tagStyle?: React.HTMLAttributes<HTMLDivElement>['className'];
 	variant?: TagListVariant;
 } & React.HTMLAttributes<HTMLDivElement>;
 
@@ -36,6 +37,7 @@ export const TagList = ({
 	limit = tags.length,
 	separator = <Separator orientation='vertical' />,
 	prefix,
+	tagStyle,
 	linkBase = `/blog/tag/`,
 	variant = 'separator',
 	...attr
@@ -56,7 +58,11 @@ export const TagList = ({
 				.map((t, i, arr) => (
 					<div
 						key={t}
-						className={cn('flex gap-1', VariantStyle[variant]['item'])}
+						className={cn(
+							'flex gap-1',
+							VariantStyle[variant]['item'],
+							tagStyle
+						)}
 					>
 						<Link href={linkBase + t} className='text-nowrap'>
 							{prefix && prefix}

@@ -1,4 +1,4 @@
-import { db } from '.';
+import { dbFactory } from '.';
 import { blogs, BlogType } from '../tables/blog';
 
 type BlogFactoryInsert = Pick<
@@ -7,11 +7,11 @@ type BlogFactoryInsert = Pick<
 >;
 
 export const blogFactory = async (content: BlogFactoryInsert[]) => {
-	await db.insert(blogs).values(content);
+	await dbFactory.insert(blogs).values(content);
 };
 
 export const blogFactoryReset = async () => {
-	await db.delete(blogs).execute();
+	await dbFactory.delete(blogs).execute();
 };
 
 export const runBlogFactory = async () => {

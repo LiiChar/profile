@@ -7,7 +7,7 @@ import {
 } from '@/components/ui/carousel';
 import { Text } from '@/components/ui/text-client';
 import { TextDict } from '@/types/i18n';
-import {TagList} from "@/components/tag/TagList";
+import { TagList } from '@/components/tag/TagList';
 
 export default function Project() {
 	return (
@@ -18,9 +18,9 @@ export default function Project() {
 			</h2>
 			<Carousel>
 				<CarouselContent className='gap-4 ml-0 rounded-xl p-0'>
-					{ProjectsItem.map(p => (
-						<ProjectItem key={p.id} project={p} />
-					))}
+					{ProjectsItem &&
+						Array.isArray(ProjectsItem) &&
+						ProjectsItem.map(p => <ProjectItem key={p.id} project={p} />)}
 				</CarouselContent>
 			</Carousel>
 		</section>
@@ -47,7 +47,12 @@ export const ProjectItem = ({ project }: { project: ProjectsItem }) => {
 					<p className='text-foreground/70 text-sm'>
 						<Text text={project.description} />
 					</p>
-                    <TagList className={'flex gap-2 mt-4 flex-wrap text-sm text-gray-500'} tags={project.tags} prefix={'#'} separator={''} />
+					<TagList
+						className={'flex gap-2 mt-4 flex-wrap text-sm text-gray-500'}
+						tags={project.tags}
+						prefix={'#'}
+						separator={''}
+					/>
 				</CardBlur>
 			</SpotlightCard>
 		</CarouselItem>

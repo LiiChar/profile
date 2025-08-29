@@ -114,23 +114,25 @@ export const Knowledge = () => {
 				orientation='horizontal'
 			>
 				<CarouselContent className=' h-[100px]'>
-					{KnowledgeData.map(k => (
-						<CarouselItem
-							title={k.title}
-							key={k.title}
-							className='w-min basis-[15%]  pt-2 flex justify-center group relative'
-						>
-							{k.icon}
-							<div
-								className={cn(
-									'absolute bottom-10 scale-50 group-hover:scale-100 opacity-0 group-hover:bottom-0 transition-all group-hover:opacity-100'
-								)}
-								style={{ color: k.color }}
+					{KnowledgeData &&
+						Array.isArray(KnowledgeData) &&
+						KnowledgeData.map(k => (
+							<CarouselItem
+								title={k.title}
+								key={k.title}
+								className='w-min basis-[15%]  pt-2 flex justify-center group relative'
 							>
-								{k.title}
-							</div>
-						</CarouselItem>
-					))}
+								{k.icon}
+								<div
+									className={cn(
+										'absolute bottom-10 scale-50 group-hover:scale-100 opacity-0 group-hover:bottom-0 transition-all group-hover:opacity-100'
+									)}
+									style={{ color: k.color }}
+								>
+									{k.title}
+								</div>
+							</CarouselItem>
+						))}
 				</CarouselContent>
 			</Carousel>
 		</div>

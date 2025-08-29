@@ -8,7 +8,7 @@ import { getDate } from '@/helpers/date';
 import { timeRead } from '@/helpers/text';
 import { GrowArrow } from '../ui/grow-arrow';
 import { Markdown } from '../ui/markdown';
-import {TagList} from "@/components/tag/TagList";
+import { TagList } from '@/components/tag/TagList';
 
 type BlogCardProps = {
 	blog: BlogType;
@@ -18,13 +18,15 @@ export const BlogCard = ({ blog, className, ...attr }: BlogCardProps) => {
 	return (
 		<div {...attr} className={cn('flex flex-col gap-4', className)}>
 			<div className='relative '>
-				<Image
-					alt={blog.title}
-					fill={true}
-					loading='lazy'
-					src={blog.image ?? DEFAULT_IMAGE}
-					className='object-cover aspect-[16/10] w-full h-full transition-all rounded-md top-0 left-0 static!'
-				/>
+				{(blog.image ?? DEFAULT_IMAGE) && (
+					<Image
+						alt={blog.title}
+						fill={true}
+						loading='lazy'
+						src={blog.image ?? DEFAULT_IMAGE}
+						className='object-cover aspect-[16/10] w-full h-full transition-all rounded-md top-0 left-0 static!'
+					/>
+				)}
 			</div>
 			{/* Контейнер, занимающий всю высоту */}
 			<div className='w-full flex flex-col grow'>
@@ -45,7 +47,9 @@ export const BlogCard = ({ blog, className, ...attr }: BlogCardProps) => {
 				</div>
 
 				<div className='flex gap-3 items-center text-sm mt-auto'>
-                    {blog.tags && <TagList tags={blog.tags} limit={blog.tags.length <= 24 ? 2 : 1} />}
+					{blog.tags && (
+						<TagList tags={blog.tags} limit={blog.tags.length <= 24 ? 2 : 1} />
+					)}
 					<Separator />
 					<a
 						href={`/blog/${blog.id}`}

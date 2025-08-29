@@ -19,7 +19,7 @@ export const LinePortfolio = ({
 	const containerRef = useRef<HTMLDivElement | null>(null);
 	const pathRef = useRef<SVGPathElement | null>(null);
 
-	const [projects, setProjects] = useState<ProjectType[]>(initial.slice(0, 3));
+	const [projects, setProjects] = useState<ProjectType[]>(initial.slice(0, 8));
 	const [visibleProjects, setVisibleProjects] = useState<number>(0);
 	const [cursorPos, setCursorPos] = useState<Point | null>(null);
 	const [pathPoints, setPathPoints] = useState<Point[]>([]);
@@ -106,11 +106,11 @@ export const LinePortfolio = ({
 
 	// Параметры линии и генерация грубых контрольных точек (они нужны только для построения path)
 	const leftX = 150;
-	const rightX = 450;
+	const rightX = 550;
 	const gapY = 300;
 	const offsetY = 80;
-	const wave1 = 60;
-	const wave2 = 30;
+	const wave1 = 120;
+	const wave2 = 10;
 
 	const generateControlPoints = (): Point[] => {
 		return projects.map((_, i) => {

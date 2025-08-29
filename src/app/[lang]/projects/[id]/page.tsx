@@ -1,7 +1,6 @@
 import { db } from '@/db/db';
 import { eq } from 'drizzle-orm';
 import { projects } from '@/db/schema';
-import Image from 'next/image';
 import { TagList } from '@/components/tag/TagList';
 import { CommitTree } from '@/components/git/CommitTimeline';
 import { Button } from '@/components/ui/button';
@@ -10,6 +9,7 @@ import { Separator } from '@/components/ui/separator';
 import { ProjectAction } from '@/components/project/ProjectAction';
 import { getFieldLang, getLang } from '@/helpers/i18n';
 import { Markdown } from '@/components/ui/markdown';
+import { getCommits } from '@/action/git/getCommits';
 
 export default async function ProjectPage({
 	params,
@@ -32,7 +32,8 @@ export default async function ProjectPage({
 		);
 	}
 
-	const { title, image, repoName, createdAt, tags, author, url } = project;
+	const { repoName, createdAt, tags, author, url } = project;
+	const commits = repoName ? await getCommits(repoName) : null;
 
 	return (
 		<main className='max-w-4xl mx-auto px-4 py-8'>
@@ -42,11 +43,11 @@ export default async function ProjectPage({
 					src={url}
 				></iframe>
 			)}
-			<h1 className='text-4xl font-bold my-12'>
+			<h1 className='text-4xl font-bold my-16'>
 				{getFieldLang(project, 'title', lang)}
 			</h1>
 			<div className='flex gap-4'>
-				<div>
+				<div className='w-full'>
 					<div className='mb-6 w-full'>
 						<div className='flex justify-between items-center'>
 							<p className='text-sm text-gray-500'>
@@ -66,28 +67,10 @@ export default async function ProjectPage({
 						</div>
 					</div>
 
-					{image && (
-						<div className='mb-6'>
-							<Image
-								fill={true}
-								src={image}
-								alt={title}
-								className='w-full max-h-[400px] object-cover rounded-lg shadow'
-							/>
-						</div>
-					)}
-
 					<div className='prose prose-lg max-w-none '>
 						<Markdown>{getFieldLang(project, 'content', lang)}</Markdown>
 					</div>
 
-					{/* Опционально: если есть репозиторий — показываем таймлайн */}
-					{/*repoName && (
-                <div className="mt-12">
-                    <h2 className="text-2xl font-semibold mb-4">История коммитов</h2>
-                    <CommitTimeline repo={repoName} />
-                </div>
-            )*/}
 					<div className='flex items-center gap-3 mt-10'>
 						<div>
 							{tags && (
@@ -106,9 +89,11 @@ export default async function ProjectPage({
 						</div>
 					</div>
 				</div>
-				<div className='w-[200px]'>
-					<CommitTree />
-				</div>
+				{commits && (
+					<div>
+						<CommitTree commits={commits} />
+					</div>
+				)}
 			</div>
 		</main>
 	);

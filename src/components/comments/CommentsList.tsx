@@ -17,9 +17,9 @@ export const CommentsList = ({
 		<div {...attr}>
 			{userId && <CommentTextarea blogyId={blogId} userId={userId} />}
 			<div className='flex flex-col gap-4 mt-3'>
-				{comments.map(c => (
-					<CommentsCard key={c.id} comment={c} />
-				))}
+				{comments &&
+					Array.isArray(comments) &&
+					comments.map(c => <CommentsCard key={c.id} comment={c} />)}
 				{comments.length == 0 && (
 					<div>Тут пусто, но ты можешь это исправить</div>
 				)}

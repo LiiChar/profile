@@ -8,7 +8,7 @@ export const ScrollProgressBorder = () => {
 	const [progress, setProgress] = useState(0);
 
 	useEffect(() => {
-		return scrollYProgress.onChange(latest => {
+		return scrollYProgress.on('change', latest => {
 			setProgress(latest);
 		});
 	}, [scrollYProgress]);

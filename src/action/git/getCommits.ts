@@ -1,4 +1,10 @@
-export const getCommits = async () => {
-    const res = await fetch('https://api.github.com/repos/LiiChar/book-styde/commits');
-    return await res.json();
-}
+'use server';
+
+import { Commit } from '@/types/commit';
+
+export const getCommits = async (repo: string): Promise<Commit[]> => {
+	const res = await fetch(
+		`https://api.github.com/repos/LiiChar/${repo}/commits`
+	);
+	return await res.json();
+};

@@ -53,7 +53,7 @@
 
 // 	return (
 // 		<main className='bg-background font-sans space-y-48 px-6 py-12'>
-// 			{SECTIONS.map(({ id, Component }, i) => (
+// 			{SECTIONS && Array.isArray(SECTIONS) && SECTIONS.map(({ id, Component }, i) => (
 // 				<div
 // 					key={id}
 // 					id={id}

@@ -23,12 +23,14 @@ export const CardBlur = ({
 				attr.className
 			)}
 		>
-			<Image
-				fill={true}
-				className='object-cover w-full h-full group-hover:opacity-20 transition-all opacity-10 absolute top-0 left-0'
-				src={wallpaper}
-				alt='wallpaper'
-			/>
+			{wallpaper && (
+				<Image
+					fill={true}
+					className='object-cover w-full h-full group-hover:opacity-20 transition-all opacity-10 absolute top-0 left-0'
+					src={wallpaper}
+					alt='wallpaper'
+				/>
+			)}
 			<CardContent
 				className={cn(
 					'backdrop-blur-sm py-4 group-hover:scale-[1.01] transition-all h-full'

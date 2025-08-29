@@ -17,13 +17,15 @@ export default async function Tag({
 		<main>
 			<h1 className='my-10'>{tag}</h1>
 			<div className='flex gap-4 px-2 flex-wrap 	'>
-				{tagBlogs.map(b => (
-					<BlogCard
-						className='w-full px-4	flex-grow sm:px-0 sm:w-[calc(50%-12px)] md:w-[calc(33%-9px)]'
-						blog={b}
-						key={b.id}
-					/>
-				))}
+				{tagBlogs &&
+					Array.isArray(tagBlogs) &&
+					tagBlogs.map(b => (
+						<BlogCard
+							className='w-full px-4	flex-grow sm:px-0 sm:w-[calc(50%-12px)] md:w-[calc(33%-9px)]'
+							blog={b}
+							key={b.id}
+						/>
+					))}
 			</div>
 		</main>
 	);

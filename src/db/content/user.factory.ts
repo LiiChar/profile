@@ -1,14 +1,14 @@
-import { db } from '.';
+import { dbFactory } from '.';
 import { users, UserType } from '../tables/user';
 
 type UserFactoryInsert = Pick<UserType, 'name'>;
 
 export const userFactory = async (content: UserFactoryInsert[]) => {
-	await db.insert(users).values(content);
+	await dbFactory.insert(users).values(content);
 };
 
 export const userFactoryReset = async () => {
-	await db.delete(users).execute();
+	await dbFactory.delete(users).execute();
 };
 
 export const runUserFactory = async () => {

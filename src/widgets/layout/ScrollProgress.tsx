@@ -8,7 +8,7 @@ export const ScrollProgressBorder = () => {
 	const [progress, setProgress] = useState(0);
 
 	useEffect(() => {
-		return scrollYProgress.on('change', latest => {
+		return scrollYProgress.on('change', (latest) => {
 			setProgress(latest);
 		});
 	}, [scrollYProgress]);
@@ -17,7 +17,7 @@ export const ScrollProgressBorder = () => {
 		<BorderProgress
 			strokeColor='var(--foreground)'
 			style={{
-				width: '170px',
+				width: '160px',
 				opacity: '0.5',
 			}}
 			strokeWidth={1}

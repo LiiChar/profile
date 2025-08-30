@@ -11,6 +11,7 @@ import { Scroll } from '@/widgets/layout/Scroll';
 import { TooltipProvider } from '@radix-ui/react-tooltip';
 
 const inter = Inter({
+	display: 'swap',
 	subsets: ['latin', 'cyrillic'],
 	weight: ['400', '500', '600', '700'],
 });

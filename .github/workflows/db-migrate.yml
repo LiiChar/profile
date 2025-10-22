@@ -7,8 +7,6 @@ on:
 jobs:
   migrate:
     runs-on: ubuntu-latest
-    env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
     steps:
       - name: Checkout repo
@@ -25,4 +23,4 @@ jobs:
       - name: Run Drizzle Push
         run: npx drizzle-kit push
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DB_FILE_NAME: ${{ secrets.DATABASE_URL }}

@@ -23,4 +23,4 @@ jobs:
       - name: Run Drizzle Push
         run: npx drizzle-kit push
         env:
-          DB_FILE_NAME: ${{ secrets.DATABASE_URL }}
+          DB_FILE_NAME: ${{ secrets.DB_FILE_NAME }}

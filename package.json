@@ -4,10 +4,10 @@
 	"private": true,
 	"scripts": {
 		"dev": "next dev --turbopack",
-		"build": "next build && drizzle-kit push && npm run factory",
+		"build": "next build && npm run factory",
 		"start": "next start",
 		"lint": "next lint",
-		"factory": "tsx ./src/db/content/index.ts",
+		"factory": "drizzle-kit push && tsx ./src/db/content/index.ts",
 		"test:vitest": "vitest",
 		"db:push": "drizzle-kit push",
 		"db:generate": "drizzle-kit generate",

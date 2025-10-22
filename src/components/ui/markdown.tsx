@@ -2,8 +2,7 @@
 import Mark from 'react-markdown';
 import rehypeHighlight from 'rehype-highlight';
 import remarkGfm from 'remark-gfm';
-import '@/styles/highlight-js/github-dark.css';
-import '@/styles/highlight-js/github.css';
+
 import { cn } from '@/lib/utils';
 import { Check, Copy } from 'lucide-react';
 import { ReactNode } from 'react';

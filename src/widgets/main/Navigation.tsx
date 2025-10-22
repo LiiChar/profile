@@ -9,7 +9,7 @@ import React, {
 	useRef,
 	useState,
 } from 'react';
-import { Monitor, FileText, Hammer, LayoutDashboard, Book } from 'lucide-react';
+import { Monitor, FileText, LayoutDashboard, Book, Brain } from 'lucide-react';
 
 const MainComponents = {
 	hero: {
@@ -22,15 +22,15 @@ const MainComponents = {
 	},
 	knowledge: {
 		title: 'Навыки',
-		icon: <Book />,
+		icon: <Brain />,
 	},
 	portfolio: {
 		title: 'Портфолио',
 		icon: <LayoutDashboard />,
 	},
-	projects: {
-		title: 'Проекты',
-		icon: <Hammer />,
+	blog: {
+		title: 'Блог',
+		icon: <Book />,
 	},
 };
 
@@ -77,10 +77,10 @@ export const Navigation = ({
 
 	useEffect(() => {
 		const observer = new IntersectionObserver(
-			entries => {
+			(entries) => {
 				let mostVisible: IntersectionObserverEntry | null = null;
 
-				entries.forEach(entry => {
+				entries.forEach((entry) => {
 					sectionRefs.current[entry.target.id] = entry.target as HTMLDivElement;
 
 					if (
@@ -99,7 +99,7 @@ export const Navigation = ({
 			{ threshold: 0.2 }
 		);
 
-		Object.keys(components).forEach(key => {
+		Object.keys(components).forEach((key) => {
 			const el = document.getElementById(key);
 			if (el) observer.observe(el);
 		});
@@ -152,7 +152,7 @@ export const Navigation = ({
 							{value.title}
 						</div>
 						<button
-							ref={el => (buttonRefs.current[key] = el as any) as any}
+							ref={(el) => (buttonRefs.current[key] = el as any) as any}
 							className={cn(
 								'relative z-10 rounded-full  text-foreground/50 hover:text-primary transition-colors duration-200',
 								currentSection === key && 'text-primary font-bold p-3'

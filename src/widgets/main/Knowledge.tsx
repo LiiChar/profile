@@ -5,6 +5,7 @@ import {
 	CarouselContent,
 	CarouselItem,
 } from '@/components/ui/carousel';
+import { Text } from '@/components/ui/text-client';
 import { cn } from '@/lib/utils';
 import {
 	SiCss,
@@ -94,7 +95,9 @@ const KnowledgeData: Knowledge[] = [
 export const Knowledge = () => {
 	return (
 		<div>
-			<h2 className='mb-10'>Мои навыки</h2>
+			<h2 className='mb-10'>
+				<Text text='page.main.knowledge.title' />
+			</h2>
 			<Carousel
 				plugins={[
 					AutoScroll({
@@ -116,7 +119,7 @@ export const Knowledge = () => {
 				<CarouselContent className=' h-[100px]'>
 					{KnowledgeData &&
 						Array.isArray(KnowledgeData) &&
-						KnowledgeData.map(k => (
+						KnowledgeData.map((k) => (
 							<CarouselItem
 								title={k.title}
 								key={k.title}

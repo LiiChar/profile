@@ -9,12 +9,19 @@
 			},
 			"description": {
 				"title": "About Me",
-				"paragraf1": "I'm a frontend developer with a focus on React, Next.js, Tailwind, WebSocket, and Node.js. I'm also familiar with backend: Node.js (NestJS), express, PostgreSQL.",
-				"paragraf2": "I'm looking for a job as a frontend developer."
+				"paragraf1": "I am a web developer with experience in building applications using React and Next.js. I work on API development, database integration, and project architecture optimization. I also have experience with DevOps practices, CI/CD setup, and infrastructure management.",
+				"paragraf2": "I am interested in frontend development, interactive graphics (WebGL/shaders), and building complex UI components with animations. In my projects, I focus on code quality, user experience, and maintainable architecture.",
+				"paragraf3": "My goal is to grow into a Senior Developer, dive deeper into application architecture, experiment with graphics, and create products with strong technical and visual foundations."
 			},
 			"portfolio": {
 				"title": "Portfolio",
 				"items": []
+			},
+			"knowledge": {
+				"title": "My Skills"
+			},
+			"blog": {
+				"title": "Blog"
 			},
 			"projects": {
 				"title": "Projects",
@@ -30,9 +37,9 @@
 				]
 			}
 		},
-        "project": {
-          "title": "Projects"
-        }
+		"project": {
+			"title": "Projects"
+		}
 	},
 	"layout": {
 		"header": {

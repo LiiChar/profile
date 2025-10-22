@@ -1,11 +1,11 @@
 import { getProjects } from '@/action/project/getProjects';
 import { BlockIntersection } from '@/components/animation/BlockIntersection';
+import { Blog } from '@/widgets/main/Blog';
 import { Description } from '@/widgets/main/Description';
 import { Hero } from '@/widgets/main/Hero';
 import { Knowledge } from '@/widgets/main/Knowledge';
 import { LinePortfolio } from '@/widgets/main/LinePortfolio';
 import { Navigation } from '@/widgets/main/Navigation';
-import Projects from '@/widgets/main/Projects';
 
 export default async function Home() {
 	const projects = await getProjects();
@@ -24,8 +24,8 @@ export default async function Home() {
 				<BlockIntersection id='portfolio' height={2400} threshold={0.1}>
 					<LinePortfolio projects={projects} />
 				</BlockIntersection>
-				<BlockIntersection id='projects' height={1000}>
-					<Projects />
+				<BlockIntersection id='blog' height={1000}>
+					<Blog />
 				</BlockIntersection>
 			</Navigation>
 		</main>

@@ -1,5 +1,7 @@
 import { LangParams } from '@/types/i18n';
 import './globals.css';
+import '@/styles/highlight-js/github-dark.css';
+import '@/styles/highlight-js/github.css';
 import { Metadata } from 'next';
 import { DictionaryProvider } from '@/stores/lang/langProvider';
 import { getDictionary } from '@/dictionaries/dictionaries';

@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "next dev --turbopack",
-		"build": "next build && npm run factory",
+		"build": "npm run factory && next build",
 		"start": "next start",
 		"lint": "next lint",
 		"factory": "drizzle-kit push && tsx ./src/db/content/index.ts",

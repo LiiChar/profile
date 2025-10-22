@@ -6734,10 +6734,10 @@ object.values@^1.1.6, object.values@^1.2.1:
     define-properties "^1.2.1"
     es-object-atoms "^1.0.0"
 
-ogl@^1.0.11:
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/ogl/-/ogl-1.0.11.tgz#369d6b8681035500fbb14d461f4d74f014527b88"
-  integrity sha512-kUpC154AFfxi16pmZUK4jk3J+8zxwTWGPo03EoYA8QPbzikHoaC82n6pNTbd+oEaJonaE8aPWBlX7ad9zrqLsA==
+ogl@0.0.79:
+  version "0.0.79"
+  resolved "https://registry.yarnpkg.com/ogl/-/ogl-0.0.79.tgz#fdbc91ac73041cd0a2a6b9931ef61a2c2c557a2c"
+  integrity sha512-gNxgJV6cXXU9W84bE738sL7tqW4a+yFK+uE8twmzYQozYvFEPloB/7oj9SbJkEsRcLwoheWf5Tl5omHPOuBQ7A==
 
 on-finished@^2.4.1:
   version "2.4.1"

@@ -21,6 +21,7 @@ import { MarkdownEditor } from '@/components/ui/markdown-editor';
 import { getDate } from '@/helpers/date';
 import { validateUrl } from '@/helpers/url';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 const formUpdateProjectSchema = z.object({
 	title: z
@@ -154,9 +155,11 @@ export const ProjectUpdatePage = ({
 											/>
 											{field.value && (
 												<div className='mt-2'>
-													<img
+													<Image
 														src={field.value}
 														alt='Обложка проекта'
+														width={800}
+														height={600}
 														className='rounded-lg object-cover w-full h-full'
 													/>
 												</div>
@@ -252,7 +255,7 @@ export const ProjectUpdatePage = ({
 											className='w-full p-2 border rounded font-mono text-sm'
 											rows={4}
 											value={JSON.stringify(field.value, null, 2)}
-											onChange={e => {
+											onChange={(e) => {
 												try {
 													form.clearErrors('lang');
 													field.onChange(JSON.parse(e.target.value));

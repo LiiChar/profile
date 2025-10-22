@@ -19,8 +19,8 @@ export default function LineAnimated({ points: p = [] }: D3LineAnimatedProps) {
 
 	const lineGenerator = d3
 		.line<Point>()
-		.x(d => d.x)
-		.y(d => d.y)
+		.x((d) => d.x)
+		.y((d) => d.y)
 		.curve(d3.curveBasis);
 
 	const pathData = lineGenerator(points);

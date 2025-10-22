@@ -732,5 +732,7 @@
 	display: none;
 }
 
-@import '@/styles/highlight-js/github-dark.css';
-@import '@/styles/highlight-js/github.css';
+@import '../../styles/highlight-js/github-dark.css';
+@import '../../styles/highlight-js/github.css';
+/* @import '@/styles/highlight-js/github-dark.css';
+@import '@/styles/highlight-js/github.css'; */

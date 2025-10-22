@@ -4,11 +4,14 @@
 	"private": true,
 	"scripts": {
 		"dev": "next dev --turbopack",
-		"build": "next build && npx drizzle-kit push && npm run factory",
+		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
 		"factory": "tsx ./src/db/content/index.ts",
-		"test:vitest": "vitest"
+		"test:vitest": "vitest",
+		"db:push": "drizzle-kit push",
+		"db:generate": "drizzle-kit generate",
+		"db:migrate": "drizzle-kit migrate"
 	},
 	"dependencies": {
 		"@formatjs/intl-localematcher": "^0.6.1",

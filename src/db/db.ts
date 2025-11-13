@@ -2,6 +2,7 @@ import { drizzle } from 'drizzle-orm/better-sqlite3';
 import * as schema from './schema';
 import path from 'path';
 import fs from 'fs';
+import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 
 const dbPath = path.resolve(process.cwd(), process.env.DB_FILE_NAME || 'db.sqlite');
 console.log('Database path:', dbPath);
@@ -15,7 +16,7 @@ if (!fs.existsSync(dbDir)) {
 	fs.mkdirSync(dbDir, { recursive: true });
 }
 
-let db;
+let db: BetterSQLite3Database<typeof schema>;
 try {
 	db = drizzle(dbPath, {
 		schema: { ...schema },

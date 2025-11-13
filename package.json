@@ -5,6 +5,7 @@
 	"scripts": {
 		"dev": "next dev --turbopack",
 		"build": "next build",
+		"postbuild": "copy db.sqlite .next\\standalone\\db.sqlite",
 		"start": "next start",
 		"lint": "next lint",
 		"factory": "tsx ./src/db/content/index.ts",

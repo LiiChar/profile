@@ -10,21 +10,21 @@ import { Navigation } from '@/widgets/main/Navigation';
 export default async function Home() {
 	const projects = await getProjects();
 	return (
-		<main className='min-h-screen bg-background px-6 py-12'>
+		<main className='min-h-screen  px-6 py-12'>
 			<Navigation>
-				<BlockIntersection id='hero' height={1000}>
+				<BlockIntersection id='hero' height={1000} className="mb-[40%]">
 					<Hero />
 				</BlockIntersection>
-				<BlockIntersection id='description' height={1000}>
+				<BlockIntersection id='description' height={800} className="mb-[40%]">
 					<Description />
 				</BlockIntersection>
-				<BlockIntersection id='knowledge' height={1000} threshold={0.6}>
+				<BlockIntersection id='knowledge' height={800} className="mb-[40%]">
 					<Knowledge />
 				</BlockIntersection>
-				<BlockIntersection id='portfolio' height={2400} threshold={0.1}>
+				<BlockIntersection id='portfolio' height={3000} className="mb-[40%]">
 					<LinePortfolio projects={projects} />
 				</BlockIntersection>
-				<BlockIntersection id='blog' height={1000}>
+				<BlockIntersection id='blog' height={800} className="">
 					<Blog />
 				</BlockIntersection>
 			</Navigation>

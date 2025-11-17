@@ -1,7 +1,6 @@
 'use client';
 import { Moon, Sun } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
 
 const LOCAL_STORAGE_THEME_KEY = 'theme';
 
@@ -20,42 +19,34 @@ export const ChangeTheme = () => {
 	}, []);
 
 	const handleChangeTheme = (theme: 'light' | 'dark') => {
-		if (theme == 'dark') {
-			document.querySelector('body')!.classList.add('dark');
-			document.querySelector('body')!.classList.remove('light');
+		// Cache body element to avoid repeated querySelector calls
+		const body = document.body;
+
+		if (theme === 'dark') {
+			body.classList.add('dark');
+			body.classList.remove('light');
 		} else {
-			document.querySelector('body')!.classList.add('light');
-			document.querySelector('body')!.classList.remove('dark');
+			body.classList.add('light');
+			body.classList.remove('dark');
 		}
+
+		// Update localStorage and state
 		localStorage.setItem(LOCAL_STORAGE_THEME_KEY, theme);
 		setTheme(theme);
 	};
 
 	return (
 		<div className='cursor-pointer'>
-			{theme == 'light' && (
-				<motion.div
-					transition={{ type: 'spring' }}
-					initial={{ x: 20, y: -40 }}
-					animate={{ x: 0, y: 0 }}
-				>
-					<Moon
-						className='hover:stroke-primary'
-						onClick={() => handleChangeTheme('dark')}
-					/>
-				</motion.div>
-			)}
-			{theme == 'dark' && (
-				<motion.div
-					transition={{ type: 'spring' }}
-					initial={{ x: 20, y: -40 }}
-					animate={{ x: 0, y: 0 }}
-				>
-					<Sun
-						className='hover:stroke-primary'
-						onClick={() => handleChangeTheme('light')}
-					/>
-				</motion.div>
+			{theme == 'light' ? (
+				<Moon
+					className='hover:stroke-primary'
+					onClick={() => handleChangeTheme('dark')}
+				/>
+			) : (
+				<Sun
+					className='hover:stroke-primary'
+					onClick={() => handleChangeTheme('light')}
+				/>
 			)}
 		</div>
 	);

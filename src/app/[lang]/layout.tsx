@@ -9,6 +9,8 @@ import { Footer } from '@/widgets/layout/Footer';
 import { InitProvider } from '@/widgets/layout/InitProvider';
 import { Scroll } from '@/widgets/layout/Scroll';
 import { TooltipProvider } from '@radix-ui/react-tooltip';
+import Script from 'next/script';
+import Dither from '@/components/background/Dither';
 
 export const metadata: Metadata = {
 	title: 'Профиль',
@@ -23,6 +25,7 @@ export default async function RootLayout({
 	LangParams) {
 	return (
 		<html lang={(await params).lang}>
+			<Script src='https://js.puter.com/v2/' strategy='afterInteractive' />
 			<DictionaryProvider dict={await getDictionary((await params).lang)}>
 				<body className='dark min-h-screen overflow-x-hidden relative z-[10]'>
 					<InitProvider>
@@ -31,6 +34,7 @@ export default async function RootLayout({
 							<Header />
 							{children}
 							<Footer />
+							<Dither />
 						</TooltipProvider>
 					</InitProvider>
 				</body>

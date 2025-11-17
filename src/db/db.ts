@@ -3,26 +3,9 @@ import * as schema from './schema';
 import path from 'path';
 import fs from 'fs';
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
-import { runFactory } from './content';
+// import { runFactory } from './content';
 
 const dbPath = path.resolve(process.cwd(), process.env.DB_FILE_NAME || 'db.sqlite');
-console.log('Database path:', dbPath);
-console.log('DB_FILE_NAME:', process.env.DB_FILE_NAME);
-console.log('process.cwd():', process.cwd());
-
-// Ensure the directory exists
-const dbDir = path.dirname(dbPath);
-if (!fs.existsSync(dbDir)) {
-	console.log('Creating database directory:', dbDir);
-	fs.mkdirSync(dbDir, { recursive: true });
-}
-
-// Ensure the database file exists
-if (!fs.existsSync(dbPath)) {
-	console.log('Creating database file:', dbPath);
-	fs.writeFileSync(dbPath, '');
-	runFactory();
-}
 
 let db: BetterSQLite3Database<typeof schema>;
 try {
@@ -33,7 +16,7 @@ try {
 } catch (error) {
 	console.error('Error connecting to database:', error);
 	console.error('dbPath:', dbPath);
-	console.error('Directory exists:', fs.existsSync(dbDir));
+	// console.error('Directory exists:', fs.existsSync(dbDir));
 	console.error('File exists:', fs.existsSync(dbPath));
 	throw error;
 }

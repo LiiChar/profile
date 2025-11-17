@@ -179,7 +179,7 @@ export const LinePortfolio = ({
 						cx={p.x}
 						cy={p.y}
 						r={6}
-						fill={i < visibleProjects ? 'white' : 'transparent'}
+						fill={i < visibleProjects ? 'var(--primary)' : 'transparent'}
 						stroke='var(--primary)'
 						strokeWidth={2}
 					/>

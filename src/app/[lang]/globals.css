@@ -117,6 +117,7 @@
 	}
 	html {
 		@apply scroll-smooth;
+		scroll-snap-type: y mandatory;
 	}
 	body {
 		@apply bg-background text-foreground z-10;
@@ -128,6 +129,7 @@
 		background: transparent;
 		width: 6px;
 		height: 3px;
+		background: var(--foreground);
 	}
 
 	@media (max-width: 600) {

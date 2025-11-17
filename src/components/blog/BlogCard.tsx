@@ -40,9 +40,9 @@ export const BlogCard = ({ blog, className, ...attr }: BlogCardProps) => {
 					</div>
 					<div className='py-2 -m'>
 						<h3 className='text-[19px]'>{blog.title}</h3>
-						<p className='block sm:hidden lg:block md:hidden overflow-ellipsis h-[60px] overflow-hidden text-[16px] mt-[4px]'>
+						<div className='block sm:hidden lg:block md:hidden overflow-ellipsis h-[60px] overflow-hidden text-[16px] mt-[4px]'>
 							<Markdown>{blog.content}</Markdown>
-						</p>
+						</div>
 					</div>
 				</div>
 

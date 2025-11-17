@@ -28,7 +28,8 @@
 		"**/*.tsx",
 		".next/types/**/*.ts",
 		"tailwind.config.js",
-		"src/widgets/layout/ScrollProgress.tsx"
+		"src/widgets/layout/ScrollProgress.tsx",
+		"src/types"
 	],
 	"exclude": ["node_modules"]
 }

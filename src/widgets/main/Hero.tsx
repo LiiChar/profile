@@ -15,7 +15,7 @@ export const Hero = ({}) => {
 	const dict = useDictionaryStore(state => state.dictionary);
 	return (
 		// <section className='mx-auto text-center h-[calc(100vh-40px)] flex flex-col justify-center items-center -mt-12 z-20'>
-		<section className='mx-auto text-center  z-20'>
+		<section className='mx-auto text-center h-full flex flex-col justify-center items-center z-20'>
 			<motion.h1
 				initial={{ opacity: 0, y: -20 }}
 				animate={{ opacity: 1, y: 0 }}

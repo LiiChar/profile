@@ -50,6 +50,13 @@ const ProjectBackground = ({
 					className='w-full h-full object-cover transition-transform duration-500 group-hover:scale-105'
 				/>
 			</div>
+
+			<div className='absolute  inset-0 flex flex-col justify-end bg-gradient-to-t from-black/70 to-transparent p-4 opacity-100 translate-y-4 transition-all duration-300 group-hover:opacity-0 group-hover:translate-y-0'>
+				<a href={`/projects/${project.id}`}>
+					<h2 className=' font-bold text-lg m-0 p-0 border-0 mb-4'>{project.title}</h2>
+				</a>
+			</div>
+
 			{/* Контент, который появляется при наведении */}
 			<div className='absolute  inset-0 flex flex-col justify-end bg-gradient-to-t from-black/70 to-transparent p-4 opacity-0 translate-y-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0'>
 				<a href={`/projects/${project.id}`}>

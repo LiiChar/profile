@@ -2,10 +2,12 @@
 import { ProjectType } from '@/db/tables/project';
 import { cn } from '@/lib/utils';
 import { ProjectCard } from '@/components/project/ProjectCard';
-import { useMemo, useState, useRef, useEffect } from 'react';
+import { useMemo, useState } from 'react';
 import { Reorder } from 'motion/react';
 import { useSticky } from '@/hooks/useSticky';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
+import { Carousel, CarouselContent, CarouselItem } from '../ui/carousel';
+import AutoScroll from 'embla-carousel-auto-scroll';
 
 type ProjectListVariant = 'grid' | 'column' | 'vertical' | 'column-2';
 
@@ -50,45 +52,9 @@ export const ProjectList = ({
 	const [filteredProjects, setFilteredProjects] = useState(projects ?? []);
 	const { ref, isSticky } = useSticky<HTMLDivElement>(0);
 
-	const scrollRef = useRef<HTMLDivElement>(null);
-	const pauseRef = useRef(false);
-	const timerRef = useRef<NodeJS.Timeout | null>(null);
-
-	// авто-скролл
-	useEffect(() => {
-		if (!isSticky || !scrollRef.current) return;
-		let frame: number;
-		const el = scrollRef.current;
-
-		const step = () => {
-			if (el && !pauseRef.current) {
-				el.scrollLeft += 0.5; // скорость
-				if (el.scrollLeft + el.clientWidth >= el.scrollWidth) {
-					el.scrollLeft = 0;
-				}
-			}
-			frame = requestAnimationFrame(step);
-		};
-		frame = requestAnimationFrame(step);
-		return () => cancelAnimationFrame(frame);
-	}, [isSticky]);
-
-	// wheel → только горизонтальный скролл + автопауза
-	const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
-		if (!scrollRef.current) return;
-		e.preventDefault(); // запрещаем вертикальный скролл страницы
-		scrollRef.current.scrollLeft += e.deltaY;
-
-		// ставим паузу автоскролла
-		pauseRef.current = true;
-		if (timerRef.current) clearTimeout(timerRef.current);
-		timerRef.current = setTimeout(() => {
-			pauseRef.current = false;
-		}, 2000);
-	};
-
 	const tags = useMemo(() => {
 		const tagsSet = new Set<string>();
+		tagsSet.add('All');
 		projects.forEach(project => {
 			if (project.tags) {
 				project.tags
@@ -103,6 +69,9 @@ export const ProjectList = ({
 	}, [projects]);
 
 	const handleTagClick = (tag: string) => {
+		if (tag === 'All') {
+			tag = '';
+		}
 		setCurrentTags(tag);
 		const filteredProjectTag = projects.filter(p =>
 			(p.tags ?? '').includes(tag)
@@ -113,15 +82,6 @@ export const ProjectList = ({
 	// Общий рендер кнопок
 	const renderTags = () => (
 		<>
-			<div
-				onClick={() => handleTagClick('')}
-				className={cn(
-					'px-2 py-1 border border-foreground/30 transition-all hover:bg-foreground hover:text-background rounded-md hover:scale-110 bg-background/30 h-min cursor-pointer text-nowrap',
-					currentTag === '' && 'text-background bg-foreground'
-				)}
-			>
-				All
-			</div>
 			{tags.map(t => (
 				<div
 					onClick={() => handleTagClick(t)}
@@ -154,24 +114,38 @@ export const ProjectList = ({
 						{renderTags()}
 					</motion.div>
 
-					{/* Sticky-фильтр с автоскроллом */}
-					<AnimatePresence>
-						{isSticky && (
-							<motion.div
-								ref={scrollRef}
-								onWheel={handleWheel}
-								initial={{ opacity: 0, y: -10 }}
-								animate={{ opacity: 1, y: 0 }}
-								exit={{ opacity: 0, y: -10 }}
-								transition={{ duration: 0.3 }}
-								className={cn(
-									'flex fixed top-[50px] h-[44px] left-1/2 -translate-x-1/2 gap-2 w-full flex-nowrap overflow-y-hidden overflow-x-scroll rounded-md z-10 overscroll-contain  max-w-[864px] scroll-smooth scrollbar-hide'
-								)}
-							>
-								{renderTags()}
-							</motion.div>
-						)}
-					</AnimatePresence>
+					<Carousel
+						style={{ display: !isSticky ? 'none' : 'block' }}
+						plugins={[
+							AutoScroll({
+								speed: 0.5,
+								startDelay: 2000,
+								playOnInit: true,
+								stopOnMouseEnter: false,
+								stopOnFocusIn: false,
+								stopOnInteraction: false,
+							}),
+						]}
+						opts={{
+							align: 'start',
+							dragFree: true,
+							loop: true,
+						}}
+						orientation='horizontal'
+						className='z-10 fixed top-[50px] left-0'
+					>
+						<CarouselContent>
+							{tags.map(t => (
+								<CarouselItem
+									title={t}
+									key={t}
+									className='basis-[4%] mx-1 px-2 py-1 border border-foreground/30 transition-all bg-background/30 hover:bg-foreground hover:text-background rounded-md hover:scale-110 backdrop-blur-[10px] h-min cursor-pointer text-nowrap pointer-events-none'
+								>
+									{t}
+								</CarouselItem>
+							))}
+						</CarouselContent>
+					</Carousel>
 				</>
 			)}
 

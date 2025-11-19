@@ -5,7 +5,9 @@ export default async function Blog() {
 	const blogs = await db.query.blogs.findMany();
 	return (
 		<main>
-			<h1 className='my-10'>Blog</h1>
+			<h1 className='my-10'>
+				Blog
+			</h1>
 			<div className='flex gap-4 px-2 flex-wrap 	'>
 				{blogs &&
 					Array.isArray(blogs) &&

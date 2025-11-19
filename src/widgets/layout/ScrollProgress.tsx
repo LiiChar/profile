@@ -37,7 +37,6 @@ export const ScrollProgressBorder = () => {
 			}}
 			strokeWidth={1}
 			progress={progress}
-			className='backdrop-blur-[10px]'
 		/>
 	);
 };

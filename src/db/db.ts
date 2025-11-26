@@ -2,35 +2,48 @@ import { drizzle } from 'drizzle-orm/better-sqlite3';
 import * as schema from './schema';
 import path from 'path';
 import fs from 'fs';
+import Database from 'better-sqlite3';
+import { execSync } from 'child_process';
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { runFactory } from './content';
-import { exec } from 'child_process';
 
-const dbPath = path.resolve(process.cwd(), process.env.DB_FILE_NAME || 'db.sqlite');
+const dbPath = path.resolve(
+	process.cwd(),
+	process.env.DB_FILE_NAME || 'db.sqlite'
+);
 
-let db: BetterSQLite3Database<typeof schema>;
-try {
-	db = drizzle(dbPath, {
-		schema: { ...schema },
-	});
-} catch (error) {
-	console.log('Database created and factoried cause by error:', error);
-	fs.writeFileSync(dbPath, '');
-	exec('npx drizzle-kit push', { cwd: process.cwd() }, (error, stdout, stderr) => {
-    if (error) {
-        console.error(`Error: ${error.message}`);
-        return;
-    }
-    if (stderr) {
-        runFactory();
-        return;
-    }
-    console.log(`Output: ${stdout}`);
-});
-	
-	db = drizzle(dbPath, {
-		schema: { ...schema },
-	});
+function needsMigration(db: any) {
+	try {
+		const info = db.prepare('PRAGMA table_info(user);').all();
+        
+		return info.length === 0; // таблицы нет → миграции нужны
+	} catch {
+		return true;
+	}
 }
+
+function ensureDatabase() {
+	const exists = fs.existsSync(dbPath);
+
+	if (!exists) {
+		console.log('Database not found — creating...');
+		fs.writeFileSync(dbPath, '');
+	}
+
+	const testDb = new Database(dbPath);
+
+	if (needsMigration(testDb)) {
+		console.log('Running migrations...');
+		execSync('npx drizzle-kit push', { stdio: 'inherit' });
+		runFactory();
+	}
+
+	testDb.close();
+}
+
+ensureDatabase();
+
+const sqlite = new Database(dbPath);
+const db: BetterSQLite3Database<typeof schema> = drizzle(sqlite, { schema });
 
 export { db };

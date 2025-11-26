@@ -18,6 +18,7 @@ import { MarkdownEditor } from '../ui/markdown-editor';
 import { toast } from 'sonner';
 import { createBlog } from '@/action/blog/create';
 import { useRouter } from 'next/navigation';
+import { GenerateIcon } from '../generate/GenerateIcon';
 
 const formCreateBlogSchema = z.object({
 	title: z.string().min(2, {
@@ -70,6 +71,8 @@ export const BlogCreatePage = () => {
 							render={({ field }) => (
 								<FormItem className='w-full mb-4'>
 									<FormControl className='w-full'>
+										<GenerateIcon context='header' handleGenerate={(res) => form.setValue('title', res)}>
+
 										<div
 											contentEditable
 											className='!text-5xl text-center font-bold  my-10 w-full !bg-transparent border-0'
@@ -77,9 +80,10 @@ export const BlogCreatePage = () => {
 												form.setValue('title', e.currentTarget.innerText)
 											}
 											suppressContentEditableWarning={true}
-										>
+											>
 											{field.value}
 										</div>
+										</GenerateIcon>
 									</FormControl>
 									<FormMessage />
 								</FormItem>

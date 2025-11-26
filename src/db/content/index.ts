@@ -17,4 +17,4 @@ export const runFactory = async () => {
 	await runProjectFactory();
 };
 
-runFactory();
+// runFactory();

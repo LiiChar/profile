@@ -5,80 +5,53 @@ import { Lang } from '@/types/i18n';
 import { headers } from 'next/headers';
 import Link from 'next/link';
 import { ChangeTheme } from '../theme/ChangeTheme';
-import { Text } from '@/components/ui/text-server';
 import { cn } from '@/lib/utils';
 import { ScrollProgressBorder } from './ScrollProgress';
-import { Rounded } from '@/components/animation/rounded';
+import { NavigationLinks } from './NavigationLinks';
 
 export const Header = async () => {
 	const headerList = await headers();
-	const path = headerList.get('x-current-path');
+	const path = headerList.get('x-current-path') || '/';
 	const lang = (headerList.get('x-current-language') || defaultLocale) as Lang;
 
 	return (
-		<header className='px-4 sticky top-0 z-50 pt-2' role='banner'>
-			<div className='flex justify-between'>
-				<div className='flex items-center w-1/6'>
-					<Link
-						href={updateLanugagePath(lang == 'ru' ? 'en' : 'ru', path ?? '/')}
-						aria-label={`Switch language to ${
-							lang === 'ru' ? 'English' : 'Русский'
-						}`}
-					>
-						<SwitchDetail
-							value={lang == 'ru'}
-							className='w-14 h-6 text-[13px] text-foreground'
-							variant='pill'
-							first={'EN'}
-							second={'RU'}
-							aria-label={`Current language: ${lang.toUpperCase()}`}
-						/>
-					</Link>
-				</div>
-				<nav
-					id='nav'
-					className='flex gap-4 items-center relative'
-					role='navigation'
-					aria-label='Main site navigation'
+		<header className='sticky top-0 z-50 w-full px-4 pt-4 pb-6' role='banner'>
+			<div id='nav' className='mx-auto max-w-5xl'>
+				<div
+					className={cn(
+						'relative overflow-hidden rounded-2xl border',
+						'bg-background/20 backdrop-blur-xl',
+						'border-white/10',
+						'shadow-2xl shadow-black/20',
+						'ring-1 ring-red-500/10', // тонкая красная аура
+						'animate-in fade-in slide-in-from-top-6 duration-800 ease-out'
+					)}
 				>
-					<div
-						className='absolute top-0 left-0 right-0 h-full w-full bg-secondary/20 backdrop-blur-[10px] scale-125 rounded-lg'
-						aria-hidden='true'
-					>
-						<ScrollProgressBorder />
+					<div className='absolute inset-0 -z-10 opacity-30' aria-hidden='true'>
+						<div className='absolute inset-x-0 top-0 h-full bg-gradient-to-b from-red-500/40 to-transparent blur-3xl' />
+						<div className='absolute h-full inset-0 bg-gradient-to-r from-red-600/20 via-transparent to-rose-600/20 blur-2xl' />
 					</div>
-					<Link
-						className={cn(
-							'z-[60] px-[4px] no-underline py-[1px] border-[1px] border-transparent rounded-md hover:bg-foreground hover:text-background',
-							path?.split('/').includes('projects') &&
-								'bg-foreground text-background'
-						)}
-						href={'/projects'}
-						aria-current={
-							path?.split('/').includes('projects') ? 'page' : undefined
-						}
-					>
-						<Text text='layout.header.links.projects' />
-					</Link>
-					<Link className='z-[60]' href={'/'} aria-label='Go to homepage'>
-						<Rounded className='h-[30px] w-[30px]'>Hi</Rounded>
-					</Link>
-					<Link
-						className={cn(
-							'z-[60] px-[4px] no-underline py-[1px] border-[1px] border-transparent rounded-md hover:bg-foreground hover:text-background',
-							path?.split('/').includes('blog') &&
-								'bg-foreground text-background'
-						)}
-						href={'/blog'}
-						aria-current={
-							path?.split('/').includes('blog') ? 'page' : undefined
-						}
-					>
-						<Text text='layout.header.links.blog' />
-					</Link>
-				</nav>
-				<div className='flex items-center z-10 justify-end gap-4 w-1/6'>
-					<ChangeTheme aria-label='Change color theme' />
+					<ScrollProgressBorder className='z-[-1] w-full' targetId='nav'>
+						<div className='relative flex items-center justify-between px-4 py-2 w-full'>
+							<Link
+								href={updateLanugagePath(lang === 'ru' ? 'en' : 'ru', path)}
+								className='group'
+							>
+								<SwitchDetail
+									value={lang === 'ru'}
+									className='w-14 h-7 text-[13px] font-semibold transition-all duration-300 group-hover:scale-110'
+									variant='pill'
+									first='EN'
+									second='RU'
+								/>
+							</Link>
+							<NavigationLinks/>
+							<ChangeTheme
+								className='ransition-all duration-300 hover:scale-110'
+								aria-label='Сменить тему'
+							/>
+						</div>
+					</ScrollProgressBorder>
 				</div>
 			</div>
 		</header>

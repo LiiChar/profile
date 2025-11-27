@@ -3,7 +3,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
-		"dev": "next dev --turbopack --experimental-https",
+		"dev": "next dev --turbopack",
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
@@ -15,11 +15,13 @@
 	},
 	"dependencies": {
 		"@formatjs/intl-localematcher": "^0.6.1",
+		"@google/genai": "^1.30.0",
 		"@heyputer/puter.js": "^2.1.4",
 		"@hookform/resolvers": "^5.1.1",
 		"@icons-pack/react-simple-icons": "^13.5.0",
 		"@radix-ui/react-avatar": "^1.1.10",
 		"@radix-ui/react-dialog": "^1.1.14",
+		"@radix-ui/react-dropdown-menu": "^2.1.16",
 		"@radix-ui/react-label": "^2.1.7",
 		"@radix-ui/react-separator": "^1.1.7",
 		"@radix-ui/react-slot": "^1.2.3",

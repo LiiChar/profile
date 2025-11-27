@@ -2,75 +2,65 @@
 import { Text } from 'lucide-react';
 import { useState } from 'react';
 import { Textarea } from '../ui/textarea';
-import { gigaChat } from '@/action/generate/giga';
+import { cn } from '@/lib/utils';
+import { Dropdown } from '../ui/dropdown';
+import { Button } from '../ui/button';
+import { chat } from '@/action/generate';
 
-export const GenerateIcon = ({
-	children,
-	context,
-	handleGenerate,
-}: {
+type GenerateIconProps = {
 	children: React.ReactNode;
 	context?: string;
 	handleGenerate: (res: string) => void;
-}) => {
-	const [visible, setVisible] = useState(false);
+} & React.HTMLAttributes<HTMLDivElement>;
+
+export const GenerateIcon = ({
+	children,
+	handleGenerate,
+	className,
+	...attr
+}: GenerateIconProps) => {
 	const [text, setText] = useState('');
 	const [loading, setLoading] = useState(false);
 
-	const toggleVisible = () => setVisible(v => !v);
 
 	const onGenerate = async () => {
 		try {
 			setLoading(true);
 
-			const res = await gigaChat([
-				{
-					role: 'system',
-					content: `Ты — помощник. Генерируй ответ строго в контексте: "${context}".`,
-				},
-				{
-					role: 'user',
-					content: text,
-				},
-			]);
+			const res = await chat(text);
 
-			const message = res.choices?.[0]?.message?.content ?? '';
-			handleGenerate(message);
+			handleGenerate(res);
 		} catch (err) {
 			console.error('Ошибка GigaChat:', err);
 			handleGenerate('Ошибка при генерации.');
 		} finally {
-			setVisible(false);
 			setLoading(false);
 			setText('');
 		}
 	};
 
 	return (
-		<div className='relative' >
+		<div  {...attr} className={cn('relative', className)}>
 			{children}
 
-			<div className='absolute top-0 -right-4'>
-				<Text onClick={toggleVisible} className='cursor-pointer' />
-
-				{visible && (
-					<div className='p-2  border rounded-xl shadow-md w-56'>
+				<Dropdown align='center' className='mx-2' trigger={<Text size={'17'} className='cursor-pointer  absolute left-2 bottom-2' />}>
+					<div className='p-1'>
 						<Textarea
 							value={text}
 							onChange={e => setText(e.target.value)}
 							placeholder='Введите текст...'
 						/>
 
-						<button
+						<Button
 							disabled={loading}
 							onClick={onGenerate}
 							className='mt-2 w-full py-1 text-sm  rounded-md'
 						>
 							{loading ? 'Генерирую...' : 'Сгенерировать'}
-						</button>
+						</Button>
 					</div>
-				)}
-			</div>
+				</Dropdown>
+
 		</div>
 	);
 };

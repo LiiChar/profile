@@ -1,42 +1,44 @@
 'use client';
-import React, { useState, useEffect } from 'react';
-import { useScroll } from 'framer-motion';
-import { BorderProgress } from '@/components/ui/border-progress';
+import { BorderProgress } from "@/components/ui/border-progress";
+import { cn } from "@/lib/utils";
+import { useScroll } from "framer-motion";
+import { useEffect, useState, useRef } from "react";
 
-export const ScrollProgressBorder = () => {
-	const { scrollYProgress } = useScroll();
+type ScrollProgressProps = {
+	targetId?: string;
+} & React.HTMLAttributes<HTMLDivElement>;
+
+export const ScrollProgressBorder = ({
+	targetId,
+	children,
+	className,
+	...props
+}: ScrollProgressProps) => {
+	const targetRef = useRef<HTMLElement>(null);
+	const { scrollYProgress } = useScroll({
+		target: targetRef,
+		offset: ['start start', 'end end'],
+	});
+
 	const [progress, setProgress] = useState(0);
-	const [width, setWidth] = useState(160);
 
 	useEffect(() => {
-		const handleResizeWindow = () => {
-			setWidth(prev => document.querySelector('#nav')?.clientWidth ?? prev);
-		};
-
-		handleResizeWindow()
-		
-		window.addEventListener('resize', handleResizeWindow);
-
-		return () => {
-			window.removeEventListener('resize', handleResizeWindow);
-		}
-	}, []);
+		targetRef.current = document.getElementById(`#${targetId}`)!;
+	});
 
 	useEffect(() => {
-		return scrollYProgress.on('change', (latest) => {
-			setProgress(latest);
-		});
+		return scrollYProgress.on('change', setProgress);
 	}, [scrollYProgress]);
 
 	return (
 		<BorderProgress
-			strokeColor='var(--foreground)'
-			style={{
-				width: `${width}px`,
-				opacity: '0.5',
-			}}
-			strokeWidth={1}
+			strokeColor='rgb(239 20 20)' // красный акцент
+			strokeWidth={3}
 			progress={progress}
-		/>
+			className={cn('rounded-2xl', className)}
+			{...props}
+		>
+			{children}
+		</BorderProgress>
 	);
 };

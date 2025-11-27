@@ -19,6 +19,7 @@ import { toast } from 'sonner';
 import { createBlog } from '@/action/blog/create';
 import { useRouter } from 'next/navigation';
 import { GenerateIcon } from '../generate/GenerateIcon';
+import { Input } from '../ui/input';
 
 const formCreateBlogSchema = z.object({
 	title: z.string().min(2, {
@@ -71,18 +72,18 @@ export const BlogCreatePage = () => {
 							render={({ field }) => (
 								<FormItem className='w-full mb-4'>
 									<FormControl className='w-full'>
-										<GenerateIcon context='header' handleGenerate={(res) => form.setValue('title', res)}>
-
-										<div
-											contentEditable
-											className='!text-5xl text-center font-bold  my-10 w-full !bg-transparent border-0'
-											onInput={e =>
-												form.setValue('title', e.currentTarget.innerText)
-											}
-											suppressContentEditableWarning={true}
-											>
-											{field.value}
-										</div>
+										<GenerateIcon
+											context='header'
+											handleGenerate={res => form.setValue('title', res)}
+										>
+											<Input
+												className='h-14 text-center !text-4xl'
+												onInput={e =>
+													form.setValue('title', e.currentTarget.innerText)
+												}
+												value={field.value}
+												suppressContentEditableWarning={true}
+											/>
 										</GenerateIcon>
 									</FormControl>
 									<FormMessage />
@@ -94,7 +95,9 @@ export const BlogCreatePage = () => {
 							<div className='flex text-nowrap items-center space-x-2  text-foreground/60 text-sm'>
 								<span>LiiChar</span>
 								<span>·</span>
-								<time dateTime={new Date().toISOString()}>{getDate(new Date().toISOString())}</time>
+								<time dateTime={new Date().toISOString()}>
+									{getDate(new Date().toISOString())}
+								</time>
 							</div>
 							<Separator className='px-3' />
 						</div>
@@ -134,24 +137,22 @@ export const BlogCreatePage = () => {
 
 					{/* Tags and Save */}
 					<div className='flex gap-3 px-8 items-center text-sm mt-auto'>
-						<div className='flex gap-1 text-foreground/60 flex-1'>
-							<FormField
-								control={form.control}
-								name='tags'
-								render={({ field }) => (
-									<FormItem className='flex-1'>
-										<FormControl>
-											<input
-												placeholder='Теги через запятую'
-												className='w-full p-2 border rounded'
-												{...field}
-											/>
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-						</div>
+						<FormField
+							control={form.control}
+							name='tags'
+							render={({ field }) => (
+								<FormItem className='flex-1'>
+									<FormControl>
+										<input
+											placeholder='Теги через запятую'
+											className='p-2 border rounded'
+											{...field}
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 						<FormField
 							control={form.control}
 							name='image'

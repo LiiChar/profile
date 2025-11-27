@@ -101,5 +101,5 @@ export async function gigaChat(
 	messages: GigaMessage[],
 	model = 'GigaChat-Pro'
 ) {
-	return await giga.chat(messages, model);
+	return (await giga.chat(messages, model)).choices?.[0]?.message?.content ?? '';
 }

@@ -132,14 +132,15 @@ export const ProjectList = ({
 							loop: true,
 						}}
 						orientation='horizontal'
-						className='z-10 fixed top-[50px] left-0'
+						className='z-100 fixed top-[80px] left-0'
 					>
 						<CarouselContent>
 							{tags.map(t => (
 								<CarouselItem
+									onClick={() => handleTagClick(t)}
 									title={t}
 									key={t}
-									className='basis-[4%] mx-1 px-2 py-1 border border-foreground/30 transition-all bg-background/30 hover:bg-foreground hover:text-background rounded-md hover:scale-110 backdrop-blur-[10px] h-min cursor-pointer text-nowrap pointer-events-none'
+									className='basis-[4%] mx-1 px-2 py-1 border border-foreground/30 transition-all bg-background/30 hover:bg-foreground hover:text-background rounded-md hover:scale-110 backdrop-blur-[10px] h-min cursor-pointer text-nowrap pointer-events-none z-100'
 								>
 									{t}
 								</CarouselItem>

@@ -1,10 +1,13 @@
 'use client';
+import { cn } from '@/lib/utils';
 import { Moon, Sun } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 const LOCAL_STORAGE_THEME_KEY = 'theme';
 
-export const ChangeTheme = () => {
+type ChangeThemeProps = React.HTMLAttributes<HTMLDivElement>;
+
+export const ChangeTheme = ({...attr}: ChangeThemeProps) => {
 	const [theme, setTheme] = useState<'light' | 'dark'>('dark');
 
 	useEffect(() => {
@@ -36,7 +39,7 @@ export const ChangeTheme = () => {
 	};
 
 	return (
-		<div className='cursor-pointer'>
+		<div {...attr} className={cn('cursor-pointer', attr.className)}>
 			{theme == 'light' ? (
 				<Moon
 					className='hover:stroke-primary'

@@ -27,7 +27,7 @@ function ensureDatabase() {
 
 	if (!exists) {
 		console.log('Database not found — creating...');
-		fs.writeFileSync(dbPath, '');
+		fs.writeFileSync(dbPath, '', {flag: 'wx'});
 	}
 
 	const testDb = new Database(dbPath);

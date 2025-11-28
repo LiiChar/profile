@@ -102,7 +102,6 @@ export function Markdown({ children }: { children: string }) {
 					);
 				},
 				code({ children, className, ...props }) {
-					const language = className?.replace('language-', '') || '';
 					return (
 						<code
 							className={cn(

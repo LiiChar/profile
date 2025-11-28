@@ -8,7 +8,7 @@
   Outdated base version: https://github.com/primer/github-syntax-dark
   Current colors taken from GitHub's CSS
 */
-.dark {
+body.dark {
 	.hljs {
 		color: #c9d1d9;
 	}

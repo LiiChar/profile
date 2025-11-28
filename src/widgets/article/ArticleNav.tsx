@@ -1,0 +1,242 @@
+'use client';
+import { cn } from '@/lib/utils';
+import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Separator } from '@/components/ui/separator';
+
+type ArticleNavProps = {
+	targetSelect: string;
+	heading?: string;
+	deep?: number;
+} & React.HTMLAttributes<HTMLDivElement>;
+
+type ArticleNav = {
+	id: string;
+	title: string;
+	level: number;
+	children: ArticleNav[];
+	element: HTMLElement | null;
+};
+
+const getHeaders = (root: Element): ArticleNav[] => {
+	const headers: ArticleNav[] = [];
+	const headerElements = Array.from(
+		root.querySelectorAll<HTMLElement>('h2, h3, h4, h5, h6')
+	);
+
+	if (headerElements.length === 0) return [];
+
+	const stack: ArticleNav[] = [];
+
+	headerElements.forEach(header => {
+		if (!header.id) {
+			header.id = header.textContent?.trim() || Date.now().toString();
+		}
+
+		const level = Number(header.tagName.slice(1));
+		const node: ArticleNav = {
+			id: header.id,
+			title: header.textContent?.trim() || '',
+			level,
+			element: header,
+			children: [],
+		};
+
+		while (stack.length && stack[stack.length - 1].level >= level) {
+			stack.pop();
+		}
+
+		if (stack.length === 0) {
+			headers.push(node);
+		} else {
+			stack[stack.length - 1].children.push(node);
+		}
+		stack.push(node);
+	});
+
+	return headers;
+};
+
+	const RenderTree = ({
+	items,
+	activeId,
+	onClick,
+	level = 0,
+	expanded = false,
+}: {
+	items: ArticleNav[];
+	activeId: string;
+	onClick: (id: string) => (e: React.MouseEvent) => void;
+	level?: number;
+	expanded?: boolean;
+}) => {
+	return (
+		<div>
+			{items.map(item => (
+				<div key={item.id} id={`nav-${item.id.replace(/"/g, '')}`}>
+					<a
+						href={`#${item.id}`}
+						onClick={onClick(item.id)}
+						className={cn(
+							'!hidden group-hover:!block text-sm line-clamp-1 leading-tight text-foreground/60 hover:text-foreground transition-colors duration-150 min-[1250px]:pl-2  min-[1250px]:border-l-2 max-[1250px]:pr-2 max-[1250px]:border-r-2 border-transparent py-[2px] no-underline hover:scale-y-105',
+							item.id === activeId && 'text-foreground font-medium'
+						)}
+						style={{ paddingLeft: `${level * 10 + 8}px` }}
+					>
+						{item.title}
+					</a>
+					<a
+						href={`#${item.id}`}
+						onClick={onClick(item.id)}
+						className={cn(
+							'!flex group-hover:!hidden text-sm line-clamp-1 leading-tight text-foreground/60 hover:text-foreground transition-colors duration-150  min-[1250px]:pl-2  min-[1250px]:border-l-2 max-[1250px]:pr-2 max-[1250px]:border-r-2 border-transparent py-[2px]	max-[1250px]:justify-end',
+							item.id === activeId && 'text-foreground font-medium'
+						)}
+					>
+						<Separator style={{ width: `${(level - level * 6) + 12}px` }} />
+					</a>
+					{item.children.length > 0 && (
+						<RenderTree
+							items={item.children}
+							activeId={activeId}
+							onClick={onClick}
+							level={level + 1}
+							expanded={expanded}
+						/>
+					)}
+				</div>
+			))}
+		</div>
+	);
+};
+
+export default function ArticleNav({ targetSelect, ...attr }: ArticleNavProps) {
+	const [articles, setArticles] = useState<ArticleNav[]>([]);
+	const [activeId, setActiveId] = useState('');
+	const [expanded, setExpanded] = useState(false);
+	const [indicatorStyle, setIndicatorStyle] = useState({ top: 0, height: 0 });
+	const headersRef = useRef<HTMLElement[]>([]);
+	const navRef = useRef<HTMLElement>(null);
+
+	useEffect(() => {
+		const rootNode = document.querySelector(targetSelect);
+		if (!rootNode) return;
+
+		const tree = getHeaders(rootNode);
+		setArticles(tree);
+
+		const headers = Array.from(
+			rootNode.querySelectorAll<HTMLElement>('h2, h3, h4, h5, h6')
+		).filter(h => h.id);
+		headersRef.current = headers;
+
+		const updateActiveHeader = () => {
+			let closest: HTMLElement | null = null;
+			let minDistance = Infinity;
+
+			headers.forEach(header => {
+				const rect = header.getBoundingClientRect();
+				const distance = Math.abs(rect.top);
+
+				// Учитываем только заголовки выше или чуть ниже верха экрана
+				if (rect.top <= window.innerHeight * 0.3 && distance < minDistance) {
+					minDistance = distance;
+					closest = header;
+				}
+			});
+
+			// Если ничего не найдено выше центра — берём первый видимый
+			if (!closest) {
+				for (const header of headers) {
+					const rect = header.getBoundingClientRect();
+					if (rect.top >= 0 && rect.top < window.innerHeight) {
+						closest = header;
+						break;
+					}
+				}
+			}
+
+			if (closest && closest.id !== activeId) {
+				setActiveId(closest.id);
+			}
+		};
+
+		// Начальное обновление
+		updateActiveHeader();
+
+		// Отслеживаем скролл с дебаунсом
+		let ticking = false;
+		const handleScroll = () => {
+			if (!ticking) {
+				requestAnimationFrame(() => {
+					updateActiveHeader();
+					ticking = false;
+				});
+				ticking = true;
+			}
+		};
+
+		window.addEventListener('scroll', handleScroll, { passive: true });
+		window.addEventListener('resize', updateActiveHeader);
+
+		return () => {
+			window.removeEventListener('scroll', handleScroll);
+			window.removeEventListener('resize', updateActiveHeader);
+		};
+	}, [targetSelect, activeId]);
+
+	useLayoutEffect(() => {
+		if (!activeId || !navRef.current) return;
+
+		const navEl = navRef.current;
+		const activeEl = navEl.querySelector(`#${CSS.escape(`nav-${activeId.replace(/"/g, '')}`)}`) as HTMLElement;
+
+		if (activeEl) {
+			const top = activeEl.offsetTop;
+			const height = activeEl.offsetHeight;
+			setIndicatorStyle({ top, height });
+		}
+	}, [activeId, expanded, articles]);
+
+	const handleClick = (id: string) => (e: React.MouseEvent) => {
+		e.preventDefault();
+		const el = document.getElementById(id);
+		if (!el) return;
+
+		el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+		history.replaceState(null, '', `#${id}`);
+		setActiveId(id);
+	};
+
+	return (
+		<aside {...attr} className={cn('max-w-64 shrink-0', attr.className)}>
+			<nav
+				ref={navRef}
+				className={cn(
+					'relative min-[1250px]:border-l max-h-[70vh] overflow-auto max-[1250px]:border-r border-foreground/20 group',
+					expanded &&
+						'max-[1250px]:bg-background/60 max-[1250px]:py-2 max-[1250px]:rounded-md max-[1250px]:backdrop-blur-lg'
+				)}
+				onMouseEnter={() => setExpanded(true)}
+				onMouseLeave={() => setExpanded(false)}
+			>
+				{articles.length > 0 ? (
+					<RenderTree
+						items={articles}
+						activeId={activeId}
+						onClick={handleClick}
+						expanded={expanded}
+					/>
+				) : (
+					<p className='text-sm text-muted-foreground pl-4'>Нет заголовков</p>
+				)}
+				<motion.div
+					className="absolute left-0 bg-primary rounded-full"
+					style={{ width: '3px' }}
+					animate={{ top: indicatorStyle.top, height: indicatorStyle.height }}
+					transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+				/>
+			</nav>
+		</aside>
+	);
+}

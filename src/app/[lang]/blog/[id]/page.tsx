@@ -1,3 +1,4 @@
+
 import { BlogAction } from '@/components/blog/BlogAction';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -13,6 +14,7 @@ import { BlogLike } from '@/components/blog/BlogLike';
 import { Metadata } from 'next';
 import { getFieldLang, getLang } from '@/helpers/i18n';
 import { TagList } from '@/components/tag/TagList';
+import ArticleNav from '@/widgets/article/ArticleNav';
 
 export async function generateMetadata({
 	params,
@@ -72,7 +74,7 @@ export default async function Page({
 
 	return (
 		<main className='max-w-3xl mx-auto my-8 px-4 relative'>
-			<Card className=''>
+			<Card className='relative'>
 				<CardHeader className='px-4 sm:px-6 lg:px-8'>
 					<h1 className='text-4xl font-bold my-10  sm:text-5xl'>
 						{getFieldLang(blog, 'title', lang)}
@@ -102,8 +104,14 @@ export default async function Page({
 				)}
 
 				{/* Контент статьи */}
-				<CardContent className='px-4 sm:px-6 lg:px-8'>
-					<div className='prose prose-lg max-w-none '>
+				<CardContent className='px-0'>
+					<div className=' max-w-3xl z-[100000000000] top-[50%] w-full pr-8 flex justify-end translate-y-[-50%] fixed'>
+						<ArticleNav
+							className=' relative   min-[1250px]:translate-x-[100%]'
+							targetSelect='.markdrow-content'
+						/>
+					</div>
+					<div className='prose prose-lg max-w-none markdrow-content px-4 sm:px-6 lg:px-8'>
 						<Markdown>{getFieldLang(blog, 'content', lang)}</Markdown>
 					</div>
 				</CardContent>

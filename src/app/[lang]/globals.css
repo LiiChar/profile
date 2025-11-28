@@ -166,7 +166,7 @@
 		@apply my-6 w-full overflow-y-auto;
 	}
 	table tr {
-		@apply even:bg-muted m-0 border-t p-0;
+		@apply even:bg-muted/40 m-0 border-t p-0 rounded-sm;
 	}
 	table th {
 		@apply border px-4 py-2 text-left font-bold [&[align=center]]:text-center [&[align=right]]:text-right;
@@ -314,6 +314,10 @@
 
 .animate-goo {
 	animation: gooMove 4s infinite ease-in-out;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+	display: none;
 }
 
 .shape {
@@ -499,7 +503,6 @@
 @keyframes morph-1 {
 	0% {
 		border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
-		scale: 1;
 	}
 	2% {
 		border-radius: 62% 38% 32% 68% / 58% 32% 68% 42%;
@@ -524,7 +527,6 @@
 	}
 	16% {
 		border-radius: 64% 36% 60% 40% / 40% 64% 40% 56%;
-		scale: 1.08;
 	}
 	18% {
 		border-radius: 62% 38% 62% 38% / 39% 66% 39% 54%;
@@ -537,7 +539,6 @@
 	}
 	24% {
 		border-radius: 56% 44% 66% 34% / 38% 70% 36% 48%;
-		scale: 1.06;
 	}
 	26% {
 		border-radius: 54% 46% 67% 33% / 38% 71% 35% 46%;
@@ -550,7 +551,6 @@
 	}
 	32% {
 		border-radius: 48% 52% 70% 30% / 38% 72% 34% 40%;
-		scale: 1.1;
 	}
 	34% {
 		border-radius: 46% 54% 68% 32% / 38% 71% 35% 42%;
@@ -560,7 +560,6 @@
 	}
 	38% {
 		border-radius: 42% 58% 64% 36% / 38% 68% 38% 46%;
-		scale: 1.01;
 	}
 	40% {
 		border-radius: 40% 60% 62% 38% / 39% 66% 39% 48%;
@@ -573,7 +572,6 @@
 	}
 	46% {
 		border-radius: 46% 54% 56% 44% / 42% 56% 44% 54%;
-		scale: 1.07;
 	}
 	48% {
 		border-radius: 48% 52% 54% 46% / 44% 52% 46% 56%;
@@ -583,7 +581,6 @@
 	}
 	52% {
 		border-radius: 52% 48% 50% 50% / 48% 46% 50% 60%;
-		scale: 1.05;
 	}
 	54% {
 		border-radius: 54% 46% 48% 52% / 50% 44% 52% 58%;
@@ -596,7 +593,6 @@
 	}
 	60% {
 		border-radius: 60% 40% 42% 58% / 56% 38% 58% 52%;
-		scale: 1.06;
 	}
 	62% {
 		border-radius: 61% 39% 40% 60% / 58% 36% 60% 50%;
@@ -612,7 +608,6 @@
 	}
 	70% {
 		border-radius: 65% 35% 32% 68% / 66% 30% 68% 42%;
-		scale: 1.01;
 	}
 	72% {
 		border-radius: 66% 34% 30% 70% / 68% 32% 70% 40%;
@@ -625,7 +620,6 @@
 	}
 	78% {
 		border-radius: 60% 40% 36% 64% / 62% 38% 64% 46%;
-		scale: 1.05;
 	}
 	80% {
 		border-radius: 58% 42% 38% 62% / 60% 40% 62% 48%;
@@ -647,7 +641,6 @@
 	}
 	92% {
 		border-radius: 54% 46% 42% 58% / 56% 44% 58% 52%;
-		scale: 1.02;
 	}
 	94% {
 		border-radius: 56% 44% 40% 60% / 58% 42% 60% 50%;
@@ -660,7 +653,6 @@
 	}
 	100% {
 		border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
-		scale: 1;
 	}
 }
 
@@ -730,9 +722,6 @@
 	}
 }
 
-.scrollbar-hide::-webkit-scrollbar {
-	display: none;
-}
 
 @import '../../styles/highlight-js/github-dark.css';
 @import '../../styles/highlight-js/github.css';

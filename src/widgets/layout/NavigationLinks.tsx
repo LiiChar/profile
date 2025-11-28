@@ -48,7 +48,6 @@ export const NavigationLinks = () => {
 				<Rounded
 					className={cn(
 						'h-10 w-10 flex items-center justify-center text-lg transition-all duration-500',
-						isActive('/') && 'ring-2 ring-foreground'
 					)}
 				>
 					ᚺᛙ

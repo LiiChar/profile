@@ -49,6 +49,7 @@
 		"framer-motion": "^12.23.0",
 		"google-translate-api-x": "^10.7.2",
 		"gsap": "^3.13.0",
+		"lowlight": "^3.3.0",
 		"lucide-react": "^0.525.0",
 		"motion": "^12.23.0",
 		"negotiator": "^1.0.0",

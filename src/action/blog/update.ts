@@ -29,13 +29,22 @@ export const updateBlog = async (
 	if (!existedBlog) {
 		throw Error('не найден блог по id ' + data.id);
 	}
+	let resTitle = null;
+	let resContent = null;
 
-	const resTitle = data.title
-		? await translate(data.title, { to: 'en' })
-		: null;
-	const resContent = data.content
-		? await translate(data.content, { to: 'en' })
-		: null;
+	try {
+		resTitle = data.title
+			? (await translate(data.title, { to: 'en' })).text
+			: null;
+		resContent = data.content
+			? (await translate(data.content, { to: 'en' })).text
+			: null;
+	} catch (e) {
+		if (e instanceof Error) {
+			console.log('Translate error');
+		}
+	}
+	
 
 	const updatedBlog = await db
 		.update(blogs)
@@ -45,8 +54,8 @@ export const updateBlog = async (
 			content: data.content,
 			lang: {
 				en: {
-					content: resContent ? resContent.text : '',
-					title: resTitle ? resTitle.text : '',
+					content: resContent ? resContent : '',
+					title: resTitle ? resTitle : '',
 				},
 			},
 		})

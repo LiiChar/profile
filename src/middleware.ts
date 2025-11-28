@@ -12,7 +12,7 @@ const getLocale = (request: NextRequest): Lang => {
 
 	const headers = { 'accept-language': acceptLanguage };
 	const languages = new Negotiator({ headers }).languages();
-	return match(languages, locales as string[], defaultLocale) as Lang;
+	return match(languages, locales, defaultLocale) as Lang;
 };
 
 const getLangFromUrl = (pathname: string): Lang | null => {
@@ -39,7 +39,6 @@ export async function middleware(request: NextRequest) {
 
 	// Сохраняем язык в куки (асинхронно!)
 	const response = NextResponse.next();
-	const cookieStore = request.cookies;
 
 	const finalLocale = pathnameHasLocale || preferredLocale;
 

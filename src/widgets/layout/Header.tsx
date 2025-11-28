@@ -32,7 +32,7 @@ export const Header = async () => {
 						<div className='absolute h-full inset-0 bg-gradient-to-r from-red-600/20 via-transparent to-rose-600/20 blur-2xl' />
 					</div>
 					<ScrollProgressBorder className='z-[-1] w-full' targetId='nav'>
-						<div className='relative flex items-center justify-between px-4 py-2 w-full'>
+						<div className='relative flex items-center justify-between px-4 py-[3px] w-full'>
 							<Link
 								href={updateLanugagePath(lang === 'ru' ? 'en' : 'ru', path)}
 								className='group'

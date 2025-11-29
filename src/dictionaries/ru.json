@@ -41,6 +41,53 @@
 			"title": "Проекты"
 		}
 	},
+	"comments": {
+		"empty": "Тут пусто, но вы можете это исправить",
+		"placeholder": "Оставьте ваш комментарий..."
+	},
+	"blog": {
+		"coverAlt": "Обложка для",
+		"notFound": "Не найдено",
+		"create": {
+			"titlePlaceholder": "Название статьи",
+			"contentPlaceholder": "Введите содержание",
+			"tagsPlaceholder": "Теги через запятую",
+			"imagePlaceholder": "Ссылка на изображение",
+			"button": "Создать",
+			"validation": {
+				"titleMin": "Название должно быть не менее 2 символов",
+				"contentMin": "Содержание должно быть не менее 10 символов"
+			},
+			"toast": {
+				"success": "Статья успешно создана"
+			}
+		}
+	},
+	"project": {
+		"create": {
+			"title": "Создать проект",
+			"urlPlaceholder": "URL проекта",
+			"titlePlaceholder": "Название проекта",
+			"imagePlaceholder": "Ссылка на изображение",
+			"coverAlt": "Обложка проекта",
+			"authorPlaceholder": "Автор",
+			"repoPlaceholder": "Имя репозитория (GitHub)",
+			"descriptionPlaceholder": "Краткое описание",
+			"contentPlaceholder": "Полное описание",
+			"tagsPlaceholder": "Теги (через запятую)",
+			"button": "Создать",
+			"validation": {
+				"titleMin": "Название должно быть не менее 2 символов",
+				"contentMin": "Содержание должно быть не менее 10 символов"
+			},
+			"toast": {
+				"success": "Проект успешно создан"
+			}
+		}
+	},
+	"common": {
+		"author": "LiiChar"
+	},
 	"layout": {
 		"header": {
 			"links": {
@@ -54,5 +101,8 @@
 		"footer": {
 			"text": "Максим | Сайт сделан на Next.js, Tailwind и framer-motion"
 		}
+	},
+	"error": {
+		"generic": "Произошла ошибка"
 	}
 }

@@ -41,6 +41,53 @@
 			"title": "Projects"
 		}
 	},
+	"comments": {
+		"empty": "It's empty here, but you can fix it",
+		"placeholder": "Leave your comment..."
+	},
+	"blog": {
+		"coverAlt": "Cover for",
+		"notFound": "Not found",
+		"create": {
+			"titlePlaceholder": "Article title",
+			"contentPlaceholder": "Enter content",
+			"tagsPlaceholder": "Tags comma separated",
+			"imagePlaceholder": "Image link",
+			"button": "Create",
+			"validation": {
+				"titleMin": "Title must be at least 2 characters",
+				"contentMin": "Content must be at least 10 characters"
+			},
+			"toast": {
+				"success": "Article created successfully"
+			}
+		}
+	},
+	"project": {
+		"create": {
+			"title": "Create project",
+			"urlPlaceholder": "Project URL",
+			"titlePlaceholder": "Project title",
+			"imagePlaceholder": "Image link",
+			"coverAlt": "Project cover",
+			"authorPlaceholder": "Author",
+			"repoPlaceholder": "Repository name (GitHub)",
+			"descriptionPlaceholder": "Short description",
+			"contentPlaceholder": "Full description",
+			"tagsPlaceholder": "Tags (comma separated)",
+			"button": "Create",
+			"validation": {
+				"titleMin": "Title must be at least 2 characters",
+				"contentMin": "Content must be at least 10 characters"
+			},
+			"toast": {
+				"success": "Project created successfully"
+			}
+		}
+	},
+	"common": {
+		"author": "LiiChar"
+	},
 	"layout": {
 		"header": {
 			"links": {
@@ -54,5 +101,8 @@
 		"footer": {
 			"text": "Maksim | Site made with Next.js, Tailwind, and framer-motion"
 		}
+	},
+	"error": {
+		"generic": "An error occurred"
 	}
 }

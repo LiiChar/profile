@@ -78,7 +78,7 @@ const getHeaders = (root: Element): ArticleNav[] => {
 						href={`#${item.id}`}
 						onClick={onClick(item.id)}
 						className={cn(
-							'!hidden group-hover:!block text-sm line-clamp-1 leading-tight text-foreground/60 hover:text-foreground transition-colors duration-150 min-[1250px]:pl-2  min-[1250px]:border-l-2 max-[1250px]:pr-2 max-[1250px]:border-r-2 border-transparent py-[2px] no-underline hover:scale-y-105',
+							'!hidden group-hover:!block text-sm line-clamp-1 leading-tight text-foreground/60 hover:text-foreground transition-colors ease-in-bounce duration-150 xl:pl-2 xl:border-l-2 max-xl:pr-2 max-xl:border-r-2 border-transparent py-[2px] no-underline hover:scale-y-105',
 							item.id === activeId && 'text-foreground font-medium'
 						)}
 						style={{ paddingLeft: `${level * 10 + 8}px` }}
@@ -89,11 +89,11 @@ const getHeaders = (root: Element): ArticleNav[] => {
 						href={`#${item.id}`}
 						onClick={onClick(item.id)}
 						className={cn(
-							'!flex group-hover:!hidden text-sm line-clamp-1 leading-tight text-foreground/60 hover:text-foreground transition-colors duration-150  min-[1250px]:pl-2  min-[1250px]:border-l-2 max-[1250px]:pr-2 max-[1250px]:border-r-2 border-transparent py-[2px]	max-[1250px]:justify-end',
+							'!flex group-hover:!hidden text-sm line-clamp-1 leading-tight text-foreground/60 hover:text-foreground transition-colors duration-150  xl:pl-2  xl:border-l-2 max-xl:pr-2 max-xl:border-r-2 border-transparent py-[2px]	max-xl:justify-end',
 							item.id === activeId && 'text-foreground font-medium'
 						)}
 					>
-						<Separator style={{ width: `${(level - level * 6) + 12}px` }} />
+						<Separator style={{ width: `${level - level * 6 + 12}px` }} />
 					</a>
 					{item.children.length > 0 && (
 						<RenderTree
@@ -209,13 +209,17 @@ export default function ArticleNav({ targetSelect, ...attr }: ArticleNavProps) {
 	};
 
 	return (
-		<aside {...attr} className={cn('max-w-64 shrink-0', attr.className)}>
+		<aside
+			{...attr}
+			className={cn('max-w-64 overflow-auto shrink-0', attr.className)}
+		>
+			{/* {activeId && !expanded && <div className='pl-2 pb-2 text-sm'>{activeId}</div>} */}
 			<nav
 				ref={navRef}
 				className={cn(
-					'relative min-[1250px]:border-l max-h-[70vh] overflow-auto max-[1250px]:border-r border-foreground/20 group',
+					'relative xl:border-l scrollbar-transparent overflow-hidden max-h-[70vh]  max-xl:border-r border-foreground/20 group',
 					expanded &&
-						'max-[1250px]:bg-background/60 max-[1250px]:py-2 max-[1250px]:rounded-md max-[1250px]:backdrop-blur-lg'
+						'max-xl:bg-background/60 max-xl:py-2 max-xl:rounded-md max-xl:backdrop-blur-lg'
 				)}
 				onMouseEnter={() => setExpanded(true)}
 				onMouseLeave={() => setExpanded(false)}
@@ -231,7 +235,7 @@ export default function ArticleNav({ targetSelect, ...attr }: ArticleNavProps) {
 					<p className='text-sm text-muted-foreground pl-4'>Нет заголовков</p>
 				)}
 				<motion.div
-					className="absolute left-0 bg-primary rounded-full"
+					className='absolute bg-primary rounded-full max-xl:right-[-1px] xl:left-[-1px]'
 					style={{ width: '3px' }}
 					animate={{ top: indicatorStyle.top, height: indicatorStyle.height }}
 					transition={{ type: 'spring', stiffness: 300, damping: 30 }}

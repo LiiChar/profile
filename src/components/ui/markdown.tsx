@@ -85,7 +85,7 @@ export function Markdown({ children }: { children: string }) {
 								onClick={() => handleCopy(codeString)}
 								className={cn(
 									'absolute right-3 top-3 z-10 p-2 rounded-md transition-all opacity-0 group-hover:opacity-100',
-									'bg-gray-800/90 hover:bg-gray-700 border border-gray-600',
+									'bg-secondary/40 hover:bg-red-700/5 border border-gray-600',
 									isCopied ? 'text-green-400 border-green-500' : 'text-gray-400'
 								)}
 								aria-label={isCopied ? 'Скопировано!' : 'Копировать код'}

@@ -33,7 +33,7 @@ export const ScrollProgressBorder = ({
 	return (
 		<BorderProgress
 			strokeColor='#ffffff' // красный акцент
-			strokeWidth={3}
+			strokeWidth={2}
 			progress={progress}
 			className={cn('rounded-2xl', className)}
 			{...props}

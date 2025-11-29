@@ -41,6 +41,7 @@
 	--radius-md: calc(var(--radius) - 2px);
 	--radius-lg: var(--radius);
 	--radius-xl: calc(var(--radius) + 4px);
+	--ease-in-bounce: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 :root {
 	--radius: 0.65rem;
@@ -256,6 +257,13 @@
 
 .curve-border {
 	border-radius: 40% 42% 45% 55%;
+}
+
+.scrollbar-transparent::-webkit-scrollbar { 
+    width: 0 !important;
+		-ms-overflow-style: none;
+		overflow: -moz-scrollbars-none;
+    background: transparent;  
 }
 
 .goTo {

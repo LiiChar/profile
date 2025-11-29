@@ -16,23 +16,28 @@ export const Hero = ({}) => {
 	return (
 		// <section className='mx-auto text-center h-[calc(100vh-40px)] flex flex-col justify-center items-center -mt-12 z-20'>
 		<section className='mx-auto text-center h-full flex flex-col justify-center items-center z-20'>
-			<motion.h1
-				initial={{ opacity: 0, y: -20 }}
-				animate={{ opacity: 1, y: 0 }}
-				transition={{ duration: 0.6 }}
-				className=' '
-			>
-				<Text text='page.main.hero.title' />
-			</motion.h1>
-
-			{/*<motion.p
-				initial={{ opacity: 0 }}
-				animate={{ opacity: 1 }}
-				transition={{ delay: 0.4, duration: 0.6 }}
-				className='text-lg md:text-xl mb-4 text-foreground/70'
-			>
-				<Text text='page.main.hero.description' />
-			</motion.p> */}
+			
+			<motion.div
+				animate={{ y: [0, 20, 0], rotate: [0, -5, 0] }}
+				transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
+				className='absolute bottom-32 right-10 w-80 h-80 bg-secondary/10 rounded-full blur-3xl -z-10'
+			/>
+			<div className='relative'>
+				<motion.h1
+					initial={{ opacity: 0, y: -20 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.6 }}
+					className=' '
+				>
+					<Text text='page.main.hero.title' />
+				</motion.h1>
+				<motion.div
+					initial={{ scaleX: 0 }}
+					animate={{ scaleX: 1 }}
+					transition={{ duration: 1, delay: 0.6 }}
+					className='mt-6 h-1 w-32 mx-auto bg-primary/60 rounded-full'
+				/>
+			</div>
 			<div className='text-lg mt-5 md:text-xl mb-4 text-foreground/70 px-8'>
 				<TextType text={[getText('page.main.hero.description', dict!)]} />
 			</div>
@@ -55,6 +60,24 @@ export const Hero = ({}) => {
 						<GrowArrow variant='right' color='text-foreground bg-white' />
 					</Button>
 				</Link>
+			</motion.div>
+			<motion.div
+				animate={{ y: [0, 10, 0] }}
+				transition={{ duration: 2, repeat: Infinity }}
+				className='absolute -bottom-40 left-1/2 -translate-x-1/2'
+			>
+				<svg
+					className='w-6 h-6 text-foreground/30'
+					fill='none'
+					stroke='currentColor'
+					viewBox='0 0 24 24'
+				>
+					<path
+						strokeLinecap='round'
+						strokeWidth={1.5}
+						d='M19 14l-7 7m0 0l-7-7m7 7V3'
+					/>
+				</svg>
 			</motion.div>
 		</section>
 	);

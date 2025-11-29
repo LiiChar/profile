@@ -611,11 +611,6 @@ const updateToolbar = () => {
 			)}
 
 			{error && <div className='text-sm text-red-500 mt-1'>{error}</div>}
-			{onSubmit && (
-				<div className='text-xs text-center text-gray-500 block'>
-					Ctrl + Enter — отправить. Поддерживается Markdown.
-				</div>
-			)}
 		</div>
 	);
 };

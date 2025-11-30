@@ -39,6 +39,108 @@
 		},
 		"project": {
 			"title": "Projects"
+		},
+		"resume": {
+			"personal": {
+				"name": "Ivanov Maksim",
+				"title": "Frontend Developer",
+				"about": {
+					"title": "About Me",
+					"content": "Frontend developer (React + TypeScript) with commercial development experience. During my year at a web studio, I optimized client websites using modern technology stack. Independently built several large applications, including an interactive platform with online code editor and automated testing.\n\nI confidently master the React ecosystem: RTK Query, TanStack Query, Zustand, Next.js 14 App Router, application architecture and performance optimization. I quickly learn new technologies, focus on clean code and quality results.\n\nReady to take on junior+ level challenges from day one and continuously develop towards a senior developer position."
+				},
+				"location": "Yekaterinburg, Russia",
+				"phone": "+7 (902)-875-02-46",
+				"email": "litavanchik@gmail.com"
+			},
+			"sections": {
+				"experience": "Work Experience",
+				"education": "Education",
+				"projects": "Projects",
+				"honors": "Honors/Awards",
+				"languages": "Languages",
+				"links": {
+					"title": "Links",
+					"telegram": "Telegram",
+					"email": "Email",
+					"github": "GitHub"
+				},
+				"skills": {
+					"title": "Skills",
+					"technical": "Technical Skills",
+					"soft": "Soft Skills"
+				},
+				"responsibilities": "Responsibilities",
+				"achievements": "Achievements"
+			},
+			"experience": {
+				"position1": {
+					"position": "Frontend Developer",
+					"company": "LLC «Artena»",
+					"website": "artena.ru",
+					"location": "Russia, Yekaterinburg",
+					"date": {
+						"start": "06-2024",
+						"end": "06-2025"
+					},
+					"description": "Development and optimization of client websites",
+					"responsibilities": [
+						"Developed and modernized client websites on 1C-Bitrix24",
+						"Completed tasks according to specifications: new pages, forms, integrations, bug fixes",
+						"Optimized loading speed and mobile responsiveness (PageSpeed 90+ scores)",
+						"Worked on accessibility (WCAG) and basic SEO: meta tags, friendly URLs, schema.org markup",
+						"Wrote custom scripts and widgets in JavaScript, sometimes React/Vue for individual blocks",
+						"Worked with constructors (Bitrix, wordpress, sometimes Tilda), made changes to PHP templates",
+						"Received feedback from managers and clients, completed tasks on time"
+					],
+					"achievements": [
+						"Reduced application response time by 30% through database query optimization and caching implementation",
+						"Increased application scalability by developing a new API architecture, allowing processing of 50% more requests during peak hours"
+					]
+				}
+			},
+			"education": {
+				"education1": {
+					"degree": "Vocational Education",
+					"institution": "Nizhny Tagil Trade and Economics College",
+					"location": "Russia",
+					"date": {
+						"start": "09-2020",
+						"end": "05-2024"
+					}
+				}
+			},
+			"projects": {
+				"project1": {
+					"title": "Website Catalog Structure Changes",
+					"company": "LLC 'PAAZ'",
+					"website": "www.paaz.ru",
+					"date": "02-2025",
+					"description": "Worked on restructuring the main website catalog to improve conversion and fix friendly URL issues. Added more logical navigation and optimized category distribution. As a result, user behavior improved and page visibility in search increased."
+				}
+			},
+			"honors": {
+				"honor1": {
+					"title": "Winner of 'Future Technologies' Hackathon",
+					"date": "2022",
+					"description": "As part of a team, developed an application for automating processes in education. The application received high marks from the jury for innovation and practical value."
+				}
+			},
+			"languages": {
+				"english": {
+					"name": "English",
+					"level": "B1"
+				}
+			},
+			"contact": {
+				"telegram": "t.me/lLItaV",
+				"email": "litavanchik@gmail.com",
+				"github": "github.com/LiiChar"
+			},
+			"download": {
+				"pdf": "Download PDF",
+				"image": "Download Image",
+				"title": "Download Resume"
+			}
 		}
 	},
 	"comments": {
@@ -99,7 +201,11 @@
 			}
 		},
 		"footer": {
-			"text": "Maksim | Site made with Next.js, Tailwind, and framer-motion"
+			"text": "Maksim | Site made with Next.js, Tailwind, and framer-motion",
+			"links": {
+				"settings": "Settings",
+				"resume": "Resume"
+			}
 		}
 	},
 	"error": {

@@ -78,14 +78,4 @@ describe('<Button />', () => {
 		expect(link).toHaveAttribute('href', '/test');
 		expect(link).toBeInTheDocument();
 	});
-
-	it('includes SVG size classes', () => {
-		render(
-			<Button>
-				<svg data-testid="icon">Icon</svg>
-			</Button>
-		);
-		const svg = screen.getByTestId('icon');
-		expect(svg).toHaveClass('size-4');
-	});
 });

@@ -93,7 +93,7 @@ const getHeaders = (root: Element): ArticleNav[] => {
 							item.id === activeId && 'text-foreground font-medium'
 						)}
 					>
-						<Separator style={{ width: `${level - level * 6 + 12}px` }} />
+						<Separator style={{ width: `${level - level * 4 + 12}px` }} />
 					</a>
 					{item.children.length > 0 && (
 						<RenderTree

@@ -146,8 +146,12 @@ export const LinePortfolio = ({
 	const H_GAP = 36; // горизонтальный отступ от точки до карточки
 
 	return (
-		<div id='portfolio' ref={containerRef} className='relative'>
-			{/* SVG линия (абсолютно) */}
+		<div
+			id='portfolio'
+			ref={containerRef}
+			className='relative scroll-mt-[100px]'
+		>
+			<h2>Мои проекты</h2>
 			<svg className='absolute top-0 left-0 w-full h-full pointer-events-none z-10'>
 				<defs>
 					<linearGradient id='line-gradient' x1='0%' y1='0%' x2='0%' y2='100%'>

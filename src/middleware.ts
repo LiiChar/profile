@@ -1,76 +1,57 @@
-// middleware.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { match } from '@formatjs/intl-localematcher';
 import Negotiator from 'negotiator';
-import { Lang } from './types/i18n';
-import { defaultLocale } from './dictionaries/dictionaries';
 import { locales } from './const/i18n';
+import { defaultLocale } from './dictionaries/dictionaries';
+import type { Lang } from './types/i18n';
 
-const getLocale = (request: NextRequest): Lang => {
-	const acceptLanguage = request.headers.get('accept-language');
-	if (!acceptLanguage) return defaultLocale;
+const detectFromAcceptLanguage = (request: NextRequest): Lang => {
+	const accept = request.headers.get('accept-language');
+	if (!accept) return defaultLocale;
 
-	const headers = { 'accept-language': acceptLanguage };
-	const languages = new Negotiator({ headers }).languages();
+	const languages = new Negotiator({
+		headers: { 'accept-language': accept },
+	}).languages();
+
 	return match(languages, locales, defaultLocale) as Lang;
 };
 
-const getLangFromUrl = (pathname: string): Lang | null => {
-	const firstSegment = pathname.split('/')[1];
-	if (!firstSegment) return null;
-	return locales.includes(firstSegment as Lang) ? (firstSegment as Lang) : null;
-};
-
-export async function middleware(request: NextRequest) {
+export function middleware(request: NextRequest) {
 	const { pathname } = request.nextUrl;
 
-	// Игнорируем статические файлы и API
-	if (
-		pathname.startsWith('/_next') ||
-		pathname.startsWith('/favicon.ico') ||
-		pathname.startsWith('/static') ||
-		pathname.includes('.')
-	) {
+	const segment = pathname.split('/')[1] as Lang;
+	const urlHasLocale = locales.includes(segment);
+
+
+	if (urlHasLocale) {
 		return NextResponse.next();
 	}
 
-	const pathnameHasLocale = getLangFromUrl(pathname);
-	const preferredLocale = getLocale(request);
+	const cookieLang = request.cookies.get('lang')?.value as Lang | undefined;
 
-	// Сохраняем язык в куки (асинхронно!)
-	const response = NextResponse.next();
+	const lang: Lang =
+		cookieLang && locales.includes(cookieLang)
+			? cookieLang
+			: detectFromAcceptLanguage(request);
 
-	const finalLocale = pathnameHasLocale || preferredLocale;
+	const url = request.nextUrl.clone();
+	url.pathname = `/${lang}${pathname}`;
 
-	// Устанавливаем куки и заголовки
-	response.cookies.set('lang', finalLocale, {
-		path: '/',
-		maxAge: 60 * 60 * 24 * 365, // 1 год
-		sameSite: 'lax',
-	});
-
-	response.headers.set('x-current-language', finalLocale);
-	response.headers.set('x-current-path', request.nextUrl.pathname);
-
-	// Если локаль уже в URL — просто продолжаем
-	if (pathnameHasLocale) {
-		return response;
+	const response = NextResponse.redirect(url);
+	response.headers.set('x-current-language', lang);
+	response.headers.set('x-current-path', `/${lang}${pathname}`);
+	if (!cookieLang || cookieLang !== lang) {
+		response.cookies.set('lang', lang, {
+			path: '/',
+			maxAge: 60 * 60 * 24 * 365,
+		});
 	}
 
-	// Редирект на URL с локалью
-	const urlWithLocale = new URL(
-		`/${finalLocale}${pathname === '/' ? '' : pathname}${
-			request.nextUrl.search
-		}`,
-		request.url
-	);
-
-	return NextResponse.redirect(urlWithLocale);
+	return response;
 }
 
 export const config = {
 	matcher: [
-		// Применяем ко всем путям, кроме статических и API
 		'/((?!_next|api|static|favicon.ico|images|fonts|uploads|.*\\..*).*)',
 	],
 };

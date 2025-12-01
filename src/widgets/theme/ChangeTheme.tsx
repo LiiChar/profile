@@ -1,9 +1,10 @@
 'use client';
+import { LOCAL_STORAGE_THEME_KEY } from '@/const/theme';
 import { cn } from '@/lib/utils';
 import { Moon, Sun } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-const LOCAL_STORAGE_THEME_KEY = 'theme';
+
 
 type ChangeThemeProps = React.HTMLAttributes<HTMLDivElement>;
 

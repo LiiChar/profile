@@ -1,0 +1,74 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { getCookie, setCookie } from 'cookies-next';
+import { useDictionaryStore } from '@/stores/lang/langStore';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { getText } from '@/helpers/i18n-client';
+
+export const Cookie = () => {
+	const dict = useDictionaryStore(state => state.dictionary);
+	const pathname = usePathname();
+	const currentLang = pathname.split('/')[1] || 'ru';
+
+	const [isVisible, setIsVisible] = useState(false);
+
+	useEffect(() => {
+		const allow = getCookie('allow-cookies');
+		if (!allow) {
+			setIsVisible(true);
+		}
+	}, []);
+
+	const acceptCookies = () => {
+		setCookie('allow-cookies', 'true', {
+			path: '/',
+			maxAge: 60 * 60 * 24 * 365, // 1 year
+		});
+		setIsVisible(false);
+	};
+
+	const declineCookies = () => {
+		// Optionally set a decline cookie or just don't set allow cookie
+		setCookie('allow-cookies', 'false', {
+			path: '/',
+			maxAge: 60 * 60 * 24 * 30, // 30 days, user can be asked again later
+		});
+		setIsVisible(false);
+	};
+
+	if (!isVisible) return null;
+
+	return (
+		<div className='fixed bottom-3 left-3 right-3 z-50 '>
+			<div className='max-w-4xl mx-auto bg-background/60 backdrop-blur-lg border-b border-white/20 p-4 shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-lg'>
+				<div className='text-sm text-muted-foreground flex-1'>
+					<p>
+						{getText('layout.cookie.message', dict!)}
+						<Link
+							href={`/${currentLang}/cookie-policy`}
+							className='text-primary hover:underline underline-offset-4 font-medium'
+						>
+							{getText('layout.cookie.policy', dict!)}
+						</Link>
+					</p>
+				</div>
+				<div className='flex gap-3 shrink-0'>
+					<button
+						onClick={declineCookies}
+						className='px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors border border-white/10 rounded-lg hover:bg-white/5'
+					>
+						{getText('layout.cookie.decline', dict!)}
+					</button>
+					<button
+						onClick={acceptCookies}
+						className='px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors'
+					>
+						{getText('layout.cookie.accept', dict!)}
+					</button>
+				</div>
+			</div>
+		</div>
+	);
+};

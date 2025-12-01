@@ -27,9 +27,7 @@ export const Description = () => {
 	];
 
 	return (
-		<section
-			ref={containerRef}
-		>
+		<section id='description' className='scroll-mt-[100px]' ref={containerRef}>
 			<div className=''>
 				{/* Заголовок с акцентом */}
 				<motion.div
@@ -61,7 +59,7 @@ export const Description = () => {
 							}}
 							className='relative pl-8 before:absolute before:left-0 before:top-3 before:w-1 before:h-8 before:bg-primary/30 before:rounded-full'
 						>
-								<Text text={key as any} />
+							<Text text={key as any} />
 						</motion.p>
 					))}
 				</motion.div>

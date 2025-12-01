@@ -1070,7 +1070,7 @@
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.27.6.tgz#ec4070a04d76bae8ddbb10770ba55714a417b7c6"
   integrity sha512-vbavdySgbTTrmFE+EsiqUTzlOr5bzlnJtUv9PynGCAKvfQqjIXbvFdumPM/GxMDfyuGMJaJAU6TO4zc1Jf1i8Q==
 
-"@babel/runtime@^7.17.8":
+"@babel/runtime@^7.17.8", "@babel/runtime@^7.17.9":
   version "7.28.4"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.28.4.tgz#a70226016fabe25c5783b2f22d3e1c9bc5ca3326"
   integrity sha512-Q/N6JNWvIvPnLDvjlE1OUBLPQHH6l3CltCEsHIujp45zQUSSh8K+gHnaEX45yAT1nyngnINhvWtzN+Nb9D8RAQ==
@@ -1772,6 +1772,19 @@
   dependencies:
     google-auth-library "^10.3.0"
     ws "^8.18.0"
+
+"@hcaptcha/loader@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@hcaptcha/loader/-/loader-2.3.0.tgz#d9d3f9362a1c19fb376fb347be75b5128ae92d62"
+  integrity sha512-i4lnNxKBe+COf3R1nFZEWaZoHIoJjvDgWqvcNrdZq8ehoSNMN6KVZ56dcQ02qKie2h3+BkbkwlJA9DOIuLlK/g==
+
+"@hcaptcha/react-hcaptcha@^1.16.0":
+  version "1.16.0"
+  resolved "https://registry.yarnpkg.com/@hcaptcha/react-hcaptcha/-/react-hcaptcha-1.16.0.tgz#2c63dfd3bb69b050a12e045f7f37bba60fa9d96d"
+  integrity sha512-ALRsAwQDCtGeR9QXrLjf7IQsWlaIg1dQWpPYdBR03KHkUrLgRjmqLKkOXaq8L+0qcicXRasHRuvXp2Vinun9aw==
+  dependencies:
+    "@babel/runtime" "^7.17.9"
+    "@hcaptcha/loader" "^2.3.0"
 
 "@heyputer/kv.js@^0.2.1":
   version "0.2.1"
@@ -5042,6 +5055,18 @@ cookie@^0.7.1, cookie@^0.7.2:
   version "0.7.2"
   resolved "https://registry.yarnpkg.com/cookie/-/cookie-0.7.2.tgz#556369c472a2ba910f2979891b526b3436237ed7"
   integrity sha512-yki5XnKuf750l50uGTllt6kKILY4nQ1eNIQatoXEByZ5dWgnKqbnqmTrBE5B4N7lrMJKQ2ytWMiTO2o0v6Ew/w==
+
+cookie@^1.0.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/cookie/-/cookie-1.1.1.tgz#3bb9bdfc82369db9c2f69c93c9c3ceb310c88b3c"
+  integrity sha512-ei8Aos7ja0weRpFzJnEA9UHJ/7XQmqglbRwnf2ATjcB9Wq874VKH9kfjjirM6UhU2/E5fFYadylyhFldcqSidQ==
+
+cookies-next@^6.1.1:
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/cookies-next/-/cookies-next-6.1.1.tgz#241c5de1b90540e61ec080ecf78311178bf0d462"
+  integrity sha512-8JZBc4IN2m8xqOXyG7uicth6yH3SvynAUGSeV/FQ5lcEclzNGoR0+YCjySdn8r6keZdRyGQr4YJ8qy8F+Jq5uw==
+  dependencies:
+    cookie "^1.0.1"
 
 core-js-compat@^3.43.0:
   version "3.47.0"

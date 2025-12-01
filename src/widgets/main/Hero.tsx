@@ -14,8 +14,7 @@ import Link from 'next/link';
 export const Hero = ({}) => {
 	const dict = useDictionaryStore(state => state.dictionary);
 	return (
-		// <section className='mx-auto text-center h-[calc(100vh-40px)] flex flex-col justify-center items-center -mt-12 z-20'>
-		<section className='mx-auto text-center h-full flex flex-col justify-center items-center z-20'>
+		<section id='hero' className='mx-auto relative min-h-screen text-center h-full flex flex-col justify-center items-center z-20'>
 			
 			<motion.div
 				animate={{ y: [0, 20, 0], rotate: [0, -5, 0] }}
@@ -61,13 +60,14 @@ export const Hero = ({}) => {
 					</Button>
 				</Link>
 			</motion.div>
-			<motion.div
+			<motion.a
+				href='#description'
 				animate={{ y: [0, 10, 0] }}
 				transition={{ duration: 2, repeat: Infinity }}
-				className='absolute -bottom-40 left-1/2 -translate-x-1/2'
+				className='absolute bottom-14 left-1/2 -translate-x-1/2'
 			>
 				<svg
-					className='w-6 h-6 text-foreground/30'
+					className='w-6 h-6 text-foreground/80'
 					fill='none'
 					stroke='currentColor'
 					viewBox='0 0 24 24'
@@ -78,7 +78,7 @@ export const Hero = ({}) => {
 						d='M19 14l-7 7m0 0l-7-7m7 7V3'
 					/>
 				</svg>
-			</motion.div>
+			</motion.a>
 		</section>
 	);
 };

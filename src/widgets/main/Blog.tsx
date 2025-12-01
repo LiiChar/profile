@@ -9,7 +9,7 @@ export const Blog = async () => {
 	const blogs = await db.query.blogs.findMany({});
 
 	return (
-		<section className='z-10 relative '>
+		<section className='z-10 relative mb-28' id='blog'>
 			<h2 className='mb-8'>
 				<Text text='page.main.blog.title' />
 			</h2>

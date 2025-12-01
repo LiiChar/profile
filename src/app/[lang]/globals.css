@@ -121,7 +121,7 @@
 		scroll-snap-type: y mandatory;
 	}
 	body {
-		@apply bg-background text-foreground z-10;
+		@apply bg-background text-foreground z-10 scroll-pt-[100px];
 	}
 	main {
 		@apply mx-auto max-w-4xl relative z-10;

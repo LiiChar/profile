@@ -118,7 +118,7 @@ export const Knowledge = () => {
 	const [selected, setSelected] = useState<Knowledge | null>(null);
 
 	return (
-		<div className='relative'>
+		<div className='relative py-18' id='knowledge'>
 			<h2 className='mb-10'>
 				<Text text='page.main.knowledge.title' />
 			</h2>

@@ -1,0 +1,40 @@
+'use client';
+
+import SwitchDetail from '@/components/ui/switch-detail';
+import { usePathname, useRouter } from 'next/navigation';
+import { setCookie } from 'cookies-next';
+
+export default function LanguageSwitcher() {
+	const pathname = usePathname();
+	const router = useRouter();
+
+	const currentLang = pathname.split('/')[1] || 'ru'; // если локали нет — берём дефолт
+
+	const switchLanguage = async () => {
+		const newLang = currentLang === 'ru' ? 'en' : 'ru';
+    
+		setCookie('lang', newLang, {
+			path: '/',
+			maxAge: 60 * 60 * 24 * 365,
+		});
+
+		// Правильно формируем путь с новой локалью
+		const newPath = pathname.startsWith(`/${currentLang}`)
+			? pathname.replace(`/${currentLang}`, `/${newLang}`)
+			: `/${newLang}${pathname}`;
+
+		router.push(newPath);
+	};
+
+	return (
+		<div onClick={switchLanguage} className='group'>
+			<SwitchDetail
+				value={currentLang === 'ru'}
+				className='w-14 h-7 text-[13px] font-semibold transition-all duration-300 group-hover:scale-110'
+				variant='pill'
+				first='EN'
+				second='RU'
+			/>
+		</div>
+	);
+}

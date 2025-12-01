@@ -18,7 +18,7 @@ type TextProps = {
 export const Text = async ({ text }: TextProps) => {
 	const headerList = await headers();
 	const lang = headerList.get('x-current-language');
-
+	
 	const dict = await getDictionary((lang ?? defaultLocale) as Lang);
 	const value = getFromDict(dict, text);
 

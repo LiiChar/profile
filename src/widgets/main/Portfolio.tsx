@@ -14,7 +14,7 @@ import AutoHeight from 'embla-carousel-auto-height';
 
 export default function Portfolio() {
 	return (
-		<section className=''>
+		<section className='' id='portfolio'>
 			<h2 className='mb-8'>
 				<Text text='page.main.portfolio.title' />
 			</h2>

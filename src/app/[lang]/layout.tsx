@@ -6,6 +6,7 @@ import { DictionaryProvider } from '@/stores/lang/langProvider';
 import { getDictionary } from '@/dictionaries/dictionaries';
 import { Header } from '@/widgets/layout/Header';
 import { Footer } from '@/widgets/layout/Footer';
+import { Cookie } from '@/widgets/layout/Cookie';
 import { InitProvider } from '@/widgets/layout/InitProvider';
 import { Scroll } from '@/widgets/layout/Scroll';
 import { TooltipProvider } from '@radix-ui/react-tooltip';
@@ -34,6 +35,7 @@ export default async function RootLayout({
 							<Header />
 							{children}
 							<Footer />
+							<Cookie />
 							<Dither />
 						</TooltipProvider>
 					</InitProvider>

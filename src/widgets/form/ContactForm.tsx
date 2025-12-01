@@ -14,6 +14,8 @@ import {
 import { InputLabel } from '@/components/ui/input-label';
 import { TextareaLabel } from '@/components/ui/TextareaLabel';
 import { sendMail } from '@/action/email/send';
+import { Captcha } from '@/components/form/captcha';
+import { verifyCaptcha } from '@/action/captcha/hCaptcha';
 
 const formSchema = z.object({
 	name: z.string().min(2, {
@@ -22,6 +24,7 @@ const formSchema = z.object({
 	message: z.string().min(10, {
 		message: 'Сообщение не должно быть менее 10 символов.',
 	}),
+	hcaptcha: z.string().min(1, 'Подтвердите, что вы не робот'),
 });
 
 export function ContactForm() {
@@ -34,6 +37,11 @@ export function ContactForm() {
 	});
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
+		const verify = await verifyCaptcha(values.hcaptcha);
+		if (!verify) {
+			form.setError('hcaptcha', {message: 'Произошла ошибка в подтверждении капчи, подтвердите заново'});
+			return;
+		}
 		const res = await sendMail(values);
 		console.log(res);
 	}
@@ -72,6 +80,22 @@ export function ContactForm() {
 									label='Сообщение'
 									className='w-full min-h-[100px]'
 									{...field}
+								/>
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name='hcaptcha'
+					render={() => (
+						<FormItem className='mt-4'>
+							<FormControl>
+								<Captcha
+									onVerify={token => {
+										form.setValue('hcaptcha', token);
+									}}
 								/>
 							</FormControl>
 							<FormMessage />

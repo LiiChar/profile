@@ -6,16 +6,16 @@ import { HTMLAttributes } from 'react';
 export const CommentsList = ({
 	comments,
 	blogId,
-	userId,
+	currentUserId,
 	...attr
 }: {
 	comments: CommentWithUser[];
 	blogId: number;
-	userId?: number;
+	currentUserId?: number;
 } & HTMLAttributes<HTMLDivElement>) => {
 	return (
 		<div {...attr}>
-			{userId && <CommentTextarea blogyId={blogId} userId={userId} />}
+			{currentUserId && <CommentTextarea blogyId={blogId} userId={currentUserId} />}
 			<div className='flex flex-col gap-4 mt-3'>
 				{comments &&
 					Array.isArray(comments) &&

@@ -1,14 +1,20 @@
 'use server';
 
 import { db } from '@/db/db';
-import { LikeInsert, likes } from '@/db/tables/like';
+import { likes } from '@/db/tables/like';
 import { and, eq, count } from 'drizzle-orm';
+import { getCurrentUser } from '../auth/login';
 
-export const removeLike = async ({ userId, blogId }: LikeInsert) => {
+export const removeLike = async (blogId: number) => {
 	try {
+		const user = await getCurrentUser();
+		if (!user) {
+			throw new Error('Not authenticated');
+		}
+
 		await db
 			.delete(likes)
-			.where(and(eq(likes.userId, userId), eq(likes.blogId, blogId)));
+			.where(and(eq(likes.userId, user.id), eq(likes.blogId, blogId)));
 
 		await db
 			.select({ count: count() })

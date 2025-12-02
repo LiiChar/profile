@@ -26,10 +26,12 @@ export const Header = async () => {
 						<div className='relative flex items-center justify-between px-4 py-[3px] w-full'>
 							<LanguageSwitcher/>
 							<NavigationLinks />
-							<ChangeTheme
-								className='ransition-all duration-300 hover:scale-110'
-								aria-label='Сменить тему'
-							/>
+							<div className="flex items-center gap-4">
+								<ChangeTheme
+									className='ransition-all duration-300 hover:scale-110'
+									aria-label='Сменить тему'
+								/>
+							</div>
 						</div>
 					</ScrollProgressBorder>
 				</div>

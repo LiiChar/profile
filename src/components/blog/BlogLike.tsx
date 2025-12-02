@@ -5,44 +5,47 @@ import { removeLike } from '@/action/like/remove';
 import { LikeType } from '@/db/tables/like';
 import { cn } from '@/lib/utils';
 import { Heart } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import React, { HTMLAttributes, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 export const BlogLike = ({
 	likes,
-	userId,
+	currentUserId,
 	blogId,
 	size = 18,
 	...attr
 }: {
 	likes: LikeType[];
-	userId?: number;
+	currentUserId?: number;
 	blogId?: number;
 	size?: number;
 } & HTMLAttributes<HTMLDivElement>) => {
-	const [liked, setLiked] = useState(likes.some(l => l.userId === userId));
-	const router = useRouter();
+	const [liked, setLiked] = useState(likes.some(l => l.userId === currentUserId));
 
 	useEffect(() => {
-		setLiked(likes.some(l => l.userId === userId));
-	}, [likes, userId]);
+		setLiked(likes.some(l => l.userId === currentUserId));
+	}, [likes, currentUserId]);
 
 	const handleLike = async () => {
-		if (!userId || !blogId) return;
+		if (!currentUserId || !blogId) {
+			toast('Требуется авторизация');
+			return;
+		}
 
 		const isUnliking = liked;
 
 		try {
 			if (isUnliking) {
-				await removeLike({ blogId, userId });
+				await removeLike(blogId);
 			} else {
-				await createLike({ blogId, userId });
+				await createLike(blogId);
 			}
-			router.refresh();
+			setLiked(!liked);
+			// router.refresh();
 		} catch (error) {
 			console.error('[LIKE ERROR]', error);
 			toast('Произошла ошибка при обновлении лайка');
+			setLiked(liked); // rollback
 		}
 	};
 

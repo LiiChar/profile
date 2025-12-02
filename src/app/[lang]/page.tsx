@@ -14,7 +14,7 @@ export default async function Home() {
 				<Hero />
 				<Description />
 				<Knowledge />
-				<LinePortfolio projects={projects} />
+				{projects.length > 0 && <LinePortfolio projects={projects} />}
 				<Blog />
 			</Navigation>
 		</main>

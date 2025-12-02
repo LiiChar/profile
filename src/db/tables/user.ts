@@ -6,7 +6,13 @@ import { likes } from './like';
 
 export const users = sqliteTable('user', {
 	id: int().primaryKey({ autoIncrement: true }),
+	lastVisit: text('last_visit')
+		.notNull()
+		.default(sql`CURRENT_TIMESTAMP`),
+	userAgent: text('user_agent'),
 	name: text().notNull(),
+	password: text(),
+	photo: text(),
 	createdAt: text('created_at')
 		.notNull()
 		.default(sql`CURRENT_TIMESTAMP`),

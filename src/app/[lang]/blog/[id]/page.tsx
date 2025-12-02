@@ -15,6 +15,8 @@ import { Metadata } from 'next';
 import { getFieldLang, getLang } from '@/helpers/i18n';
 import { TagList } from '@/components/tag/TagList';
 import ArticleNav from '@/widgets/article/ArticleNav';
+import { getCurrentUser } from '@/action/auth/login';
+import { addMetric } from '@/action/metrics/addMetric';
 
 export async function generateMetadata({
 	params,
@@ -65,10 +67,14 @@ export default async function Page({
 			},
 		},
 	});
+	const currentUser = await getCurrentUser();
 
 	if (!blog) {
 		return 'Not found';
 	}
+
+	// Track view metric
+	await addMetric({ action: 'view', targetType: 'blog', targetId: id });
 
 	const { image, user, title, createdAt, tags } = blog;
 
@@ -120,7 +126,7 @@ export default async function Page({
 					<div className='flex gap-3 px-8 items-center text-sm mt-auto'>
 						<TagList tags={tags} />
 						<Separator />
-						<BlogLike likes={blog.likes} userId={1} blogId={blog.id} />
+						<BlogLike likes={blog.likes} currentUserId={currentUser?.id} blogId={blog.id} />
 					</div>
 				)}
 			</Card>
@@ -128,7 +134,7 @@ export default async function Page({
 				className='mt-8'
 				blogId={id}
 				comments={blog.comments}
-				userId={1}
+				currentUserId={currentUser?.id}
 			/>
 		</main>
 	);

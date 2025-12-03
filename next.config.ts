@@ -15,6 +15,7 @@ const nextConfig: NextConfig = {
 	},
 
 	webpack: (config) => {
+		config.externals = [...config.externals, 'bcrypt'];
 		config.resolve.alias['@'] = path.resolve(__dirname, 'src');
 		return config;
 	},

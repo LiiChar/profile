@@ -323,7 +323,7 @@ export default function Dither({
 }: DitherProps) {
 	return (
 		<Canvas
-			className='w-scren z-[-1] h-screen blur-sm opacity-40 fixed! top-0 left-0 overflow-hidden'
+			className='w-scren z-[-1] h-screen blur-sm opacity-30 black:opacity-40 fixed! top-0 left-0 overflow-hidden'
 			camera={{ position: [0, 0, 6] }}
 			dpr={1}
 			gl={{ antialias: true, preserveDrawingBuffer: true }}

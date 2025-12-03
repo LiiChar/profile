@@ -14,8 +14,10 @@ import Link from 'next/link';
 export const Hero = ({}) => {
 	const dict = useDictionaryStore(state => state.dictionary);
 	return (
-		<section id='hero' className='mx-auto relative min-h-screen text-center h-full flex flex-col justify-center items-center z-20'>
-			
+		<section
+			id='hero'
+			className='mx-auto relative min-h-screen text-center h-full flex flex-col justify-center items-center z-20'
+		>
 			<motion.div
 				animate={{ y: [0, 20, 0], rotate: [0, -5, 0] }}
 				transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
@@ -56,7 +58,10 @@ export const Hero = ({}) => {
 				<Link href={'/projects'}>
 					<Button variant='default' className='group'>
 						<Text text='page.main.hero.button1' />
-						<GrowArrow variant='right' color='text-foreground bg-white' />
+						<GrowArrow
+							variant='right'
+							color='text-foreground bg-white group-hover:bg-background'
+						/>
 					</Button>
 				</Link>
 			</motion.div>

@@ -15,12 +15,14 @@ export const CommentsList = ({
 } & HTMLAttributes<HTMLDivElement>) => {
 	return (
 		<div {...attr}>
-			{currentUserId && <CommentTextarea blogyId={blogId} userId={currentUserId} />}
+			{currentUserId && (
+				<CommentTextarea blogyId={blogId} userId={currentUserId} />
+			)}
 			<div className='flex flex-col gap-4 mt-3'>
 				{comments &&
 					Array.isArray(comments) &&
 					comments.map(c => <CommentsCard key={c.id} comment={c} />)}
-				{comments.length == 0 && (
+				{currentUserId && comments.length == 0 && (
 					<div>Тут пусто, но ты можешь это исправить</div>
 				)}
 			</div>

@@ -3,9 +3,9 @@ import { BlogAction } from '@/components/blog/BlogAction';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { db } from '@/db/db';
-import { blogs } from '@/db/schema';
+import { blogs, metrics } from '@/db/schema';
 import { getDate } from '@/helpers/date';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import Image from 'next/image';
 import React from 'react';
 import { Markdown } from '@/components/ui/markdown';
@@ -17,6 +17,7 @@ import { TagList } from '@/components/tag/TagList';
 import ArticleNav from '@/widgets/article/ArticleNav';
 import { getCurrentUser } from '@/action/auth/login';
 import { addMetric } from '@/action/metrics/addMetric';
+import { Eye } from 'lucide-react';
 
 export async function generateMetadata({
 	params,
@@ -65,8 +66,23 @@ export default async function Page({
 				},
 				orderBy: (b, { desc }) => [desc(b.id)],
 			},
+			
 		},
 	});
+	const metric = await db.query.metrics.findMany({
+		where: () => and(eq(metrics.targetId, id), eq(metrics.targetType, 'blog')),
+		with: {
+			user: true,
+		},
+		orderBy: (m, { desc }) => [desc(m.id)],
+	});
+	
+	const users = new Set(
+		metric.filter(m => m.action === 'view').map(m => m.userId)
+	);
+
+	const view = users.size;
+
 	const currentUser = await getCurrentUser();
 
 	if (!blog) {
@@ -126,7 +142,15 @@ export default async function Page({
 					<div className='flex gap-3 px-8 items-center text-sm mt-auto'>
 						<TagList tags={tags} />
 						<Separator />
-						<BlogLike likes={blog.likes} currentUserId={currentUser?.id} blogId={blog.id} />
+						<div className='flex gap-2 text-xs bg-secondary px-[10px] py-1 rounded-md items-center  select-none'>
+							<Eye size={18}/>
+							<div>{view}</div>
+						</div>
+						<BlogLike
+							likes={blog.likes}
+							currentUserId={currentUser?.id}
+							blogId={blog.id}
+						/>
 					</div>
 				)}
 			</Card>

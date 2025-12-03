@@ -12,6 +12,7 @@ import { Scroll } from '@/widgets/layout/Scroll';
 import { TooltipProvider } from '@radix-ui/react-tooltip';
 import Script from 'next/script';
 import Dither from '@/components/background/Dither';
+import { Auth } from '@/widgets/layout/Auth';
 
 export const metadata: Metadata = {
 	title: 'Профиль',
@@ -35,6 +36,7 @@ export default async function RootLayout({
 							<Header />
 							{children}
 							<Footer />
+							<Auth/>
 							<Cookie />
 							<Dither />
 						</TooltipProvider>

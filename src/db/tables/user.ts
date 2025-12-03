@@ -12,6 +12,9 @@ export const users = sqliteTable('user', {
 	userAgent: text('user_agent'),
 	name: text().notNull(),
 	password: text(),
+	passwordUpdated: text('password_updated')
+		.notNull()
+		.default(sql`CURRENT_TIMESTAMP`),
 	photo: text(),
 	createdAt: text('created_at')
 		.notNull()

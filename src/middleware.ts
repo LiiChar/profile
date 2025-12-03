@@ -4,7 +4,7 @@ import Negotiator from 'negotiator';
 import { locales } from './const/i18n';
 import { defaultLocale } from './dictionaries/dictionaries';
 import type { Lang } from './types/i18n';
-import { getCurrentUser } from './action/auth/login';
+// import { getCurrentUser } from './action/auth/login';
 
 const detectFromAcceptLanguage = (request: NextRequest): Lang => {
 	const accept = request.headers.get('accept-language');
@@ -19,9 +19,9 @@ const detectFromAcceptLanguage = (request: NextRequest): Lang => {
 
 export function middleware(request: NextRequest) {
 	// User
-	const user = getCurrentUser();
+	// const user = getCurrentUser();
 
-	if (!user) {
+	// if (!user) {
 		// const name = faker.person.firstName();
 		// const uuid = generateUUID();
 		// console.log(name, uuid);
@@ -29,7 +29,7 @@ export function middleware(request: NextRequest) {
 		// 	name: name,
 		// 	password: uuid,
 		// });
-	}
+	// }
 
 	// Internalization path
 	const { pathname } = request.nextUrl;

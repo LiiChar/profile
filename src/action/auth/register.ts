@@ -13,7 +13,7 @@ export interface RegisterData {
 	photo?: string;
 }
 
-export const register = async (data: RegisterData) => {
+export const 	register = async (data: RegisterData) => {
 	try {
 		// Check if username already exists
 		const existing = await db
@@ -37,11 +37,16 @@ export const register = async (data: RegisterData) => {
 
 		const result = await db.insert(users).values(newUser).returning({ id: users.id, name: users.name, photo: users.photo });
 
+		const cookieStore = await cookies();
+
 		// Set session cookie
-		(await cookies()).set('user_id', result[0].id.toString(), {
+		cookieStore.set({
+			name: 'user_id',
+			value: result[0].id.toString(),
 			httpOnly: true,
-			secure: process.env.NODE_ENV === 'production',
-			sameSite: 'strict',
+			secure: true,
+			sameSite: 'lax',
+			path: '/',
 			maxAge: 60 * 60 * 24 * 7, // 7 days
 		});
 

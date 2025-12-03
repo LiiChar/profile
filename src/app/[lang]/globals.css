@@ -117,8 +117,9 @@
 		@apply border-border outline-ring/50;
 	}
 	html {
-		@apply scroll-smooth;
+		@apply scroll-smooth ;
 		scroll-snap-type: y mandatory;
+		transition: color 200ms ease-in-out;
 	}
 	body {
 		@apply bg-background text-foreground z-10 scroll-pt-[100px];

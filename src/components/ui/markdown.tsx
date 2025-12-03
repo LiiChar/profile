@@ -90,7 +90,11 @@ export function Markdown({ children }: { children: string }) {
 								)}
 								aria-label={isCopied ? 'Скопировано!' : 'Копировать код'}
 							>
-								{isCopied ? <Check size={16} /> : <Copy size={16} />}
+								{isCopied ? (
+									<Check size={16} />
+								) : (
+									<Copy color='#99a1af' size={16} />
+								)}
 							</button>
 							{language && (
 								<span className='absolute left-3 top-3 text-xs text-gray-500 bg-gray-800/90 px-2 py-1 rounded'>

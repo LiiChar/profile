@@ -19,6 +19,8 @@ import { getCurrentUser } from '@/action/auth/login';
 import { addMetric } from '@/action/metrics/addMetric';
 import { BackwardLink } from '@/components/ui/backward-link';
 import { ContentMetrics } from '@/components/metrics/ContentMetrics';
+import { isAdmin } from '@/helpers/user';
+import { cn } from '@/lib/utils';
 
 export async function generateMetadata({
 	params,
@@ -85,35 +87,34 @@ export default async function Page({
 		<main className='max-w-3xl mx-auto my-8 px-4 relative'>
 			<BackwardLink href={'/blog'} />
 			<Card className='relative'>
-				<CardHeader className='px-4 sm:px-6 lg:px-8'>
-					<h1 className='text-4xl font-bold my-10  sm:text-5xl'>
+				<CardHeader className={cn('px-4 sm:px-6 lg:px-8 relative', image ? 'pb-4 -mt-6' : '')}>
+					{image && (
+						<div className='px-4 sm:px-6 lg:px-8 mb-6'>
+							<Image
+								fill={true}
+								src={image}
+								alt={`Обложка для ${title}`}
+								className='w-full opacity-70 h-auto rounded-lg z-1 shadow-md object-cover'
+							/>
+						</div>
+					)}
+					<h1 className='text-4xl font-bold my-10 relative z-[2]  sm:text-5xl'>
 						{getFieldLang(blog, 'title', lang)}
 					</h1>
-					<div className='flex w-full justify-between items-center mt-4 gap-4'>
+					<div className='flex w-full justify-between items-center mt-4 gap-4 relative z-[2]'>
 						<div className='flex text-nowrap items-center space-x-2  text-foreground/60 text-sm'>
 							<span>{user.name}</span>
 							<span>·</span>
 							<time dateTime={createdAt}>{getDate(createdAt)}</time>
 						</div>
 						<Separator className='px-3' />
-						{currentUser && (
+						{isAdmin(currentUser) && (
 							<div>
 								<BlogAction blog={blog} />
 							</div>
 						)}
 					</div>
 				</CardHeader>
-
-				{image && (
-					<div className='px-4 sm:px-6 lg:px-8 mb-6'>
-						<Image
-							fill={true}
-							src={image}
-							alt={`Обложка для ${title}`}
-							className='w-full h-auto rounded-lg shadow-md object-cover'
-						/>
-					</div>
-				)}
 
 				{/* Контент статьи */}
 				<CardContent className='px-0'>

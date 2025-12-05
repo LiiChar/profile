@@ -6,7 +6,7 @@ import { eq } from 'drizzle-orm';
 import translate from 'google-translate-api-x';
 
 export const updateBlog = async (
-	data: Partial<Pick<BlogType, 'id' | 'userId' | 'title' | 'content' | 'lang'>>
+	data: Partial<Pick<BlogType, 'id' | 'userId' | 'title' | 'content' | 'lang' | 'image'>>
 ) => {
 	// TODO
 	// if (data.authorId != data.userId) {
@@ -49,6 +49,7 @@ export const updateBlog = async (
 	const updatedBlog = await db
 		.update(blogs)
 		.set({
+			image: data?.image ?? null,
 			userId: data.userId,
 			title: data.title,
 			content: data.content,

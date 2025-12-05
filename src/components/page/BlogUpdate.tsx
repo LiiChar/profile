@@ -2,7 +2,6 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { getDate } from '@/helpers/date';
-import Image from 'next/image';
 import Link from 'next/link';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -21,6 +20,7 @@ import { toast } from 'sonner';
 import { updateBlog } from '@/action/blog/update';
 import { useRouter } from 'next/navigation';
 import { usePuterAI } from '@/hooks/usePuterAI';
+import { ImageUpload } from '../ui/image-upload';
 
 const formUpdateBlogSchema = z.object({
 	title: z.string().min(2, {
@@ -29,10 +29,11 @@ const formUpdateBlogSchema = z.object({
 	content: z.string().min(10, {
 		message: 'Содержание не должно быть менее 10 символов.',
 	}),
+	image: z.string().optional(),
 });
 
 export const BlogUpdatePage = ({ blog }: { blog: BlogWithUser }) => {
-	const { content, image, user, title, createdAt, tags } = blog;
+	const { content, user, title, createdAt, tags } = blog;
 	const router = useRouter();
 	const { loaded, chat } = usePuterAI();
 
@@ -108,16 +109,24 @@ export const BlogUpdatePage = ({ blog }: { blog: BlogWithUser }) => {
 						</div>
 					</CardHeader>
 
-					{image && (
-						<div className='px-4 sm:px-6 lg:px-8 mb-6'>
-							<Image
-								fill={true}
-								src={image}
-								alt={`Обложка для ${title}`}
-								className='w-full h-auto rounded-lg shadow-md object-cover'
-							/>
-						</div>
-					)}
+					<FormField
+						control={form.control}
+						name="image"
+						render={({ field }) => (
+							<FormItem className="px-4 sm:px-6 lg:px-8 mb-6">
+								<FormControl>
+									<ImageUpload
+									inlinePreview={true}
+										defaultImage={field.value || undefined}
+										onSelect={(base64) => {
+											form.setValue("image", base64 ?? "");
+										}}
+									/>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
 
 					<CardContent className='px-4 sm:px-6 lg:px-8'>
 						<div className='prose prose-lg max-w-none '>

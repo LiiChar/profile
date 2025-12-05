@@ -14,6 +14,7 @@ type ArticleNav = {
 	id: string;
 	title: string;
 	level: number;
+	height: number;
 	children: ArticleNav[];
 	element: HTMLElement | null;
 };
@@ -28,16 +29,39 @@ const getHeaders = (root: Element): ArticleNav[] => {
 
 	const stack: ArticleNav[] = [];
 
-	headerElements.forEach(header => {
+	headerElements.forEach((header, i) => {
 		if (!header.id) {
 			header.id = header.textContent?.trim() || Date.now().toString();
 		}
 
 		const level = Number(header.tagName.slice(1));
+
+		const nextHeader = headerElements[i + 1];
+
+		// Считаем "вес" секции — расстояние до следующего заголовка того же или более высокого уровня
+		let sectionEnd = nextHeader;
+		if (sectionEnd) {
+			let temp = sectionEnd;
+			while (temp && Number(temp.tagName.slice(1)) > level) {
+				temp =
+					headerElements[headerElements.indexOf(temp as HTMLElement) + 1] ||
+					null;
+			}
+			sectionEnd = temp || document.body;
+		} else {
+			sectionEnd = document.body;
+		}
+
+		const height =
+			sectionEnd.getBoundingClientRect().top -
+			header.getBoundingClientRect().top;
+		const relativeWeight = Math.log(Math.abs(height) + 100);
+
 		const node: ArticleNav = {
 			id: header.id,
 			title: header.textContent?.trim() || '',
 			level,
+			height: relativeWeight,
 			element: header,
 			children: [],
 		};
@@ -53,7 +77,7 @@ const getHeaders = (root: Element): ArticleNav[] => {
 		}
 		stack.push(node);
 	});
-
+	
 	return headers;
 };
 
@@ -93,7 +117,12 @@ const getHeaders = (root: Element): ArticleNav[] => {
 							item.id === activeId && 'text-foreground font-medium'
 						)}
 					>
-						<Separator style={{ width: `${level - level * 4 + 12}px` }} />
+						<Separator
+							style={{
+								width: `${level - level * 4 + 12}px`,
+								height: `${item.height - item.height * 0.7}px`,
+							}}
+						/>
 					</a>
 					{item.children.length > 0 && (
 						<RenderTree

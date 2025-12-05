@@ -1,12 +1,13 @@
 import { BlogCard } from '@/components/blog/BlogCard';
 import { db } from '@/db/db';
+import { Text } from '@/components/ui/text-server';
 
 export default async function Blog() {
 	const blogs = await db.query.blogs.findMany();
 	return (
 		<main>
 			<h1 className='my-10'>
-				Blog
+				<Text text={'page.main.blog.title'} />
 			</h1>
 			<div className='flex gap-4 px-2 flex-wrap 	'>
 				{blogs &&

@@ -13,6 +13,8 @@ import { getCommits } from '@/action/git/getCommits';
 import { BackwardLink } from '@/components/ui/backward-link';
 import { ContentMetrics } from '@/components/metrics/ContentMetrics';
 import { addMetric } from '@/action/metrics/addMetric';
+import { getCurrentUser } from '@/action/auth/login';
+import { isAdmin } from '@/helpers/user';
 
 export default async function ProjectPage({
 	params,
@@ -28,6 +30,8 @@ export default async function ProjectPage({
 			user: true,
 		},
 	});
+
+	const currentUser = await getCurrentUser();
 
 	
 	await addMetric({ action: 'view', targetType: 'project', targetId: id });
@@ -95,9 +99,9 @@ export default async function ProjectPage({
 								</div>
 							)}
 						<Separator className='' />
-						<div>
+						{isAdmin(currentUser) && <div>
 							<ProjectAction project={project} />
-						</div>
+						</div>}
 					</div>
 				</div>
 				{commits && (

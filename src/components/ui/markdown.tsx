@@ -78,22 +78,22 @@ export function Markdown({ children }: { children: string }) {
 							{...props} // Без className — пусть rehype сам добавит hljs
 							className={cn(
 								props.className, // Если rehype добавил — ок, но не трогаем
-								'relative my-6 overflow-x-auto rounded-lg group bg-background/30 p-2 backdrop-blur-xl'
+								'relative my-6 min-h- overflow-x-auto rounded-lg group bg-background/30 p-2 backdrop-blur-xl'
 							)}
 						>
 							<button
 								onClick={() => handleCopy(codeString)}
 								className={cn(
-									'absolute right-3 top-3 z-10 p-2 rounded-md transition-all opacity-0 group-hover:opacity-100',
-									'bg-secondary/40 hover:bg-red-700/5 border border-gray-600',
+									'absolute right-1 top-1 z-10 p-2 rounded-md transition-all opacity-0 group-hover:opacity-100',
+									'bg-secondary/40 hover:bg-secondary/20 border border-gray-600',
 									isCopied ? 'text-green-400 border-green-500' : 'text-gray-400'
 								)}
 								aria-label={isCopied ? 'Скопировано!' : 'Копировать код'}
 							>
 								{isCopied ? (
-									<Check size={16} />
+									<Check size={14} />
 								) : (
-									<Copy color='#99a1af' size={16} />
+									<Copy color='#99a1af' size={14} />
 								)}
 							</button>
 							{language && (

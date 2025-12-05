@@ -3,6 +3,7 @@ import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { blogs } from './blog';
 import { comments } from './comment';
 import { likes } from './like';
+import { integer } from 'drizzle-orm/sqlite-core';
 
 export const users = sqliteTable('user', {
 	id: int().primaryKey({ autoIncrement: true }),
@@ -10,6 +11,7 @@ export const users = sqliteTable('user', {
 		.notNull()
 		.default(sql`CURRENT_TIMESTAMP`),
 	userAgent: text('user_agent'),
+	isAdmin: integer('is_admin', {mode: 'boolean'}).notNull().default(false),
 	name: text().notNull(),
 	password: text(),
 	passwordUpdated: text('password_updated')

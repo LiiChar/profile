@@ -2,7 +2,6 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { getDate } from '@/helpers/date';
-import Image from 'next/image';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -20,6 +19,7 @@ import { createBlog } from '@/action/blog/create';
 import { useRouter } from 'next/navigation';
 import { GenerateIcon } from '../generate/GenerateIcon';
 import { Input } from '../ui/input';
+import { ImageUpload } from '../ui/image-upload';
 
 const formCreateBlogSchema = z.object({
 	title: z.string().min(2, {
@@ -103,17 +103,6 @@ export const BlogCreatePage = () => {
 						</div>
 					</CardHeader>
 
-					{form.watch('image') && (
-						<div className='px-4 sm:px-6 lg:px-8 mb-6'>
-							<Image
-								fill={true}
-								src={form.watch('image') || ''}
-								alt={`Обложка для ${form.watch('title')}`}
-								className='w-full h-auto rounded-lg shadow-md object-cover'
-							/>
-						</div>
-					)}
-
 					<CardContent className='px-4 sm:px-6 lg:px-8'>
 						<div className='prose prose-lg max-w-none '>
 							<FormField
@@ -157,13 +146,14 @@ export const BlogCreatePage = () => {
 							control={form.control}
 							name='image'
 							render={({ field }) => (
-								<FormItem>
+								<FormItem>	
 									<FormControl>
-										<input
+										<ImageUpload defaultImage={field.value} onSelect={field.onChange} />
+										{/* <input
 											placeholder='Ссылка на изображение'
 											className='p-2 border rounded'
 											{...field}
-										/>
+										/> */}
 									</FormControl>
 									<FormMessage />
 								</FormItem>

@@ -23,7 +23,7 @@ export const runBlogFactory = async () => {
 const blogContent: BlogFactoryInsert[] = [
 	{
 		title: 'Как я оптимизировал рендер в React',
-		content: `# Как я оптимизировал рендер в React: реальный кейс с экономией 70% времени
+		content: `## Как я оптимизировал рендер в React: реальный кейс с экономией 70% времени
 
 Недавно я работал над дашбордом аналитики с сотнями строк в таблице и кучей графиков. Даже на мощном ноутбуке при скролле всё подтормаживало — профайлер показывал, что некоторые компоненты перерисовывались по 20–30 раз за одно действие. Я решил разобраться.
 
@@ -55,10 +55,7 @@ const metrics = useMemo(() => calculateHeavyMetrics(row), [row.id]);
 | FPS при скролле таблицы    | 22–28   | 58–60   | ×2.5      |
 | Количество ререндеров/сек  | ~340    | ~48     | ×7        |
 
-Мораль простая: начинайте с React DevTools Performance tab → ищите самые тяжёлые компоненты → memo useMemo → виртуализация → гранулярный стейт. Часто 80% прироста дают 2–3 точечных изменения.
-\`\`\`
-
-,`,
+Мораль простая: начинайте с React DevTools Performance tab → ищите самые тяжёлые компоненты → memo useMemo → виртуализация → гранулярный стейт. Часто 80% прироста дают 2–3 точечных изменения.`,
 		tags: ['react', 'оптимизация', 'performance'].join(','),
 		userId: 1,
 	},
@@ -231,8 +228,8 @@ export const wsService = new WebSocketService();
 
 \`\`\`tsx
 // hooks/useWebSocket.ts
-"import { useEffect, useRef } from react;"
-"import { wsService } from @/services/websocket;"
+import { useEffect, useRef } from react;
+import { wsService } from @/services/websocket;
 
 export function useWebSocket(
   url: string,
@@ -255,10 +252,10 @@ export function useWebSocket(
       onConnected?.();
     };
 
-"    wsService.on(connect, handleConnected);"
+    wsService.on(connect, handleConnected);"
 
     return () => {
-"      wsService.off(connect, handleConnected);"
+      wsService.off(connect, handleConnected);"
       // Не отключаем глобально — другие компоненты могут использовать
     };
   }, [url, token, shouldConnect, onConnected]);
@@ -274,24 +271,24 @@ function ChatRoom({ roomId }: { roomId: string }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [online, setOnline] = useState(0);
 
-"  const ws = useWebSocket(wss://api.example.com/ws, {"
+  const ws = useWebSocket(wss://api.example.com/ws, {"
     token: user.token,
-"    onConnected: () => ws.send(join, { roomId })"
+    onConnected: () => ws.send(join, { roomId })"
   });
 
   useEffect(() => {
-"    const unsubNewMsg = ws.on(new_message, (msg: Message) => {"
+    const unsubNewMsg = ws.on(new_message, (msg: Message) => {"
       setMessages(prev => [...prev, msg]);
     });
 
-"    const unsubOnline = ws.on(online_count, (count: number) => {"
+    const unsubOnline = ws.on(online_count, (count: number) => {"
       setOnline(count);
     });
 
     return () => {
       unsubNewMsg();
       unsubOnline();
-"      ws.send(leave, { roomId });"
+      ws.send(leave, { roomId });"
     };
   }, [ws, roomId]);
 
@@ -372,7 +369,7 @@ WebSocket в React — это как ручная коробка передач:
 	},
 	{
 		title: 'Почему Zustand — это лучше, чем Redux',
-		content: `# Почему Zustand — это лучше, чем Redux в 2025 году (мой опыт после 7 лет с Redux)
+		content: `## Почему Zustand — это лучше, чем Redux в 2025 году (мой опыт после 7 лет с Redux)
 
 Я начал использовать Redux в 2016 году. Тогда это был единственный нормальный способ управлять состоянием в больших приложениях. Сегодня у меня 14 коммерческих проектов за плечами, и в последних трёх я полностью отказался от Redux в пользу Zustand.
 

@@ -85,7 +85,7 @@ export const Navigation = ({
 
 						return (
 							<div key={key} className='relative group'>
-								<div className='absolute right-full top-1/2 -translate-y-1/2 ml-4 opacity-0 pointer-events-none lg:group-hover:opacity-100 lg:group-hover:-translate-x-2 transition-all duration-300 whitespace-nowrap'>
+								<div className='absolute right-full top-1/2 -translate-y-1/2 ml-4 -mt-[1px] opacity-0 pointer-events-none lg:group-hover:opacity-100 lg:group-hover:-translate-x-2 transition-all duration-300 whitespace-nowrap'>
 									<span
 										className={cn(
 											'text-sm font-medium',

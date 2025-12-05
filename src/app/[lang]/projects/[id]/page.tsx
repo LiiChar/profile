@@ -10,6 +10,9 @@ import { ProjectAction } from '@/components/project/ProjectAction';
 import { getFieldLang, getLang } from '@/helpers/i18n';
 import { Markdown } from '@/components/ui/markdown';
 import { getCommits } from '@/action/git/getCommits';
+import { BackwardLink } from '@/components/ui/backward-link';
+import { ContentMetrics } from '@/components/metrics/ContentMetrics';
+import { addMetric } from '@/action/metrics/addMetric';
 
 export default async function ProjectPage({
 	params,
@@ -26,17 +29,23 @@ export default async function ProjectPage({
 		},
 	});
 
+	
+	await addMetric({ action: 'view', targetType: 'project', targetId: id });
+
 	if (!project) {
 		return (
 			<div className='text-center text-red-500 mt-10'>Project not found</div>
 		);
 	}
 
+	
+
 	const { repoName, createdAt, tags, author, url } = project;
 	const commits = repoName ? await getCommits(repoName) : null;
 
 	return (
 		<main className='max-w-4xl mx-auto px-4 py-8'>
+			<BackwardLink href={'/projects'} />
 			{url && (
 				<iframe
 					className='w-full aspect-video rounded-lg border '
@@ -72,17 +81,19 @@ export default async function ProjectPage({
 					</div>
 
 					<div className='flex items-center gap-3 mt-10'>
-						<div>
 							{tags && (
-								<TagList
-									className=''
-									linkBase='/projects/tag/'
-									tags={tags}
-									prefix={'#'}
-									variant='default'
-								/>
+								<div className='flex gap-3 items-center justify-between text-sm mt-auto'>
+									<TagList
+										className=''
+										linkBase='/projects/tag/'
+										tags={tags}
+										prefix={'#'}
+										variant='default'
+									/>
+									<Separator />
+									<ContentMetrics contentId={project.id} type='project' />
+								</div>
 							)}
-						</div>
 						<Separator className='' />
 						<div>
 							<ProjectAction project={project} />

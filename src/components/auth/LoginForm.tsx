@@ -46,8 +46,8 @@ export const LoginForm = () => {
 			<div>
 				<Label htmlFor='username'>Логин</Label>
 				<Input
-					id='username'
-					name='username'
+					id='name'
+					name='name'
 					type='text'
 					required
 					value={formData.name}
@@ -67,7 +67,7 @@ export const LoginForm = () => {
 					placeholder='Ваш пароль'
 				/>
 			</div>
-			<Button type='submit' disabled={loading} className='w-full'>
+			<Button loading={loading} type='submit' disabled={loading} className='w-full'>
 				{loading ? 'Вход...' : 'Войти'}
 			</Button>
 		</form>

@@ -3,9 +3,9 @@ import { BlogAction } from '@/components/blog/BlogAction';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { db } from '@/db/db';
-import { blogs, metrics } from '@/db/schema';
+import { blogs } from '@/db/schema';
 import { getDate } from '@/helpers/date';
-import { and, eq } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import Image from 'next/image';
 import React from 'react';
 import { Markdown } from '@/components/ui/markdown';
@@ -17,7 +17,8 @@ import { TagList } from '@/components/tag/TagList';
 import ArticleNav from '@/widgets/article/ArticleNav';
 import { getCurrentUser } from '@/action/auth/login';
 import { addMetric } from '@/action/metrics/addMetric';
-import { Eye } from 'lucide-react';
+import { BackwardLink } from '@/components/ui/backward-link';
+import { ContentMetrics } from '@/components/metrics/ContentMetrics';
 
 export async function generateMetadata({
 	params,
@@ -69,19 +70,6 @@ export default async function Page({
 			
 		},
 	});
-	const metric = await db.query.metrics.findMany({
-		where: () => and(eq(metrics.targetId, id), eq(metrics.targetType, 'blog')),
-		with: {
-			user: true,
-		},
-		orderBy: (m, { desc }) => [desc(m.id)],
-	});
-	
-	const users = new Set(
-		metric.filter(m => m.action === 'view').map(m => m.userId)
-	);
-
-	const view = users.size;
 
 	const currentUser = await getCurrentUser();
 
@@ -89,13 +77,13 @@ export default async function Page({
 		return 'Not found';
 	}
 
-	// Track view metric
 	await addMetric({ action: 'view', targetType: 'blog', targetId: id });
 
 	const { image, user, title, createdAt, tags } = blog;
 
 	return (
 		<main className='max-w-3xl mx-auto my-8 px-4 relative'>
+			<BackwardLink href={'/blog'} />
 			<Card className='relative'>
 				<CardHeader className='px-4 sm:px-6 lg:px-8'>
 					<h1 className='text-4xl font-bold my-10  sm:text-5xl'>
@@ -108,9 +96,11 @@ export default async function Page({
 							<time dateTime={createdAt}>{getDate(createdAt)}</time>
 						</div>
 						<Separator className='px-3' />
-						<div>
-							<BlogAction blog={blog} />
-						</div>
+						{currentUser && (
+							<div>
+								<BlogAction blog={blog} />
+							</div>
+						)}
 					</div>
 				</CardHeader>
 
@@ -142,10 +132,7 @@ export default async function Page({
 					<div className='flex gap-3 px-8 items-center text-sm mt-auto'>
 						<TagList tags={tags} />
 						<Separator />
-						<div className='flex gap-2 text-xs bg-secondary px-[10px] py-1 rounded-md items-center  select-none'>
-							<Eye size={18}/>
-							<div>{view}</div>
-						</div>
+						<ContentMetrics contentId={blog.id} type='blog' />
 						<BlogLike
 							likes={blog.likes}
 							currentUserId={currentUser?.id}

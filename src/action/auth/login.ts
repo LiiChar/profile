@@ -18,8 +18,7 @@ export const login = async (data: LoginData) => {
 			.from(users)
 			.where(eq(users.name, data.name))
 			.limit(1);
-
-	// Check if user exists and password matches
+			
 	const existing = user.length > 0;
 	let validPassword = false;
 	if (existing) {
@@ -70,7 +69,7 @@ export const getCurrentUser = async () => {
 
 		if (user.length === 0) return null;
 
-		return { id: user[0].id, name: user[0].name, photo: user[0].photo };
+		return { id: user[0].id, name: user[0].name, photo: user[0].photo, isAdmin: user[0].isAdmin };
 	} catch (error) {
 		console.error('[GET CURRENT USER ERROR]', error);
 		return null;

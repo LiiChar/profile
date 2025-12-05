@@ -43,6 +43,13 @@
       "when": 1764757898266,
       "tag": "0005_gigantic_wilson_fisk",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1764934228022,
+      "tag": "0006_stiff_turbo",
+      "breakpoints": true
     }
   ]
 }

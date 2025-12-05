@@ -1,10 +1,18 @@
 import { dbFactory } from '.';
 import { users, UserType } from '../tables/user';
+import bcrypt from 'bcryptjs';
 
-type UserFactoryInsert = Pick<UserType, 'name'>;
+type UserFactoryInsert = Pick<UserType, 'name' | 'password' | 'isAdmin'>;
 
 export const userFactory = async (content: UserFactoryInsert[]) => {
-	await dbFactory.insert(users).values(content);
+	await dbFactory
+		.insert(users)
+		.values(
+			content.map(user => ({
+				...user,
+				password: user.password ? bcrypt.hashSync(user.password, 10): null,
+			}))
+		);
 };
 
 export const userFactoryReset = async () => {
@@ -19,9 +27,8 @@ export const runUserFactory = async () => {
 
 const userContent: UserFactoryInsert[] = [
 	{
-		name: 'Rosa',
-	},
-	{
-		name: 'Sofi',
+		name: 'Maxim',
+		password: '24688642',
+		isAdmin: true
 	},
 ];

@@ -13,6 +13,7 @@ import { TooltipProvider } from '@radix-ui/react-tooltip';
 import Script from 'next/script';
 import Dither from '@/components/background/Dither';
 import { Auth } from '@/widgets/layout/Auth';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export const metadata: Metadata = {
 	title: 'Профиль',
@@ -27,6 +28,7 @@ export default async function RootLayout({
 	LangParams) {
 	return (
 		<html lang={(await params).lang}>
+			<SpeedInsights/>
 			<Script src='https://js.puter.com/v2/' strategy='afterInteractive' />
 			<DictionaryProvider dict={await getDictionary((await params).lang)}>
 				<body className='dark min-h-screen overflow-x-hidden relative z-[10]'>

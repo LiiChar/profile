@@ -1,3 +1,4 @@
+'use server';
 import { env } from "@/helpers/env.client";
 
 export const verifyCaptcha = async (token: string) => {

@@ -95,8 +95,9 @@ export const Navigation = ({
 										{title}
 									</span>
 								</div>
-								{/* Кнопка */}
-								<button
+								<div
+									role='button'
+									tabIndex={0}
 									onClick={() => scrollToSection(key as ComponentKey)}
 									aria-current={isActive ? 'true' : 'false'}
 									aria-label={`Перейти к разделу ${title}`}
@@ -108,7 +109,7 @@ export const Navigation = ({
 									)}
 								>
 									{icon}
-								</button>
+								</div>
 							</div>
 						);
 					})}

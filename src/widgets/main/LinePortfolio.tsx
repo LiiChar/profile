@@ -60,38 +60,43 @@ export const LinePortfolio = () => {
 			if (!path || !container) return;
 
 			const totalLength = path.getTotalLength();
+			if (!totalLength || isNaN(totalLength)) return; // защита
+
 			const rect = path.getBoundingClientRect();
 			const windowHeight = window.innerHeight;
 
-			// прогресс: начинается немного раньше и кончается чуть позже для плавности
 			let progress =
 				(windowHeight - rect.top) / (windowHeight + rect.height - 500);
 			progress = Math.max(0, Math.min(progress, 1));
 
 			const drawLength = totalLength * progress;
 
-			// рисуем линию
 			path.style.strokeDasharray = `${totalLength}`;
 			path.style.strokeDashoffset = `${totalLength - drawLength}`;
 
-			// позиция курсора по линии
+			// позиция курсора
 			const cursorPoint = path.getPointAtLength(drawLength);
 			setCursorPos({ x: cursorPoint.x, y: cursorPoint.y });
 
-			// видимые проекты (по длине)
+			// видимые проекты
 			let count = 0;
 			const denom = projects.length > 1 ? projects.length - 1 : 1;
 			for (let i = 0; i < projects.length; i++) {
 				const frac = i / denom;
 				const pointDist = totalLength * frac;
-				if (drawLength + 1 >= pointDist) count = i + 1; // +1 для чуть раннего открытия
+				if (drawLength + 1 >= pointDist) count = i + 1;
 			}
 			setVisibleProjects(count);
 		};
 
-		handleScroll();
+		// критически важный момент — дождаться рендера
+		requestAnimationFrame(() => {
+			handleScroll();
+		});
+
 		window.addEventListener('scroll', handleScroll, { passive: true });
 		window.addEventListener('resize', handleScroll);
+
 		return () => {
 			window.removeEventListener('scroll', handleScroll);
 			window.removeEventListener('resize', handleScroll);

@@ -59,12 +59,12 @@ export const TagList = ({
 					<div
 						key={t}
 						className={cn(
-							'flex gap-1',
+							'flex gap-1 grow',
 							VariantStyle[variant]['item'],
 							tagStyle
 						)}
 					>
-						<Link href={linkBase + t} className='text-nowrap'>
+						<Link href={linkBase + t} className='whitespace-nowrap'>
 							{prefix && prefix}
 							{t}
 						</Link>

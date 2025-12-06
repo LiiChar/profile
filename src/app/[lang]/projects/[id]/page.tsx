@@ -85,23 +85,25 @@ export default async function ProjectPage({
 					</div>
 
 					<div className='flex items-center gap-3 mt-10'>
-							{tags && (
-								<div className='flex gap-3 items-center justify-between text-sm mt-auto'>
-									<TagList
-										className=''
-										linkBase='/projects/tag/'
-										tags={tags}
-										prefix={'#'}
-										variant='default'
-									/>
-									<Separator />
-									<ContentMetrics contentId={project.id} type='project' />
-								</div>
-							)}
-						<Separator className='' />
-						{isAdmin(currentUser) && <div>
-							<ProjectAction project={project} />
-						</div>}
+						{tags && (
+							<div className='flex items-center min-w-[90%] w-full text-sm mt-auto'>
+								<TagList
+									className='flex-wrap w-full'
+									linkBase='/projects/tag/'
+									tags={tags}
+									prefix={'#'}
+									variant='default'
+								/>
+								<Separator className='max-w-4 mx-2' />
+								<ContentMetrics contentId={project.id} type='project' />
+							</div>
+						)}
+						<Separator className='w-auto min-w-4' />
+						{isAdmin(currentUser) && (
+							<div>
+								<ProjectAction project={project} />
+							</div>
+						)}
 					</div>
 				</div>
 				{commits && (

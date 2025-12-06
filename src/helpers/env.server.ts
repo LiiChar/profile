@@ -12,6 +12,7 @@ export const envSchema = z.object({
 	GOOGLE_SECRET_KEY: z.string().min(1),
 	HCAPTCHA_PUBLIC_KEY: z.string().min(1),
 	HCAPTCHA_VERIFY_URL: z.string().min(1),
+	DEV: z.string().default('true').optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;

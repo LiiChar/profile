@@ -22,7 +22,7 @@ export const LinePortfolio = () => {
 	useEffect(() => {
 		const fetchProjects = async () => {
 			const data = await getProjects();
-			if (data) setProjects(data);
+			setProjects(data);
 		};
 		fetchProjects();
 	}, []);
@@ -106,10 +106,10 @@ export const LinePortfolio = () => {
 	// Параметры линии и генерация грубых контрольных точек (они нужны только для построения path)
 	const leftX = 150;
 	const rightX = 550;
-	const gapY = 300;
+	const gapY = 360;
 	const offsetY = 80;
-	const wave1 = 120;
-	const wave2 = 10;
+	const wave1 = 90;
+	const wave2 = 50;
 
 	const generateControlPoints = (): Point[] => {
 		return projects.map((_, i) => {

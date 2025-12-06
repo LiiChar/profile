@@ -254,5 +254,10 @@
 	},
 	"error": {
 		"generic": "An error occurred"
+	},
+	"notFound": {
+		"title": "404 Not Found",
+		"description": "Sorry, the page you are looking for does not exist.",
+		"goHome": "Go Home"
 	}
 }

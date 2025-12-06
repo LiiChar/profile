@@ -3042,10 +3042,10 @@
   resolved "https://registry.yarnpkg.com/@rushstack/eslint-patch/-/eslint-patch-1.12.0.tgz#326a7b46f6d4cfa54ae25bb888551697873069b4"
   integrity sha512-5EwMtOqvJMMa3HbmxLlF74e+3/HhwBTMcvt3nqVJgGCozO6hzIPOBlwm8mGVNR9SN2IJpxSnlxczyDjcn7qIyw==
 
-"@siberiacancode/reactuse@^0.2.25":
-  version "0.2.25"
-  resolved "https://registry.yarnpkg.com/@siberiacancode/reactuse/-/reactuse-0.2.25.tgz#9ee51e38110cc37847c454547ff365361480b3f5"
-  integrity sha512-1ktLfSlOjO0D/F80E5xqQ8KGyD4ZEqjVDfbwMdRLMcGFI5q+bDFnVBJZ6JQTKVJcnrOJDoexeDdBl9qkJktT4A==
+"@siberiacancode/reactuse@^0.3.3":
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/@siberiacancode/reactuse/-/reactuse-0.3.3.tgz#4dab5befc19e97f4cf6c3ca45d7a9f7873681f49"
+  integrity sha512-yXHCmdP6opxNikz4y7v6QZQ9jGwNz9NPPmF/3qEW6v6dJzwfyRr2DLc+Zqabx6v6RCqNbL5y0ugYBMY5n1UwcQ==
   dependencies:
     screenfull "^6.0.2"
 

@@ -15,6 +15,7 @@ import Script from 'next/script';
 import Dither from '@/components/background/Dither';
 import { Auth } from '@/widgets/layout/Auth';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { env } from '@/helpers/env.server';
 
 export const metadata: Metadata = {
 	title: 'Профиль',
@@ -35,7 +36,7 @@ export default async function RootLayout({
 	LangParams) {
 	return (
 		<html lang={(await params).lang}>
-			<SpeedInsights/>
+			{env.DEV !== 'true' && <SpeedInsights/>}
 			<Script src='https://js.puter.com/v2/' strategy='afterInteractive' />
 			<DictionaryProvider dict={await getDictionary((await params).lang as 'en' | 'ru')}>
 				<body className='dark min-h-screen overflow-x-hidden relative z-[10]'>

@@ -17,7 +17,7 @@ const detectFromAcceptLanguage = (request: NextRequest): Lang => {
 	return match(languages, locales, defaultLocale) as Lang;
 };
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
 	// User
 	// const user = getCurrentUser();
 

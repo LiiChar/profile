@@ -9,7 +9,7 @@ import { Navigation } from '@/widgets/main/Navigation';
 export default async function Home() {
 	const projects = await getProjects();
 	return (
-		<main className='min-h-screen mt-[-88px] px-6 space-y-12 '>
+		<main id="main-content" className='min-h-screen mt-[-88px] px-6 space-y-12 '>
 			<Navigation>
 				<Hero />
 				<Description />

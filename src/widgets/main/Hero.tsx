@@ -70,6 +70,7 @@ export const Hero = ({}) => {
 				animate={{ y: [0, 10, 0] }}
 				transition={{ duration: 2, repeat: Infinity }}
 				className='absolute bottom-14 left-1/2 -translate-x-1/2'
+				aria-label='Scroll down to description'
 			>
 				<svg
 					className='w-6 h-6 text-foreground/80'

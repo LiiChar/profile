@@ -1,14 +1,14 @@
 'use server';
-import { env } from "@/helpers/env.client";
+import { env } from "@/helpers/env.server";
 
 export const verifyCaptcha = async (token: string) => {
-	const response = await fetch(env.NEXT_PUBLIC_HCAPTCHA_VERIFY_URL, {
+	const response = await fetch(env.HCAPTCHA_VERIFY_URL, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',
 		},
 		body: new URLSearchParams({
-			secret: env.NEXT_PUBLIC_HCAPTCHA_PUBLIC_KEY,
+			secret: env.HCAPTCHA_PUBLIC_KEY,
 			response: token,
 		}),
 	});

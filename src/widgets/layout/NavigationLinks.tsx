@@ -25,7 +25,7 @@ export const NavigationLinks = ({isAdmin}: {isAdmin?: boolean}) => {
 	};
 
 	return (
-		<nav className='flex items-center' aria-label='Основная навигация'>
+		<nav className='flex items-center' aria-label='Main navigation'>
 			{isAdmin && (
 				<>
 					<Link
@@ -33,6 +33,7 @@ export const NavigationLinks = ({isAdmin}: {isAdmin?: boolean}) => {
 						className={cn(
 							'relative transition-all uration-300 hover:scale-105'
 						)}
+						aria-label='Create new project'
 					>
 						<PlusCircle size={16} />
 					</Link>
@@ -66,7 +67,7 @@ export const NavigationLinks = ({isAdmin}: {isAdmin?: boolean}) => {
 				)}
 			/>
 
-			<Link href='/' className='flex items-center'>
+			<Link href='/' className='flex items-center' aria-label='Home'>
 				<Rounded
 					className={cn(
 						'h-10 w-10 flex items-center justify-center text-lg transition-all duration-500'
@@ -109,6 +110,7 @@ export const NavigationLinks = ({isAdmin}: {isAdmin?: boolean}) => {
 						className={cn(
 							'relative transition-all uration-300 hover:scale-105'
 						)}
+						aria-label='Create new blog post'
 					>
 						<PlusCircle size={16} />
 					</Link>

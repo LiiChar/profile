@@ -2,7 +2,7 @@
 	"page": {
 		"main": {
 			"hero": {
-				"title": "Hello, I'm Maksim 👨‍💻",
+				"title": "Hello, I'm Maksim",
 				"description": "Frontend / Fullstack developer focused on React, Next.js, Tailwind, WebSocket, and Node.js",
 				"button1": "View Projects",
 				"button2": "Contact Me"

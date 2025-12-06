@@ -26,7 +26,7 @@ export const Header = async () => {
 							<NavigationLinks isAdmin={user?.isAdmin} />
 							<ChangeTheme
 								className='ransition-all duration-300 hover:scale-110'
-								aria-label='Сменить тему'
+								aria-label='Toggle theme'
 							/>
 						</div>
 					</ScrollProgressBorder>

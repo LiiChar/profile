@@ -27,7 +27,12 @@ export default function LanguageSwitcher() {
 	};
 
 	return (
-		<div onClick={switchLanguage} className='group'>
+		<button
+			onClick={switchLanguage}
+			className='group'
+			aria-label={`${currentLang === 'ru' ? 'Switch to English' : 'Переключить на русский'} (currently ${currentLang.toUpperCase()})`}
+			type="button"
+		>
 			<SwitchDetail
 				value={currentLang === 'ru'}
 				className='w-14 h-7 text-[13px] font-semibold transition-all duration-300 group-hover:scale-110'
@@ -35,6 +40,6 @@ export default function LanguageSwitcher() {
 				first='EN'
 				second='RU'
 			/>
-		</div>
+		</button>
 	);
 }

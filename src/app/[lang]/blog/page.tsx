@@ -5,7 +5,7 @@ import { Text } from '@/components/ui/text-server';
 export default async function Blog() {
 	const blogs = await db.query.blogs.findMany();
 	return (
-		<main>
+		<main id="main-content">
 			<h1 className='my-10'>
 				<Text text={'page.main.blog.title'} />
 			</h1>

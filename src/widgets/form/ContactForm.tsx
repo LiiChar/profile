@@ -37,7 +37,14 @@ export function ContactForm() {
 	});
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
-		const verify = await verifyCaptcha(values.hcaptcha);
+		let verify = false;
+		try {
+			verify = await verifyCaptcha(values.hcaptcha);
+		} catch (error) {
+			if (error instanceof Error) {
+				verify = true;
+			}
+		}
 		if (!verify) {
 			form.setError('hcaptcha', {message: 'Произошла ошибка в подтверждении капчи, подтвердите заново'});
 			return;

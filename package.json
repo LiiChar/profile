@@ -90,6 +90,10 @@
 		"zod": "^4.0.5",
 		"zustand": "^5.0.6"
 	},
+	"browserslist": [
+		">1%",
+		"not dead"
+	],
 	"devDependencies": {
 		"@babel/core": "^7.28.5",
 		"@babel/preset-env": "^7.28.5",

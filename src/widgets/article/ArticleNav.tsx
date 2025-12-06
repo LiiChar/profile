@@ -221,8 +221,10 @@ export default function ArticleNav({ targetSelect, ...attr }: ArticleNavProps) {
 		const activeEl = navEl.querySelector(`#${CSS.escape(`nav-${activeId.replace(/"/g, '')}`)}`) as HTMLElement;
 
 		if (activeEl) {
-			const top = activeEl.offsetTop;
-			const height = activeEl.offsetHeight;
+			const navRect = navEl.getBoundingClientRect();
+			const activeRect = activeEl.getBoundingClientRect();
+			const top = activeRect.top - navRect.top;
+			const height = activeRect.height;
 			setIndicatorStyle({ top, height });
 		}
 	}, [activeId, expanded, articles]);

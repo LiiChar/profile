@@ -30,7 +30,7 @@ export default async function RootLayout({
 		<html lang={(await params).lang}>
 			<SpeedInsights/>
 			<Script src='https://js.puter.com/v2/' strategy='afterInteractive' />
-			<DictionaryProvider dict={await getDictionary((await params).lang)}>
+			<DictionaryProvider dict={await getDictionary((await params).lang as 'en' | 'ru')}>
 				<body className='dark min-h-screen overflow-x-hidden relative z-[10]'>
 					<a
 						href="#main-content"

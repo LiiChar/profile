@@ -17,7 +17,8 @@ export const Cookie = () => {
 	useEffect(() => {
 		const allow = getCookie('allow-cookies');
 		if (!allow) {
-			setIsVisible(true);
+			// Delay showing cookie consent to not affect LCP
+			setTimeout(() => setIsVisible(true), 2000);
 		}
 	}, []);
 

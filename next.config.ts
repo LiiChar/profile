@@ -17,6 +17,12 @@ const nextConfig: NextConfig = {
 	webpack: (config) => {
 		config.externals = [...config.externals, 'bcrypt'];
 		config.resolve.alias['@'] = path.resolve(__dirname, 'src');
+		config.optimization = {
+			...config.optimization,
+			splitChunks: {
+				chunks: 'all',
+			},
+		};
 		return config;
 	},
 	turbopack: {

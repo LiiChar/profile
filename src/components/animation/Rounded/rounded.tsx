@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
 import React, { HTMLAttributes } from 'react';
-// import MetaBalls from '../ui/metaballs';
+import style from './rounded.module.css'
 
 type LogoProps = {
 	children?: React.ReactNode;
@@ -16,18 +16,6 @@ export const Rounded = ({ ...attr }: LogoProps) => {
 			)}
 		>
 			<RoundedCircle />
-			{/* <MetaBalls
-				color='#ffffff'
-				enableMouseInteraction={true}
-				enableTransparency={true}
-				hoverSmoothness={0.05}
-				cursorBallColor='#ffffff'
-				className='absolute z-10 scale-[1.80]'
-				ballCount={30}
-				speed={0.5}
-				animationSize={25}
-				clumpFactor={0.4}
-			/> */}
 			<div className='text-background z-20'>{attr.children}</div>
 		</div>
 	);
@@ -40,11 +28,9 @@ const RoundedCircle = () => {
 
 	return (
 		<>
-			<div className={cn(sharedClassName, 'shape ')} />
-			<div className={cn(sharedClassName, 'shape-1 ')} />
-			<div className={cn(sharedClassName, 'shape-2 ')} />
-			{/* <div className={cn(sharedClassName, 'goTo')} />
-			<div className={cn(sharedClassName, 'goBack')} /> */}
+			<div className={cn(sharedClassName, style.shape)} />
+			<div className={cn(sharedClassName, style['shape-1'])} />
+			<div className={cn(sharedClassName, style['shape-2'])} />
 		</>
 	);
 };

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Separator } from '@/components/ui/separator';
-import { Rounded } from '@/components/animation/rounded';
+import { Rounded } from '@/components/animation/Rounded/rounded';
 import { cn } from '@/lib/utils';
 import { Text } from '@/components/ui/text-client';
 import { PlusCircle } from 'lucide-react';

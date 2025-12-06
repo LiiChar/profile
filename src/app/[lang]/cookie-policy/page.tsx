@@ -1,6 +1,7 @@
-'use server';
 import { Text } from '@/components/ui/text-server';
-import ArticleNav from '@/widgets/article/ArticleNav';
+import ArticleNav from '@/widgets/article/ArticleNavWrapper';
+
+export const dynamic = 'force-static';
 
 export default async function CookiePolicyPage() {
 	return (

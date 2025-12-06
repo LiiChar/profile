@@ -1,4 +1,5 @@
 import { LangParams } from '@/types/i18n';
+import { locales } from '@/const/i18n';
 import './globals.css';
 
 import { Metadata } from 'next';
@@ -18,6 +19,12 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 export const metadata: Metadata = {
 	title: 'Профиль',
 };
+
+export async function generateStaticParams() {
+	return locales.map((lang) => ({
+		lang,
+	}));
+}
 
 export default async function RootLayout({
 	children,

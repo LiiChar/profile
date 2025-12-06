@@ -9,29 +9,23 @@ import { ProjectCard } from '@/components/project/ProjectCard';
 
 type Point = { x: number; y: number };
 
-type LinePortfolioProps = {
-	projects: ProjectType[];
-};
 
-export const LinePortfolio = ({
-	projects: initial = [],
-}: LinePortfolioProps) => {
+export const LinePortfolio = () => {
 	const containerRef = useRef<HTMLDivElement | null>(null);
 	const pathRef = useRef<SVGPathElement | null>(null);
+	const [projects, setProjects] = useState<ProjectType[]>([]);
 
-	const [projects, setProjects] = useState<ProjectType[]>(initial.slice(0, 8));
 	const [visibleProjects, setVisibleProjects] = useState<number>(0);
 	const [cursorPos, setCursorPos] = useState<Point | null>(null);
 	const [pathPoints, setPathPoints] = useState<Point[]>([]);
 
 	useEffect(() => {
 		const fetchProjects = async () => {
-			if (initial.length > 0) return;
 			const data = await getProjects();
 			if (data) setProjects(data);
 		};
 		fetchProjects();
-	}, [initial]);
+	}, []);
 
 	// пересчёт реальных точек на пути (getPointAtLength -> точные координаты)
 	const recalcPathPoints = () => {

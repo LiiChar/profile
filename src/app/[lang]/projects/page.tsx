@@ -2,6 +2,8 @@ import { db } from '@/db/db';
 import { ProjectList } from '@/components/project/ProjectList';
 import { Text } from '@/components/ui/text-server';
 
+export const dynamic = 'force-static';
+
 export default async function Projects() {
 	const projects = await db.query.projects.findMany();
 	return (

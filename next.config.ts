@@ -2,6 +2,14 @@ import type { NextConfig } from 'next';
 import path from 'path';
 
 const nextConfig: NextConfig = {
+	headers: async () => [
+		{
+			source: '/_next/static/(.*)',
+			headers: [
+				{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+			],
+		},
+	],
 	output: 'standalone',
 	images: {
 		remotePatterns: [
@@ -14,7 +22,7 @@ const nextConfig: NextConfig = {
 		],
 	},
 
-	webpack: (config) => {
+	webpack: config => {
 		config.externals = [...config.externals, 'bcrypt'];
 		config.resolve.alias['@'] = path.resolve(__dirname, 'src');
 		config.optimization = {

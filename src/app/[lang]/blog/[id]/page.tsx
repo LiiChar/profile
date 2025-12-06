@@ -14,7 +14,7 @@ import { BlogLike } from '@/components/blog/BlogLike';
 import { Metadata } from 'next';
 import { getFieldLang, getLang } from '@/helpers/i18n';
 import { TagList } from '@/components/tag/TagList';
-import ArticleNav from '@/widgets/article/ArticleNav';
+import ArticleNav from '@/widgets/article/ArticleNavWrapper';
 import { getCurrentUser } from '@/action/auth/login';
 import { addMetric } from '@/action/metrics/addMetric';
 import { BackwardLink } from '@/components/ui/backward-link';

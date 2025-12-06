@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Separator } from '@/components/ui/separator';
 
-type ArticleNavProps = {
+export type ArticleNavProps = {
 	targetSelect: string;
 	heading?: string;
 	deep?: number;

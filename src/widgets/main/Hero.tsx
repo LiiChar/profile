@@ -5,7 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Mail } from 'lucide-react';
 import { Text } from '@/components/ui/text-client';
 import { GrowArrow } from '@/components/ui/grow-arrow';
-import { ContactModal } from '../modal/ContactModal';
+import dynamic from 'next/dynamic';
+const ContactModal = dynamic(() => import('../modal/ContactModal.js').then(mod => mod.ContactModal), {
+	ssr: false,
+	loading: () => <div>Loading...</div>
+});
 import TextType from '@/components/ui/text-type';
 import { getText } from '@/helpers/i18n-client';
 import { useDictionaryStore } from '@/stores/lang/langStore';

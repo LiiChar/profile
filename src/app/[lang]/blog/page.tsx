@@ -2,6 +2,8 @@ import { BlogCard } from '@/components/blog/BlogCard';
 import { db } from '@/db/db';
 import { Text } from '@/components/ui/text-server';
 
+export const dynamic = 'force-static';
+
 export default async function Blog() {
 	const blogs = await db.query.blogs.findMany();
 	return (

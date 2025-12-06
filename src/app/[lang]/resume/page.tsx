@@ -1,13 +1,14 @@
 import { Text } from '@/components/ui/text-server';
 import { MapPin, Phone, Mail } from 'lucide-react';
 import { ResumeDownloadButtons } from '@/components/resume/ResumeDownloadButtons';
-import ArticleNav from '@/widgets/article/ArticleNav';
+import ArticleNav from '@/widgets/article/ArticleNavWrapper';
 
-export default async function Resume() {
+export const dynamic = 'force-static';
+
+export default function Resume() {
   return (
 		<main className='min-h-screen px-4 py-6 md:px-6 md:py-12 relative rusume-content'>
 			<div className='mx-auto max-w-4xl space-y-12'>
-				{/* Header Section */}
 				<div className='space-y-6'>
 					<div className='text-center space-y-4'>
 						<h1 className='text-5xl md:text-6xl font-extrabold text-foreground tracking-tight'>
@@ -18,7 +19,6 @@ export default async function Resume() {
 						</h2>
 					</div>
 
-					{/* Contact Information */}
 					<div className='flex flex-wrap justify-center gap-6 text-muted-foreground'>
 						<div className='flex items-center gap-2'>
 							<MapPin className='h-5 w-5 text-primary' />
@@ -41,7 +41,6 @@ export default async function Resume() {
 					</div>
 				</div>
 
-				{/* Introduction Section */}
 				<div className='space-y-4'>
 					<h2 className='text-3xl font-bold text-foreground border-b-2 border-border pb-2'>
 						<Text text='page.resume.personal.about.title' />
@@ -51,7 +50,6 @@ export default async function Resume() {
 					</p>
 				</div>
 
-				{/* Work Experience */}
 				<div className='space-y-6'>
 					<h2 className='text-3xl font-bold text-foreground border-b-2 border-border pb-2'>
 						Опыт работы
@@ -142,7 +140,6 @@ export default async function Resume() {
 					</div>
 				</div>
 
-				{/* Education */}
 				<div className='space-y-6'>
 					<h2 className='text-3xl font-bold text-foreground border-b-2 border-border pb-2'>
 						Образование
@@ -165,7 +162,6 @@ export default async function Resume() {
 					</div>
 				</div>
 
-				{/* Projects */}
 				<div className='space-y-6'>
 					<h2 className='text-3xl font-bold text-foreground border-b-2 border-border pb-2'>
 						Проекты
@@ -199,7 +195,6 @@ export default async function Resume() {
 					</div>
 				</div>
 
-				{/* Languages */}
 				<div className='space-y-6'>
 					<h2 className='text-3xl font-bold text-foreground border-b-2 border-border pb-2'>
 						Языки
@@ -214,7 +209,6 @@ export default async function Resume() {
 					</div>
 				</div>
 
-				{/* Links */}
 				<div className='space-y-6'>
 					<h2 className='text-3xl font-bold text-foreground border-b-2 border-border pb-2'>
 						Ссылки
@@ -256,14 +250,12 @@ export default async function Resume() {
 					</div>
 				</div>
 
-				{/* Skills */}
 				<div className='space-y-6'>
 					<h2 className='text-3xl font-bold text-foreground border-b-2 border-border pb-2'>
 						Навыки
 					</h2>
 
 					<div className='grid md:grid-cols-2 gap-6'>
-						{/* Technical Skills */}
 						<div className='bg-card p-6 rounded-lg border border-border space-y-4'>
 							<h3 className='text-lg font-semibold text-foreground'>
 								Технические навыки
@@ -292,7 +284,6 @@ export default async function Resume() {
 							</div>
 						</div>
 
-						{/* Soft Skills */}
 						<div className='bg-card p-6 rounded-lg border border-border space-y-4'>
 							<h3 className='text-lg font-semibold text-foreground'>
 								Софт навыки
@@ -316,7 +307,6 @@ export default async function Resume() {
 					</div>
 				</div>
 
-				{/* Download Section */}
 				<ResumeDownloadButtons />
 			</div>
 			<div className='max-w-4xl w-full z-[100000000000] pr-8 md:pr-12 top-[50%] flex justify-end translate-y-[-50%] fixed'>

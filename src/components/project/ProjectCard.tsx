@@ -41,6 +41,8 @@ const ProjectBackground = ({
 			)}
 		>
 			{/* Блок с картинкой */}
+			
+			
 			<div className='relative w-full max-h-[300px] overflow-hidden'>
 				<Image
 					src={project.image ? getUrl(project.image) : DEFAULT_IMAGE}
@@ -53,7 +55,9 @@ const ProjectBackground = ({
 
 			<div className='absolute  inset-0 flex flex-col justify-end bg-gradient-to-t from-black/70 to-transparent p-4 opacity-100 translate-y-4 transition-all duration-300 group-hover:opacity-0 group-hover:translate-y-0'>
 				<a href={`/projects/${project.id}`}>
-					<h2 className=' font-bold text-lg m-0 p-0 border-0 mb-4'>{project.title}</h2>
+					<h2 className=' font-bold text-lg m-0 p-0 border-0 mb-4'>
+						{project.title}
+					</h2>
 				</a>
 			</div>
 
@@ -65,7 +69,9 @@ const ProjectBackground = ({
 				{project.description ? (
 					<p className=' my-3'>{project.description}</p>
 				) : (
-					<p className='line-clamp-3 my-3'>{project.content}</p>
+					<p className='  line-clamp-3 my-3'>
+						{project.content}
+					</p>
 				)}
 				{project.tags && (
 					<TagList
@@ -89,9 +95,10 @@ const ProjectBlur = ({
 	link,
 	...props
 }: ProjectCardProps) => {
+
 	return (
 		<SpotlightCard {...props} className={cn('rounded-lg group', className)}>
-			<CardBlur className={'!h-full'}>
+			<CardBlur wallpaper={project.image ? getUrl(project.image) : undefined} className={'!h-full'}>
 				<h4 className='text-xl'>
 					{link ? (
 						<Link

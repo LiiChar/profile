@@ -21,7 +21,11 @@ const nextConfig: NextConfig = {
 			},
 		],
 	},
-
+	experimental: {
+		serverActions: {
+			bodySizeLimit: '100mb'
+		}
+	},
 	webpack: config => {
 		config.externals = [...config.externals, 'bcrypt'];
 		config.resolve.alias['@'] = path.resolve(__dirname, 'src');

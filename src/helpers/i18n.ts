@@ -54,10 +54,10 @@ export const getFromDict = (dict: any, path: string): any => {
 	return current;
 };
 
-export const getLang = async () => {
+export const getLang = async (pathLang?: Lang) => {
 	const headerList = await headers();
 	const lang = (headerList.get('x-current-language') || defaultLocale) as Lang;
-	return lang;
+	return pathLang ?? lang;
 };
 
 export const getFieldLang = <

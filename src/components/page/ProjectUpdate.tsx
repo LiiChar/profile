@@ -21,7 +21,7 @@ import { MarkdownEditor } from '@/components/ui/markdown-editor';
 import { getDate } from '@/helpers/date';
 import { validateUrl } from '@/helpers/url';
 import { cn } from '@/lib/utils';
-import Image from 'next/image';
+import { ImageUpload } from '../ui/image-upload';
 
 const formUpdateProjectSchema = z.object({
 	title: z
@@ -142,29 +142,7 @@ export const ProjectUpdatePage = ({
 							render={({ field }) => (
 								<FormItem>
 									<FormControl>
-										<div className='relative'>
-											<input
-												className={cn(
-													'w-full p-2 border rounded',
-													field.value &&
-														'absolute ml-4 w-[calc(100%-32px)] bg-background bottom-4 z-30'
-												)}
-												{...field}
-												placeholder='Ссылка на изображение'
-												{...field}
-											/>
-											{field.value && (
-												<div className='mt-2'>
-													<Image
-														src={field.value}
-														alt='Обложка проекта'
-														width={800}
-														height={600}
-														className='rounded-lg object-cover w-full h-full'
-													/>
-												</div>
-											)}
-										</div>
+										<ImageUpload onSelect={field.onChange}/>
 									</FormControl>
 
 									<FormMessage />

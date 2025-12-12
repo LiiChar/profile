@@ -9,6 +9,7 @@ import { timeRead } from '@/helpers/text';
 import { GrowArrow } from '../ui/grow-arrow';
 import { Markdown } from '../ui/markdown';
 import { TagList } from '@/components/tag/TagList';
+import Link from 'next/link';
 
 type BlogCardProps = {
 	blog: BlogType;
@@ -17,17 +18,20 @@ type BlogCardProps = {
 export const BlogCard = ({ blog, className, ...attr }: BlogCardProps) => {
 	return (
 		<div {...attr} className={cn('flex flex-col gap-4', className)}>
-			<div className='relative '>
+			<Link
+				href={`/blog/${blog.id}`}
+				className='relative overflow-hidden rounded-md'
+			>
 				{(blog.image ?? DEFAULT_IMAGE) && (
 					<Image
 						alt={blog.title}
 						fill={true}
 						loading='lazy'
 						src={blog.image ?? DEFAULT_IMAGE}
-						className='object-cover aspect-[16/10] w-full h-full transition-all rounded-md top-0 left-0 static!'
+						className='object-cover hover:scale-110 transition-all aspect-[16/10] w-full h-full rounded-md top-0 left-0 static!'
 					/>
 				)}
-			</div>
+			</Link>
 			{/* Контейнер, занимающий всю высоту */}
 			<div className='w-full flex flex-col grow'>
 				<div>
@@ -51,13 +55,13 @@ export const BlogCard = ({ blog, className, ...attr }: BlogCardProps) => {
 						<TagList tags={blog.tags} limit={blog.tags.length <= 24 ? 2 : 1} />
 					)}
 					<Separator />
-					<a
+					<Link
 						href={`/blog/${blog.id}`}
 						className='text-nowrap flex group items-center gap-1'
 					>
 						<span>Читать статью</span>
 						<GrowArrow className='scale-75 -mb-[1px]' />
-					</a>
+					</Link>
 				</div>
 			</div>
 		</div>

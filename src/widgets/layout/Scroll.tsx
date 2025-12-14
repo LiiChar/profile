@@ -6,7 +6,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 export const Scroll = () => {
 	const [isVisible, setIsVisible] = useState(false);
 
-	// Добавляем throttle для оптимизации на мобильных устройствах
 	const throttledScrollHandler = React.useCallback(() => {
 		let ticking = false;
 

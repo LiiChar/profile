@@ -1,3 +1,5 @@
+'use server'
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { getCurrentUser, logout } from '@/action/auth/login';

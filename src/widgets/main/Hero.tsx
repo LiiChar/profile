@@ -8,7 +8,6 @@ import { GrowArrow } from '@/components/ui/grow-arrow';
 import dynamic from 'next/dynamic';
 const ContactModal = dynamic(() => import('../modal/ContactModal.js').then(mod => mod.ContactModal), {
 	ssr: false,
-	loading: () => <div>Loading...</div>
 });
 import TextType from '@/components/ui/text-type';
 import { getText } from '@/helpers/i18n-client';
@@ -22,11 +21,6 @@ export const Hero = ({}) => {
 			id='hero'
 			className='mx-auto relative min-h-screen text-center h-full flex flex-col justify-center items-center z-20'
 		>
-			<motion.div
-				animate={{ y: [0, 20, 0], rotate: [0, -5, 0] }}
-				transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
-				className='absolute bottom-32 right-10 w-80 h-80 bg-secondary/10 rounded-full blur-3xl -z-10'
-			/>
 			<div className='relative'>
 				<motion.h1
 					initial={{ opacity: 0, y: -20 }}
@@ -43,7 +37,7 @@ export const Hero = ({}) => {
 					className='mt-6 h-1 w-32 mx-auto bg-primary/60 rounded-full'
 				/>
 			</div>
-			<div className='text-lg mt-5 md:text-xl mb-4 text-foreground/70 px-8'>
+			<div className='text-lg mt-5 md:text-xl mb-4 text-foreground/70 sm:px-8 px-4'>
 				<TextType text={[getText('page.main.hero.description', dict!)]} />
 			</div>
 

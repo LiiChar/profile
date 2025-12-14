@@ -11,7 +11,7 @@ type Props = {
 
 export const DictionaryProvider = ({ children, dict }: Props) => {
 	const setDictionary = useDictionaryStore(state => state.setDictionary);
-
+	
 	useEffect(() => {
 		setDictionary(dict);
 	}, [dict, setDictionary]);

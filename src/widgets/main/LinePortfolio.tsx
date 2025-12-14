@@ -2,7 +2,7 @@
 
 import { getProjects } from '@/action/project/getProjects';
 import { ProjectType } from '@/db/tables/project';
-import { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ProjectCard } from '@/components/project/ProjectCard';
 
 const MAIN_PATH = `
@@ -23,9 +23,10 @@ const CARD_W = 320;
 const GAP = 56;
 const OFFSET = 0.4;
 
-export const LinePortfolio = () => {
+export const LinePortfolio = React.memo(() => {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const pathRef = useRef<SVGPathElement>(null);
+	const rafRef = useRef<number>(null);
 
 	const [projects, setProjects] = useState<ProjectType[]>([]);
 	const [progress, setProgress] = useState(0);
@@ -59,13 +60,14 @@ export const LinePortfolio = () => {
 		setPoints(pts);
 	}, []);
 
-	useEffect(() => {
-		const onScroll = () => {
-			if (!containerRef.current) return;
+	const onScroll = useCallback(() => {
+		if (!containerRef.current) return;
 
-			
+		cancelAnimationFrame(rafRef.current!);
 
-			const rect = containerRef.current.getBoundingClientRect();
+		rafRef.current = requestAnimationFrame(() => {
+			const rect = containerRef.current?.getBoundingClientRect();
+			if (!rect) return;
 			const windowH = window.innerHeight;
 
 			const start = windowH * 0.85;
@@ -73,17 +75,22 @@ export const LinePortfolio = () => {
 
 			const p = (start - rect.top) / (start - end) - OFFSET;
 			setProgress(Math.min(1, Math.max(0, p)));
-		};
+		});
+	}, []);
 
+	useEffect(() => {
 		window.addEventListener('scroll', onScroll);
 		onScroll();
 
-		return () => window.removeEventListener('scroll', onScroll);
-	}, []);
+		return () => {
+			window.removeEventListener('scroll', onScroll);
+			if (rafRef.current) cancelAnimationFrame(rafRef.current);
+		};
+	}, [onScroll]);
 
-	const drawnLength = totalLength * progress;
+	const drawnLength = useMemo(() => totalLength * progress, [totalLength, progress]);
 
-	const mobilePoints = POINT_T.map((_, i) => ({ x: 50, y: 200 + i * 250 }));
+	const mobilePoints = useMemo(() => POINT_T.map((_, i) => ({ x: 50, y: 200 + i * 275 })), []);
 
 	if (isMobile) {
 		return (
@@ -97,7 +104,6 @@ export const LinePortfolio = () => {
 			>
 				<h2 className='mb-24 text-center'>Мои проекты</h2>
 
-				{/* Мобильная линия */}
 				<div className='absolute left-10 top-24'>
 					<svg
 						width={12}
@@ -254,4 +260,6 @@ export const LinePortfolio = () => {
 			})}
 		</div>
 	);
-};
+});
+
+LinePortfolio.displayName = 'LinePortfolio';

@@ -2,7 +2,7 @@
 
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Monitor, FileText, LayoutDashboard, Book, Brain } from 'lucide-react';
 
 const MainComponents = {
@@ -23,7 +23,7 @@ type NavigationProps = {
 	components?: Partial<Components>;
 };
 
-export const Navigation = ({
+export const Navigation = React.memo(({
 	children,
 	components = MainComponents,
 }: React.PropsWithChildren<NavigationProps>) => {
@@ -65,12 +65,14 @@ export const Navigation = ({
 		return () => observer.disconnect();
 	}, [components]);
 
-	const scrollToSection = (id: ComponentKey) => {
+	const scrollToSection = useCallback((id: ComponentKey) => {
 		sectionRefs.current[id]?.scrollIntoView({
 			behavior: 'smooth',
 			block: 'start',
 		});
-	};
+	}, []);
+
+	const componentEntries = useMemo(() => Object.entries(components), [components]);
 
 	return (
 		<>
@@ -84,7 +86,7 @@ export const Navigation = ({
 						transition={{ type: 'spring', stiffness: 400, damping: 35 }}
 					/>
 
-					{Object.entries(components).map(([key, { title, icon }]) => {
+					{componentEntries.map(([key, { title, icon }]) => {
 						const isActive = currentSection === key;
 
 						return (
@@ -121,4 +123,6 @@ export const Navigation = ({
 			</nav>
 		</>
 	);
-};
+});
+
+Navigation.displayName = 'Navigation';

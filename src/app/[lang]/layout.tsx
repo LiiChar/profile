@@ -84,12 +84,12 @@ export default async function RootLayout({
 	const resolvedParams = await params;
 	return (
 		<html lang={resolvedParams.lang}>
-			{env.DEV !== 'true' && (
+			{env.DEV! || env.DEV !== 'true' ? (
 				<>
 					<Analytics />
 					<SpeedInsights />
 				</>
-			)}
+			) : ''}
 			<Script src='https://js.puter.com/v2/' strategy='afterInteractive' />
 			<Script
 				id='structured-data'

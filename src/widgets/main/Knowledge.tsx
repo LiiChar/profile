@@ -8,7 +8,7 @@ import {
 import { Text } from '@/components/ui/text-client';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import AutoScroll from 'embla-carousel-auto-scroll';
 import {
 	SiReact,
@@ -114,7 +114,7 @@ const KnowledgeData: Knowledge[] = [
 	},
 ];
 
-export const Knowledge = () => {
+ const Knowledge = React.memo(() => {
 	const [selected, setSelected] = useState<Knowledge | null>(null);
 
 	return (
@@ -267,4 +267,8 @@ export const Knowledge = () => {
 			</AnimatePresence>
 		</div>
 	);
-};
+});
+
+Knowledge.displayName = 'Knowledge';
+
+export { Knowledge };	

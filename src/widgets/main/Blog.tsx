@@ -15,8 +15,12 @@ export const Blog = async () => {
 			</h2>
 			<Carousel>
 				<CarouselContent className='gap-4 ml-0 rounded-xl p-0'>
-					{blogs.map((b) => (
-						<BlogCard className='min-w-[calc(33%-16px)]' key={b.id} blog={b} />
+					{blogs.map(b => (
+						<BlogCard
+							className='w-full sm:w-[calc(50%-16px)] md:w-[calc(33%-16px)] lg:w-[calc(25%-16px)] min-w-full sm:min-w-[calc(50%-16px)] lg:min-w-[calc(33%-16px)] '
+							key={b.id}
+							blog={b}
+						/>
 					))}
 				</CarouselContent>
 			</Carousel>

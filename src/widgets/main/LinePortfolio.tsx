@@ -21,7 +21,7 @@ const POINT_T = [0.12, 0.32, 0.52, 0.72, 0.9];
 
 const CARD_W = 320;
 const GAP = 56;
-const OFFSET = 0.2;
+const OFFSET = 0.4;
 
 export const LinePortfolio = () => {
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -31,9 +31,17 @@ export const LinePortfolio = () => {
 	const [progress, setProgress] = useState(0);
 	const [points, setPoints] = useState<{ x: number; y: number }[]>([]);
 	const [totalLength, setTotalLength] = useState(1);
+	const [isMobile, setIsMobile] = useState(false);
 
 	useEffect(() => {
 		getProjects().then(data => setProjects(data.slice(0, 5)));
+	}, []);
+
+	useEffect(() => {
+		const checkMobile = () => setIsMobile(window.innerWidth < 768);
+		checkMobile();
+		window.addEventListener('resize', checkMobile);
+		return () => window.removeEventListener('resize', checkMobile);
 	}, []);
 
 	// Получаем реальные координаты точек на линии
@@ -74,6 +82,80 @@ export const LinePortfolio = () => {
 	}, []);
 
 	const drawnLength = totalLength * progress;
+
+	const mobilePoints = POINT_T.map((_, i) => ({ x: 50, y: 200 + i * 250 }));
+
+	if (isMobile) {
+		return (
+			<div
+				ref={containerRef}
+				id='portfolio'
+				className='relative'
+				style={{ height: Math.max(1200, mobilePoints[mobilePoints.length - 1].y + 200) }}
+			>
+				<h2 className='mb-24 text-center'>Мои проекты</h2>
+
+				{/* Мобильная линия */}
+				<div className='absolute left-10 top-24'>
+					<svg width={12} height={mobilePoints[mobilePoints.length - 1].y + 100} viewBox={`0 0 12 ${mobilePoints[mobilePoints.length - 1].y + 100}`}>
+						<line
+							x1={6}
+							y1={0}
+							x2={6}
+							y2={mobilePoints[mobilePoints.length - 1].y + 50}
+							stroke='var(--primary)'
+							strokeWidth={4}
+							strokeDasharray={mobilePoints[mobilePoints.length - 1].y + 50}
+							strokeDashoffset={(mobilePoints[mobilePoints.length - 1].y + 50) * (1 - progress)}
+							style={{ transition: 'stroke-dashoffset 0.08s linear' }}
+						/>
+						{mobilePoints.map((p, i) => {
+							const active = progress >= i / (mobilePoints.length - 1);
+							return (
+								<circle
+									key={i}
+									cx={6}
+									cy={p.y - 50}
+									r={5}
+									fill={active ? 'var(--primary)' : 'transparent'}
+									stroke='var(--primary)'
+									strokeWidth={2}
+									style={{ transition: 'fill 0.3s ease' }}
+								/>
+							);
+						})}
+					</svg>
+				</div>
+
+				{/* Карточки мобильные */}
+				{mobilePoints.map((p, i) => {
+					if (!projects[i]) return null;
+
+					const active = progress >= i / (mobilePoints.length - 1);
+
+					return (
+						<div
+							key={projects[i].id}
+							style={{
+								position: 'absolute',
+								top: p.y,
+								left: '80px',
+								width: `calc(100vw - 100px)`,
+								maxWidth: '400px',
+								transform: 'translateY(-50%)',
+								opacity: active ? 1 : 0,
+								pointerEvents: active ? 'auto' : 'none',
+								transition: 'opacity 0.4s ease',
+								zIndex: 10,
+							}}
+						>
+							<ProjectCard project={projects[i]} />
+						</div>
+					);
+				})}
+			</div>
+		);
+	}
 
 	return (
 		<div

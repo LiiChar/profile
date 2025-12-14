@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, unstable_Activity as Activity } from 'react';
+import { useEffect, useState } from 'react';
 import { getCookie, setCookie } from 'cookies-next';
 import Link from 'next/link';
 import { Text } from '@/components/ui/text-client';
@@ -33,8 +33,10 @@ export const Cookie = () => {
 	};
 
 	return (
-		<Activity mode={isVisible ? 'visible' : 'hidden'}>
-			<div className='fixed bottom-3 left-3 right-3 z-50 contain-content'>
+		<div style={{
+				opacity: isVisible ? 1 : 0,
+				zIndex: isVisible ? 10 : -3,
+			}} className='fixed bottom-3 left-3 right-3 z-50 contain-content'>
 				<div className='max-w-4xl mx-auto bg-background/60 backdrop-blur-lg border-b border-white/20 p-4 shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-lg'>
 					<div className='text-sm text-muted-foreground flex-1'>
 						<p>
@@ -63,6 +65,5 @@ export const Cookie = () => {
 					</div>
 				</div>
 			</div>
-		</Activity>
 	);
 };

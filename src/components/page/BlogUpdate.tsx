@@ -19,7 +19,6 @@ import { MarkdownEditor } from '../ui/markdown-editor';
 import { toast } from 'sonner';
 import { updateBlog } from '@/action/blog/update';
 import { useRouter } from 'next/navigation';
-import { usePuterAI } from '@/hooks/usePuterAI';
 import { ImageUpload } from '../ui/image-upload';
 
 const formUpdateBlogSchema = z.object({
@@ -35,7 +34,6 @@ const formUpdateBlogSchema = z.object({
 export const BlogUpdatePage = ({ blog }: { blog: BlogWithUser }) => {
 	const { content, user, title, createdAt, tags } = blog;
 	const router = useRouter();
-	const { loaded, chat } = usePuterAI();
 
 	const form = useForm<z.infer<typeof formUpdateBlogSchema>>({
 		resolver: zodResolver(formUpdateBlogSchema),
@@ -92,13 +90,6 @@ export const BlogUpdatePage = ({ blog }: { blog: BlogWithUser }) => {
 						<div className='flex w-full justify-between items-center mt-4 gap-4'>
 							<div className='flex text-nowrap items-center space-x-2  text-foreground/60 text-sm'>
 								<span
-									onClick={async () => {
-										console.log('start generate', loaded);
-
-										if (!loaded) return;
-										const generated = await chat('Bord in misery');
-										console.log(generated);
-									}}
 								>
 									{user.name}
 								</span>

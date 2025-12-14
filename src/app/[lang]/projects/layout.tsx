@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { getDictionary } from '@/dictionaries/dictionaries';
 import { getFromDict } from '@/helpers/i18n-client';
+import { SITE_URL } from '@/const/url';
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
 	const { lang } = await params;
@@ -14,7 +15,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 		openGraph: {
 			title,
 			description,
-			url: `https://ivanov-maksim.vercel.app/${lang}/projects`,
+			url: `${SITE_URL}/${lang}/projects`,
 			siteName: 'Maksim Ivanov Portfolio',
 			locale: lang === 'en' ? 'en_US' : 'ru_RU',
 			type: 'website',
@@ -25,7 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 			description,
 		},
 		alternates: {
-			canonical: `https://ivanov-maksim.vercel.app/${lang}/projects`,
+			canonical: `${SITE_URL}/${lang}/projects`,
 		},
 	};
 }

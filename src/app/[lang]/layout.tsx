@@ -18,6 +18,7 @@ import { Auth } from '@/widgets/layout/Auth';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { env } from '@/helpers/env.server';
 import { Analytics } from '@vercel/analytics/next';
+import { SITE_URL } from '@/const/url';
 
 export async function generateMetadata({ params }: LangParams): Promise<Metadata> {
 	const { lang } = await params;
@@ -35,7 +36,7 @@ export async function generateMetadata({ params }: LangParams): Promise<Metadata
 		openGraph: {
 			title,
 			description,
-			url: `https://ivanov-maksim.vercel.app/${lang}`,
+			url: `${SITE_URL}/${lang}`,
 			siteName: 'Maksim Ivanov Portfolio',
 			locale: lang === 'en' ? 'en_US' : 'ru_RU',
 			type: 'website',
@@ -47,10 +48,10 @@ export async function generateMetadata({ params }: LangParams): Promise<Metadata
 			creator: '@LiiChar',
 		},
 		alternates: {
-			canonical: `https://ivanov-maksim.vercel.app/${lang}`,
+			canonical: `${SITE_URL}/${lang}`,
 			languages: {
-				'en': 'https://ivanov-maksim.vercel.app/en',
-				'ru': 'https://ivanov-maksim.vercel.app/ru',
+				'en': `${SITE_URL}/en`,
+				'ru': `${SITE_URL}/ru`,
 			},
 		},
 		robots: {
@@ -91,33 +92,30 @@ export default async function RootLayout({
 			)}
 			<Script src='https://js.puter.com/v2/' strategy='afterInteractive' />
 			<Script
-				id="structured-data"
-				type="application/ld+json"
+				id='structured-data'
+				type='application/ld+json'
 				dangerouslySetInnerHTML={{
 					__html: JSON.stringify({
-						"@context": "https://schema.org",
-						"@type": "Person",
-						"name": "Maksim Ivanov",
-						"alternateName": "LiiChar",
-						"jobTitle": "Frontend Developer",
-						"url": "https://ivanov-maksim.vercel.app",
-						"sameAs": [
-							"https://github.com/LiiChar",
-							"https://t.me/lLItaV"
+						'@context': 'https://schema.org',
+						'@type': 'Person',
+						name: 'Maksim Ivanov',
+						alternateName: 'LiiChar',
+						jobTitle: 'Frontend Developer',
+						url: SITE_URL,
+						sameAs: ['https://github.com/LiiChar', 'https://t.me/lLItaV'],
+						knowsAbout: [
+							'React',
+							'Next.js',
+							'TypeScript',
+							'Web Development',
+							'Frontend Development',
 						],
-						"knowsAbout": [
-							"React",
-							"Next.js",
-							"TypeScript",
-							"Web Development",
-							"Frontend Development"
-						],
-						"address": {
-							"@type": "PostalAddress",
-							"addressLocality": "Yekaterinburg",
-							"addressCountry": "RU"
-						}
-					})
+						address: {
+							'@type': 'PostalAddress',
+							addressLocality: 'Yekaterinburg',
+							addressCountry: 'RU',
+						},
+					}),
 				}}
 			/>
 			<DictionaryProvider

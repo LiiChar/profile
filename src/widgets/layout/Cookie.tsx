@@ -2,16 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { getCookie, setCookie } from 'cookies-next';
-import { useDictionaryStore } from '@/stores/lang/langStore';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { getText } from '@/helpers/i18n-client';
+import { Text } from '@/components/ui/text-client';
 
 export const Cookie = () => {
-	const dict = useDictionaryStore(state => state.dictionary);
-	const pathname = usePathname();
-	const currentLang = pathname.split('/')[1] || 'ru';
-
 	const [isVisible, setIsVisible] = useState(false);
 
 	useEffect(() => {
@@ -42,16 +36,16 @@ export const Cookie = () => {
 	if (!isVisible) return null;
 
 	return (
-		<div className='fixed bottom-3 left-3 right-3 z-50 '>
+		<div className='fixed bottom-3 left-3 right-3 z-50 contain-content'>
 			<div className='max-w-4xl mx-auto bg-background/60 backdrop-blur-lg border-b border-white/20 p-4 shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-lg'>
 				<div className='text-sm text-muted-foreground flex-1'>
 					<p>
-						{getText('layout.cookie.message', dict!)}
+						<Text text='layout.cookie.message' />
 						<Link
-							href={`/${currentLang}/cookie-policy`}
+							href={`/cookie-policy`}
 							className='text-primary hover:underline underline-offset-4 font-medium'
 						>
-							{getText('layout.cookie.policy', dict!)}
+							<Text text='layout.cookie.policy' />
 						</Link>
 					</p>
 				</div>
@@ -60,13 +54,13 @@ export const Cookie = () => {
 						onClick={declineCookies}
 						className='px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors border border-white/10 rounded-lg hover:bg-white/5'
 					>
-						{getText('layout.cookie.decline', dict!)}
+						<Text text='layout.cookie.decline' />
 					</button>
 					<button
 						onClick={acceptCookies}
 						className='px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors'
 					>
-						{getText('layout.cookie.accept', dict!)}
+						<Text text='layout.cookie.accept' />
 					</button>
 				</div>
 			</div>

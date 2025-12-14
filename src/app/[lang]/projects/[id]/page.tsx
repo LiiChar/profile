@@ -20,6 +20,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { Lang } from '@/types/i18n';
 import type { Metadata } from 'next';
+import { SITE_URL } from '@/const/url';
 
 export const generateMetadata = async ({ params }: { params: Promise<{ id: number; lang: Lang }> }): Promise<Metadata> => {
 	const { id, lang } = await params;
@@ -44,7 +45,7 @@ export const generateMetadata = async ({ params }: { params: Promise<{ id: numbe
 		openGraph: {
 			title: `${title} - Maksim Ivanov Portfolio`,
 			description: description.substring(0, 160),
-			url: `https://ivanov-maksim.vercel.app/${lang}/projects/${id}`,
+			url: `${SITE_URL}/${lang}/projects/${id}`,
 			siteName: 'Maksim Ivanov Portfolio',
 			locale: lang === 'en' ? 'en_US' : 'ru_RU',
 			type: 'article',
@@ -57,7 +58,7 @@ export const generateMetadata = async ({ params }: { params: Promise<{ id: numbe
 			description,
 		},
 		alternates: {
-			canonical: `https://ivanov-maksim.vercel.app/${lang}/projects/${id}`,
+			canonical: `${SITE_URL}/${lang}/projects/${id}`,
 		},
 	};
 };

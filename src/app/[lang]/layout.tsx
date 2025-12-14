@@ -16,6 +16,7 @@ import Dither from '@/components/background/Dither';
 import { Auth } from '@/widgets/layout/Auth';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { env } from '@/helpers/env.server';
+import { Analytics } from '@vercel/analytics/next';
 
 export const metadata: Metadata = {
 	title: 'Профиль',
@@ -36,13 +37,20 @@ export default async function RootLayout({
 	LangParams) {
 	return (
 		<html lang={(await params).lang}>
-			{env.DEV !== 'true' && <SpeedInsights/>}
+			{env.DEV !== 'true' && (
+				<>
+					<Analytics />
+					<SpeedInsights />
+				</>
+			)}
 			<Script src='https://js.puter.com/v2/' strategy='afterInteractive' />
-			<DictionaryProvider dict={await getDictionary((await params).lang as 'en' | 'ru')}>
+			<DictionaryProvider
+				dict={await getDictionary((await params).lang as 'en' | 'ru')}
+			>
 				<body className='dark min-h-screen overflow-x-hidden relative z-[10]'>
 					<a
-						href="#main-content"
-						className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary text-primary-foreground px-4 py-2 rounded z-50"
+						href='#main-content'
+						className='sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary text-primary-foreground px-4 py-2 rounded z-50'
 					>
 						Skip to main content
 					</a>
@@ -52,7 +60,7 @@ export default async function RootLayout({
 							<Header />
 							{children}
 							<Footer />
-							<Auth/>
+							<Auth />
 							<Cookie />
 							<Dither />
 						</TooltipProvider>

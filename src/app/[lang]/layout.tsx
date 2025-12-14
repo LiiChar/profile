@@ -28,8 +28,18 @@ export async function generateMetadata({ params }: LangParams): Promise<Metadata
 	return {
 		title,
 		description,
+		verification: {
+			google: process.env.GOOGLE_VERIFICATION,
+		},
 		keywords: [
-			'Максим Иванов', 'Maksim Ivanov', 'Frontend Developer', 'React', 'Next.js', 'TypeScript', 'Web Developer', 'Portfolio'
+			'Максим Иванов',
+			'Maksim Ivanov',
+			'Frontend Developer',
+			'React',
+			'Next.js',
+			'TypeScript',
+			'Web Developer',
+			'Portfolio',
 		],
 		authors: [{ name: 'Maksim Ivanov' }],
 		creator: 'Maksim Ivanov',
@@ -50,8 +60,8 @@ export async function generateMetadata({ params }: LangParams): Promise<Metadata
 		alternates: {
 			canonical: `${SITE_URL}/${lang}`,
 			languages: {
-				'en': `${SITE_URL}/en`,
-				'ru': `${SITE_URL}/ru`,
+				en: `${SITE_URL}/en`,
+				ru: `${SITE_URL}/ru`,
 			},
 		},
 		robots: {
@@ -65,7 +75,7 @@ export async function generateMetadata({ params }: LangParams): Promise<Metadata
 				'max-snippet': -1,
 			},
 		},
-	}
+	};
 };
 
 export async function generateStaticParams() {

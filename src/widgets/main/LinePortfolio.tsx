@@ -90,14 +90,20 @@ export const LinePortfolio = () => {
 			<div
 				ref={containerRef}
 				id='portfolio'
-				className='relative'
-				style={{ height: Math.max(1200, mobilePoints[mobilePoints.length - 1].y + 200) }}
+				className='relative mr-6'
+				style={{
+					height: Math.max(1200, mobilePoints[mobilePoints.length - 1].y + 200),
+				}}
 			>
 				<h2 className='mb-24 text-center'>Мои проекты</h2>
 
 				{/* Мобильная линия */}
 				<div className='absolute left-10 top-24'>
-					<svg width={12} height={mobilePoints[mobilePoints.length - 1].y + 100} viewBox={`0 0 12 ${mobilePoints[mobilePoints.length - 1].y + 100}`}>
+					<svg
+						width={12}
+						height={mobilePoints[mobilePoints.length - 1].y + 100}
+						viewBox={`0 0 12 ${mobilePoints[mobilePoints.length - 1].y + 100}`}
+					>
 						<line
 							x1={6}
 							y1={0}
@@ -106,7 +112,9 @@ export const LinePortfolio = () => {
 							stroke='var(--primary)'
 							strokeWidth={4}
 							strokeDasharray={mobilePoints[mobilePoints.length - 1].y + 50}
-							strokeDashoffset={(mobilePoints[mobilePoints.length - 1].y + 50) * (1 - progress)}
+							strokeDashoffset={
+								(mobilePoints[mobilePoints.length - 1].y + 50) * (1 - progress)
+							}
 							style={{ transition: 'stroke-dashoffset 0.08s linear' }}
 						/>
 						{mobilePoints.map((p, i) => {
@@ -149,7 +157,7 @@ export const LinePortfolio = () => {
 								zIndex: 10,
 							}}
 						>
-							<ProjectCard project={projects[i]} />
+							<ProjectCard className='' project={projects[i]} />
 						</div>
 					);
 				})}

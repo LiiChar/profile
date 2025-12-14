@@ -4,8 +4,8 @@ import { db } from '@/db/db';
 import { users } from '@/db/tables/user';
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
-import { v4 as uuidv4 } from 'uuid';
 import { cookies } from 'next/headers';
+import { generateUUID } from 'three/src/math/MathUtils.js';
 
 export interface RegisterData {
 	name: string;
@@ -29,7 +29,7 @@ export const 	register = async (data: RegisterData) => {
 		// Hash password and create user
 		const hashedPassword = await bcrypt.hash(data.password, 10);
 		const newUser = {
-			uuid: uuidv4(),
+			uuid: generateUUID(),
 			name: data.name,
 			password: hashedPassword,
 			photo: data.photo ?? null,

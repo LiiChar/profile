@@ -324,11 +324,14 @@ export default function Dither({
 	// Определяем, нужно ли отключать анимацию на слабых устройствах
 	const [shouldDisableAnimation, setShouldDisableAnimation] = React.useState(false);
 
-	 const [isClient, setIsClient] = React.useState(false);
+	const [isClient, setIsClient] = React.useState(false);
 
-		React.useEffect(() => {
-			setIsClient(true);
-		}, []);
+	React.useEffect(() => {
+		setIsClient(true);
+	}, []);
+
+	// Web Worker для оптимизации закомментирован для простоты
+	// В будущем можно использовать для вычислений шума или других расчетов
 
 	React.useEffect(() => {
 		const isMobile = window.innerWidth < 768;
@@ -336,8 +339,8 @@ export default function Dither({
 		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 		// Отключаем анимацию на мобильных, слабых устройствах или если пользователь предпочитает минимум анимаций
-		setShouldDisableAnimation(disableAnimation || prefersReducedMotion || (isMobile && !!isLowEndDevice));
-	}, [disableAnimation]);
+		setShouldDisableAnimation(disableAnimation || prefersReducedMotion || isMobile || !!isLowEndDevice);
+	}, []);
 	return (
 		<>
 			{isClient && (

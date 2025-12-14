@@ -3,7 +3,6 @@ import { ProjectType } from '@/db/tables/project';
 import { cn } from '@/lib/utils';
 import { ProjectCard } from '@/components/project/ProjectCard';
 import { useMemo, useState } from 'react';
-import { Reorder } from 'motion/react';
 import { useSticky } from '@/hooks/useSticky';
 import { motion } from 'framer-motion';
 import { Carousel, CarouselContent, CarouselItem } from '../ui/carousel';
@@ -150,23 +149,17 @@ export const ProjectList = ({
 				</>
 			)}
 
-			<Reorder.Group
-				values={filteredProjects}
-				onReorder={setFilteredProjects}
-				as='section'
-				axis='y'
-				{...attr}
+			<motion.section
+				layout
 				className={cn('flex', style[variant].wrapper, attr.className)}
 			>
-				{filteredProjects.map(project => (
-					<Reorder.Item
+				{filteredProjects.map((project, index) => (
+						<motion.div
+							key={project.id}
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
-						exit={{ opacity: 0 }}
-						as='div'
+						transition={{ duration: 0.5, delay: index * 0.1 }}
 						layout
-						value={project}
-						key={project.id}
 					>
 						<ProjectCard
 							link={`/projects/${project.id}`}
@@ -175,9 +168,9 @@ export const ProjectList = ({
 							variant='background'
 							project={project}
 						/>
-					</Reorder.Item>
+					</motion.div>
 				))}
-			</Reorder.Group>
+			</motion.section>
 		</>
 	);
 };

@@ -64,7 +64,6 @@ export async function generateMetadata({ params }: LangParams): Promise<Metadata
 				'max-snippet': -1,
 			},
 		},
-		viewport: 'width=device-width, initial-scale=1',
 	}
 };
 

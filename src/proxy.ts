@@ -4,7 +4,6 @@ import Negotiator from 'negotiator';
 import { locales } from './const/i18n';
 import { defaultLocale } from './dictionaries/dictionaries';
 import type { Lang } from './types/i18n';
-// import { getCurrentUser } from './action/auth/login';
 
 const detectFromAcceptLanguage = (request: NextRequest): Lang => {
 	const accept = request.headers.get('accept-language');
@@ -18,20 +17,7 @@ const detectFromAcceptLanguage = (request: NextRequest): Lang => {
 };
 
 export function proxy(request: NextRequest) {
-	// User
-	// const user = getCurrentUser();
 
-	// if (!user) {
-		// const name = faker.person.firstName();
-		// const uuid = generateUUID();
-		// console.log(name, uuid);
-		// await register({
-		// 	name: name,
-		// 	password: uuid,
-		// });
-	// }
-
-	// Internalization path
 	const { pathname } = request.nextUrl;
 
 	const segment = pathname.split('/')[1] as Lang;

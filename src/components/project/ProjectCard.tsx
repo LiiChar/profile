@@ -98,7 +98,7 @@ const ProjectBlur = ({
 
 	return (
 		<SpotlightCard {...props} className={cn('rounded-lg group', className)}>
-			<CardBlur wallpaper={project.image ? getUrl(project.image) : undefined} className={'!h-full'}>
+			<CardBlur wallpaper={project.image ? getUrl(project.image) : undefined} className={'!h-full '}>
 				<h4 className='text-xl'>
 					{link ? (
 						<Link

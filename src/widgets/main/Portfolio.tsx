@@ -10,7 +10,6 @@ import { Text } from '@/components/ui/text-client';
 import Image from 'next/image';
 import { useEffect, useRef } from 'react';
 import Autoscroll from 'embla-carousel-auto-scroll';
-import AutoHeight from 'embla-carousel-auto-height';
 
 export default function Portfolio() {
 	return (
@@ -80,7 +79,6 @@ export const PortfolioView = ({
 						stopOnFocusIn: false,
 						stopOnInteraction: false,
 					}),
-					AutoHeight(),
 				]}
 				opts={{
 					align: 'start',

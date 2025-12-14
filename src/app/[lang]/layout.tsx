@@ -5,6 +5,7 @@ import './globals.css';
 import { Metadata } from 'next';
 import { DictionaryProvider } from '@/stores/lang/langProvider';
 import { getDictionary } from '@/dictionaries/dictionaries';
+import { getFromDict } from '@/helpers/i18n-client';
 import { Header } from '@/widgets/layout/Header';
 import { Footer } from '@/widgets/layout/Footer';
 import { Cookie } from '@/widgets/layout/Cookie';
@@ -18,8 +19,53 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import { env } from '@/helpers/env.server';
 import { Analytics } from '@vercel/analytics/next';
 
-export const metadata: Metadata = {
-	title: 'Профиль',
+export async function generateMetadata({ params }: LangParams): Promise<Metadata> {
+	const { lang } = await params;
+	const dict = await getDictionary(lang as 'en' | 'ru');
+	const title = getFromDict(dict, 'seo.home.title');
+	const description = getFromDict(dict, 'seo.home.description');
+	return {
+		title,
+		description,
+		keywords: [
+			'Максим Иванов', 'Maksim Ivanov', 'Frontend Developer', 'React', 'Next.js', 'TypeScript', 'Web Developer', 'Portfolio'
+		],
+		authors: [{ name: 'Maksim Ivanov' }],
+		creator: 'Maksim Ivanov',
+		openGraph: {
+			title,
+			description,
+			url: `https://ivanov-maksim.vercel.app/${lang}`,
+			siteName: 'Maksim Ivanov Portfolio',
+			locale: lang === 'en' ? 'en_US' : 'ru_RU',
+			type: 'website',
+		},
+		twitter: {
+			card: 'summary_large_image',
+			title,
+			description,
+			creator: '@LiiChar',
+		},
+		alternates: {
+			canonical: `https://ivanov-maksim.vercel.app/${lang}`,
+			languages: {
+				'en': 'https://ivanov-maksim.vercel.app/en',
+				'ru': 'https://ivanov-maksim.vercel.app/ru',
+			},
+		},
+		robots: {
+			index: true,
+			follow: true,
+			googleBot: {
+				index: true,
+				follow: true,
+				'max-video-preview': -1,
+				'max-image-preview': 'large',
+				'max-snippet': -1,
+			},
+		},
+		viewport: 'width=device-width, initial-scale=1',
+	}
 };
 
 export async function generateStaticParams() {
@@ -35,8 +81,9 @@ export default async function RootLayout({
 	children: React.ReactNode;
 }> &
 	LangParams) {
+	const resolvedParams = await params;
 	return (
-		<html lang={(await params).lang}>
+		<html lang={resolvedParams.lang}>
 			{env.DEV !== 'true' && (
 				<>
 					<Analytics />
@@ -44,8 +91,38 @@ export default async function RootLayout({
 				</>
 			)}
 			<Script src='https://js.puter.com/v2/' strategy='afterInteractive' />
+			<Script
+				id="structured-data"
+				type="application/ld+json"
+				dangerouslySetInnerHTML={{
+					__html: JSON.stringify({
+						"@context": "https://schema.org",
+						"@type": "Person",
+						"name": "Maksim Ivanov",
+						"alternateName": "LiiChar",
+						"jobTitle": "Frontend Developer",
+						"url": "https://ivanov-maksim.vercel.app",
+						"sameAs": [
+							"https://github.com/LiiChar",
+							"https://t.me/lLItaV"
+						],
+						"knowsAbout": [
+							"React",
+							"Next.js",
+							"TypeScript",
+							"Web Development",
+							"Frontend Development"
+						],
+						"address": {
+							"@type": "PostalAddress",
+							"addressLocality": "Yekaterinburg",
+							"addressCountry": "RU"
+						}
+					})
+				}}
+			/>
 			<DictionaryProvider
-				dict={await getDictionary((await params).lang as 'en' | 'ru')}
+				dict={await getDictionary(resolvedParams.lang as 'en' | 'ru')}
 			>
 				<body className='dark min-h-screen overflow-x-hidden relative z-[10]'>
 					<a

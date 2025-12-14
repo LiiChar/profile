@@ -259,5 +259,35 @@
 		"title": "404 Not Found",
 		"description": "Sorry, the page you are looking for does not exist.",
 		"goHome": "Go Home"
+	},
+	"seo": {
+		"home": {
+			"title": "Maksim Ivanov - Frontend Developer Portfolio",
+			"description": "Frontend / Fullstack developer focused on React, Next.js, Tailwind, WebSocket, and Node.js"
+		},
+		"projects": {
+			"title": "Projects - Maksim Ivanov Portfolio",
+			"description": "Explore the portfolio of projects by Maksim Ivanov, Frontend Developer. Innovative web applications built with React, Next.js, and modern technologies."
+		},
+		"blog": {
+			"title": "Blog - Maksim Ivanov",
+			"description": "Read articles and insights from Maksim Ivanov, Frontend Developer. Thoughts on web development, React, Next.js, and programming best practices."
+		},
+		"resume": {
+			"title": "Resume - Maksim Ivanov",
+			"description": "Resume of Maksim Ivanov, Frontend Developer with experience and projects."
+		},
+		"login": {
+			"title": "Login - Maksim Ivanov",
+			"description": "Log in to your account to manage your portfolio projects."
+		},
+		"settings": {
+			"title": "Settings - Maksim Ivanov",
+			"description": "Account settings and personal information."
+		},
+		"cookiePolicy": {
+			"title": "Cookie Policy - Maksim Ivanov",
+			"description": "Our cookie usage policy."
+		}
 	}
 }

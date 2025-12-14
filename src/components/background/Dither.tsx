@@ -324,6 +324,12 @@ export default function Dither({
 	// Определяем, нужно ли отключать анимацию на слабых устройствах
 	const [shouldDisableAnimation, setShouldDisableAnimation] = React.useState(false);
 
+	 const [isClient, setIsClient] = React.useState(false);
+
+		React.useEffect(() => {
+			setIsClient(true);
+		}, []);
+
 	React.useEffect(() => {
 		const isMobile = window.innerWidth < 768;
 		const isLowEndDevice = navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4;
@@ -333,23 +339,27 @@ export default function Dither({
 		setShouldDisableAnimation(disableAnimation || prefersReducedMotion || (isMobile && !!isLowEndDevice));
 	}, [disableAnimation]);
 	return (
-		<Canvas
-			className='w-scren z-[-2] h-screen blur-sm opacity-30 black:opacity-40 fixed! top-0 left-0 overflow-hidden'
-			camera={{ position: [0, 0, 6] }}
-			dpr={1}
-			gl={{ antialias: true, preserveDrawingBuffer: true }}
-		>
-			<DitheredWaves
-				waveSpeed={waveSpeed}
-				waveFrequency={waveFrequency}
-				waveAmplitude={waveAmplitude}
-				waveColor={waveColor}
-				colorNum={colorNum}
-				pixelSize={pixelSize}
-				disableAnimation={shouldDisableAnimation}
-				enableMouseInteraction={enableMouseInteraction}
-				mouseRadius={mouseRadius}
-			/>
-		</Canvas>
+		<>
+			{isClient && (
+				<Canvas
+					className='w-scren z-[-2] h-screen blur-sm opacity-30 black:opacity-40 fixed! top-0 left-0 overflow-hidden'
+					camera={{ position: [0, 0, 6] }}
+					dpr={1}
+					gl={{ antialias: true, preserveDrawingBuffer: true }}
+				>
+					<DitheredWaves
+						waveSpeed={waveSpeed}
+						waveFrequency={waveFrequency}
+						waveAmplitude={waveAmplitude}
+						waveColor={waveColor}
+						colorNum={colorNum}
+						pixelSize={pixelSize}
+						disableAnimation={shouldDisableAnimation}
+						enableMouseInteraction={enableMouseInteraction}
+						mouseRadius={mouseRadius}
+					/>
+				</Canvas>
+			)}
+		</>
 	);
 }

@@ -19,6 +19,48 @@ import Image from 'next/image';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { Lang } from '@/types/i18n';
+import type { Metadata } from 'next';
+
+export const generateMetadata = async ({ params }: { params: Promise<{ id: number; lang: Lang }> }): Promise<Metadata> => {
+	const { id, lang } = await params;
+
+	const project = await db.query.projects.findFirst({
+		where: () => eq(projects.id, id),
+	});
+
+	if (!project) {
+		return {
+			title: 'Project Not Found',
+		};
+	}
+
+	const title = getFieldLang(project, 'title', lang);
+	const description = project.description || title;
+
+	return {
+		title: `${title} - Portfolio | Maksim Ivanov`,
+		description: description.substring(0, 160),
+		keywords: ['project', 'portfolio', title, 'Maksim Ivanov', 'Frontend Developer'],
+		openGraph: {
+			title: `${title} - Maksim Ivanov Portfolio`,
+			description: description.substring(0, 160),
+			url: `https://ivanov-maksim.vercel.app/${lang}/projects/${id}`,
+			siteName: 'Maksim Ivanov Portfolio',
+			locale: lang === 'en' ? 'en_US' : 'ru_RU',
+			type: 'article',
+			publishedTime: new Date(project.createdAt).toISOString(),
+			authors: [project.author],
+		},
+		twitter: {
+			card: 'summary',
+			title: `${title} - Maksim Ivanov Portfolio`,
+			description,
+		},
+		alternates: {
+			canonical: `https://ivanov-maksim.vercel.app/${lang}/projects/${id}`,
+		},
+	};
+};
 
 export default async function ProjectPage({
 	params,

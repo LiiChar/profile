@@ -1,5 +1,5 @@
 'use client'
-import { useRef, useEffect, forwardRef } from 'react';
+import React, { useRef, useEffect, forwardRef } from 'react';
 import { Canvas, useFrame, useThree, ThreeEvent } from '@react-three/fiber';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
@@ -321,9 +321,20 @@ export default function Dither({
 	enableMouseInteraction = true,
 	mouseRadius = 1,
 }: DitherProps) {
+	// Определяем, нужно ли отключать анимацию на слабых устройствах
+	const [shouldDisableAnimation, setShouldDisableAnimation] = React.useState(false);
+
+	React.useEffect(() => {
+		const isMobile = window.innerWidth < 768;
+		const isLowEndDevice = navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4;
+		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+		// Отключаем анимацию на мобильных, слабых устройствах или если пользователь предпочитает минимум анимаций
+		setShouldDisableAnimation(disableAnimation || prefersReducedMotion || (isMobile && !!isLowEndDevice));
+	}, [disableAnimation]);
 	return (
 		<Canvas
-			className='w-scren z-[-1] h-screen blur-sm opacity-30 black:opacity-40 fixed! top-0 left-0 overflow-hidden'
+			className='w-scren z-[-2] h-screen blur-sm opacity-30 black:opacity-40 fixed! top-0 left-0 overflow-hidden'
 			camera={{ position: [0, 0, 6] }}
 			dpr={1}
 			gl={{ antialias: true, preserveDrawingBuffer: true }}
@@ -335,7 +346,7 @@ export default function Dither({
 				waveColor={waveColor}
 				colorNum={colorNum}
 				pixelSize={pixelSize}
-				disableAnimation={disableAnimation}
+				disableAnimation={shouldDisableAnimation}
 				enableMouseInteraction={enableMouseInteraction}
 				mouseRadius={mouseRadius}
 			/>

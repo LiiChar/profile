@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 export const Social = async () => {
 	return (
-		<div className='sticky bottom-[-1px] z-0 mt-4  flex max-[980px]:items-center  flex-row justify-between w-full max-[980px]:static max-[980px]:-mb-3 -mb-0 max-[980px]:px-6 px-[calc((100%-896px)/4)] min-[980px]:border-b mx-auto border-foreground/50'>
+		<div className='sticky bottom-[-1px] z-[-1] mt-4  flex max-[980px]:items-center  flex-row justify-between w-full max-[980px]:static max-[980px]:-mb-3 -mb-0 max-[980px]:px-6 px-[calc((100%-896px)/4)] min-[980px]:border-b mx-auto border-foreground/50'>
 			<Separator className='min-[980px]:hidden !w-10' />
 			<div className='flex gap-2 flex-col max-[980px]:flex-row  max-[980px]:px-3'>
 				<Link href={'https://github.com/LiiChar'} target='_blank'>

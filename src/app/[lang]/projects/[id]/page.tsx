@@ -51,11 +51,17 @@ export default async function ProjectPage({
 	const { repoName, createdAt, tags, author, url, image } = project;
 	const commits = repoName ? await getCommits(repoName) : null;
 
-	const showImage = image && !url;
+	const showImage = !!image;
 
 	return (
 		<main className='max-w-3xl mx-auto my-8 px-4 relative'>
 			<BackwardLink href={'/projects'} />
+				{url && (
+					<iframe
+						className='w-full mb-4 aspect-video rounded-lg border '
+						src={url}
+					></iframe>
+				)}
 			<Card className='relative gap-0 pt-0'>
 				<CardHeader
 					className={cn(
@@ -63,12 +69,6 @@ export default async function ProjectPage({
 						showImage ? '' : 'flex-col'
 					)}
 				>
-					{url && (
-						<iframe
-							className='w-full aspect-video rounded-lg border '
-							src={url}
-						></iframe>
-					)}
 					<div className='relative'>
 						{showImage && (
 							<div className=''>

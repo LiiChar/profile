@@ -6,16 +6,30 @@ type BackwardLinkProps = {
 	href: string;
 } & React.HTMLAttributes<HTMLButtonElement>;
 
-export const BackwardLink = ({href, ...attr}: BackwardLinkProps) => {
+export const BackwardLink = ({ href, ...attr }: BackwardLinkProps) => {
 	return (
-		<Button
-    className={'fixed top-[66px] p-2 translate-x-[8px] translate-y-[8px] z-100'}
-    variant={'outline'}
-			{...attr}
+		<Link
+			className='
+          fixed
+          bottom-4
+					lg:translate-x-full
+					lg:right-[calc(50%-384px)]
+					right-4
+          z-50
+        '
+			href={href}
 		>
-			<Link href={href}>
+			<Button
+				{...attr}
+				variant='outline'
+				className='
+          p-2
+					h-[36px]
+					w-[36px]
+        '
+			>
 				<ArrowLeft />
-			</Link>
-		</Button>
+			</Button>
+		</Link>
 	);
 };

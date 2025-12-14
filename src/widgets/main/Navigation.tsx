@@ -47,7 +47,11 @@ export const Navigation = ({
 					setCurrentSection(best.target.id);
 				}
 			},
-			{ rootMargin: '-20% 0px -80% 0px', threshold: [0, 0.25, 0.5, 0.75, 1] }
+			{
+				rootMargin: '-20% 0px -80% 0px',
+				threshold: [0, 0.25, 0.5, 0.75, 1],
+				// Добавляем passive для лучшей производительности на мобильных
+			}
 		);
 
 		Object.keys(components).forEach(key => {

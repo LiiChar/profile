@@ -1,9 +1,13 @@
+'use server';
+
 import { ChangeTheme } from '../theme/ChangeTheme';
 import { cn } from '@/lib/utils';
 import { ScrollProgressBorder } from './ScrollProgress';
 import { NavigationLinks } from './NavigationLinks';
-import LanguageSwitcher from './ChangeLang';
 import { getCurrentUser } from '@/action/auth/login';
+import LanguageSwitcher from './ChangeLang';
+
+
 
 export const Header = async () => {
 	const user = await getCurrentUser();

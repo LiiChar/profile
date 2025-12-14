@@ -53,8 +53,6 @@
 		"cookies-next": "^6.1.1",
 		"culori": "^4.0.2",
 		"cypress": "^14.5.2",
-		"d3": "7",
-		"d3-dag": "^0.6.3",
 		"drizzle-orm": "^0.44.3",
 		"embla-carousel-auto-height": "^8.6.0",
 		"embla-carousel-auto-scroll": "^8.6.0",

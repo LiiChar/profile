@@ -1,8 +1,15 @@
 'use client';
 
-import SwitchDetail from '@/components/ui/switch-detail';
 import { usePathname, useRouter } from 'next/navigation';
 import { setCookie } from 'cookies-next';
+import dynamic from 'next/dynamic';
+
+const SwitchDetail = dynamic(
+	() => import('@/components/ui/switch-detail.js').then(mod => mod.default),
+	{
+		ssr: false,
+	}
+);
 
 export default function LanguageSwitcher() {
 	const pathname = usePathname();

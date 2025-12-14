@@ -1,19 +1,33 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const Scroll = () => {
 	const [isVisible, setIsVisible] = useState(false);
 
-	useEffect(() => {
-		const handleScroll = () => {
+	// Добавляем throttle для оптимизации на мобильных устройствах
+	const throttledScrollHandler = React.useCallback(() => {
+		let ticking = false;
+
+		const updateVisibility = () => {
 			setIsVisible(window.scrollY > 200);
+			ticking = false;
 		};
 
-		window.addEventListener('scroll', handleScroll);
-		return () => window.removeEventListener('scroll', handleScroll);
+		return () => {
+			if (!ticking) {
+				requestAnimationFrame(updateVisibility);
+				ticking = true;
+			}
+		};
 	}, []);
+
+	useEffect(() => {
+		const handleScroll = throttledScrollHandler();
+		window.addEventListener('scroll', handleScroll, { passive: true });
+		return () => window.removeEventListener('scroll', handleScroll);
+	}, [throttledScrollHandler]);
 
 	const scrollToTop = () => {
 		window.scrollTo({

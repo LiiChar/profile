@@ -329,7 +329,6 @@
 	display: none;
 }
 
-/* LinePortfolio анимация линии */
 @keyframes drawLine {
 	from {
 		stroke-dashoffset: 1200;
@@ -339,9 +338,6 @@
 	}
 }
 
-
-
 @import '../../styles/highlight-js/github-dark.css';
 @import '../../styles/highlight-js/github.css';
-/* @import '@/styles/highlight-js/github-dark.css';
-@import '@/styles/highlight-js/github.css'; */
+

@@ -8,7 +8,7 @@ import translate from 'google-translate-api-x';
 
 export const updateProject = async (
 	data: Partial<
-		Pick<ProjectType, 'id' | 'userId' | 'title' | 'content' | 'image'>
+		Pick<ProjectType, 'id' | 'userId' | 'title' | 'content' | 'image' | 'description'>
 	>
 ) => {
 	// TODO
@@ -48,6 +48,9 @@ export const updateProject = async (
 	const resContent = data.content
 		? await translate(data.content, { to: 'en' })
 		: null;
+			const resDescription = data.description
+				? await translate(data.description, { to: 'en' })
+				: null;
 
 	const updatedBlog = await db
 		.update(projects)
@@ -60,6 +63,7 @@ export const updateProject = async (
 				en: {
 					content: resContent ? resContent.text : '',
 					title: resTitle ? resTitle.text : '',
+					description: resDescription ? resDescription.text : '',
 				},
 			},
 		})

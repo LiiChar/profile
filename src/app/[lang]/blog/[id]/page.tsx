@@ -7,8 +7,6 @@ import { blogs } from '@/db/schema';
 import { getDate } from '@/helpers/date';
 import { eq } from 'drizzle-orm';
 import Image from 'next/image';
-import React from 'react';
-import { Markdown } from '@/components/ui/markdown';
 import { CommentsList } from '@/components/comments/CommentsList';
 import { BlogLike } from '@/components/blog/BlogLike';
 import { Metadata } from 'next';
@@ -21,6 +19,7 @@ import { BackwardLink } from '@/components/ui/backward-link';
 import { ContentMetrics } from '@/components/metrics/ContentMetrics';
 import { isAdmin } from '@/helpers/user';
 import { cn } from '@/lib/utils';
+import { ContentMarkdown } from '@/components/text/ContentMarkdown';
 
 export async function generateMetadata({
 	params,
@@ -125,7 +124,7 @@ export default async function Page({
 						/>
 					</div>
 					<div className='prose prose-lg max-w-none markdrow-content px-4 sm:px-6 lg:px-8'>
-						<Markdown>{getFieldLang(blog, 'content', lang)}</Markdown>
+						<ContentMarkdown data={blog} field='content' />
 					</div>
 				</CardContent>
 

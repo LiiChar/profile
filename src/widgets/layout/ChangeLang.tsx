@@ -3,6 +3,7 @@
 import { usePathname, useRouter } from 'next/navigation';
 import { setCookie } from 'cookies-next';
 import dynamic from 'next/dynamic';
+import { useDictionaryStore } from '@/stores/lang/langStore';
 
 const SwitchDetail = dynamic(
 	() => import('@/components/ui/switch-detail.js').then(mod => mod.default),
@@ -14,12 +15,13 @@ const SwitchDetail = dynamic(
 export default function LanguageSwitcher() {
 	const pathname = usePathname();
 	const router = useRouter();
+	const { setLang } = useDictionaryStore(state => state);
 
 	const currentLang = pathname.split('/')[1] || 'ru'; // если локали нет — берём дефолт
 
 	const switchLanguage = async () => {
 		const newLang = currentLang === 'ru' ? 'en' : 'ru';
-    
+		setLang(newLang);
 		setCookie('lang', newLang, {
 			path: '/',
 			maxAge: 60 * 60 * 24 * 365,

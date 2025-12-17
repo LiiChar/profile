@@ -62,7 +62,7 @@ export const createProject = async (
 				en: {
 					content: resContent.text,
 					title: resTitle.text,
-					...(resDescription && { tags: resDescription.text }),
+					description: resDescription ? resDescription.text : '',
 				},
 			},
 		})

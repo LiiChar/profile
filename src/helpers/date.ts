@@ -18,8 +18,8 @@ export const getCurrentDateAtMinute = (minutes: number): string => {
 	}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
 };
 
-export const getDate = (date: string): string => {
-	return new Date(date).toLocaleDateString('ru-RU', {
+export const getDate = (date: string, lang: 'en' | 'ru' = 'en'): string => {
+	return new Date(date).toLocaleDateString(lang === 'ru' ? 'ru-RU' : 'en-US', {
 		year: 'numeric',
 		month: 'long',
 		day: 'numeric',

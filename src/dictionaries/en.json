@@ -150,6 +150,8 @@
 	"blog": {
 		"coverAlt": "Cover for",
 		"notFound": "Not found",
+		"readingTime": "min read",
+		"readArticle": "Read article",
 		"create": {
 			"titlePlaceholder": "Article title",
 			"contentPlaceholder": "Enter content",

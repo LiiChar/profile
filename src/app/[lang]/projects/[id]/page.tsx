@@ -8,7 +8,6 @@ import { GrowArrow } from '@/components/ui/grow-arrow';
 import { Separator } from '@/components/ui/separator';
 import { ProjectAction } from '@/components/project/ProjectAction';
 import { getFieldLang } from '@/helpers/i18n';
-import { Markdown } from '@/components/ui/markdown';
 import { getCommits } from '@/action/git/getCommits';
 import { BackwardLink } from '@/components/ui/backward-link';
 import { ContentMetrics } from '@/components/metrics/ContentMetrics';
@@ -21,6 +20,7 @@ import { cn } from '@/lib/utils';
 import { Lang } from '@/types/i18n';
 import type { Metadata } from 'next';
 import { SITE_URL } from '@/const/url';
+import { ContentMarkdown } from '@/components/text/ContentMarkdown';
 
 export const generateMetadata = async ({ params }: { params: Promise<{ id: number; lang: Lang }> }): Promise<Metadata> => {
 	const { id, lang } = await params;
@@ -159,7 +159,7 @@ export default async function ProjectPage({
 				<CardContent className='flex gap-4 px-4 sm:px-6 lg:px-8'>
 					<div className='w-full'>
 						<div className='prose prose-lg max-w-none markdrow-content '>
-							<Markdown>{getFieldLang(project, 'content', lang)}</Markdown>
+							<ContentMarkdown data={project} field='content' />
 						</div>
 
 						<div className='flex items-center gap-3 mt-10'>

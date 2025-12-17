@@ -1,7 +1,7 @@
 import { Dictionary, EntityLangField, FieldLangs, Lang } from '@/types/i18n';
 import { Leaves } from '@/types/utils';
 
-export const getFieldLang = <T extends EntityLangField & { lang: FieldLangs }>(
+export const getFieldLang = <T extends EntityLangField & { lang?: FieldLangs }>(
 	data: T,
 	field: keyof EntityLangField,
 	lang: Lang = 'en'
@@ -14,7 +14,7 @@ export const getFieldLang = <T extends EntityLangField & { lang: FieldLangs }>(
 	if (!data['lang']) {
 		return dataField;
 	}
-	if (!data['lang'][lang][field]) {
+	if (!data['lang'][lang]?.[field]) {
 		return dataField;
 	}
 

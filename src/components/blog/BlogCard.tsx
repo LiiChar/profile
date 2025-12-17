@@ -4,18 +4,22 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import React from 'react';
 import { Separator } from '../ui/separator';
-import { getDate } from '@/helpers/date';
-import { timeRead } from '@/helpers/text';
 import { GrowArrow } from '../ui/grow-arrow';
-import { Markdown } from '../ui/markdown';
 import { TagList } from '@/components/tag/TagList';
 import Link from 'next/link';
+import { TimeRead } from '../text/TimeRead';
+import { Text } from '../ui/text-server';
+import { Date } from '../date/Date';
+import { Content } from '../text/Content';
+import { ContentMarkdown } from '../text/ContentMarkdown';
 
 type BlogCardProps = {
 	blog: BlogType;
 } & React.HTMLAttributes<HTMLDivElement>;
 
 export const BlogCard = ({ blog, className, ...attr }: BlogCardProps) => {
+	
+
 	return (
 		<div {...attr} className={cn('flex flex-col gap-4', className)}>
 			<Link
@@ -36,16 +40,14 @@ export const BlogCard = ({ blog, className, ...attr }: BlogCardProps) => {
 			<div className='w-full flex flex-col grow'>
 				<div>
 					<div className='flex gap-2 w-full items-center'>
-						<div className='text-nowrap text-sm'>{getDate(blog.createdAt)}</div>
+						<Date date={blog.createdAt} />
 						<Separator className='w-full' />
-						<div className='text-nowrap text-sm'>
-							{timeRead(blog.content)} минута
-						</div>
+						<TimeRead content={blog.content} />
 					</div>
 					<div className='py-2 -m'>
-						<h3 className='text-[19px]'>{blog.title}</h3>
+						<h3 className='text-[19px]'><Content data={blog} field='title'/></h3>
 						<div className='block sm:hidden lg:block md:hidden overflow-ellipsis h-[60px] overflow-hidden text-[16px] mt-[4px]'>
-							<Markdown>{blog.content}</Markdown>
+							<ContentMarkdown data={blog} field='content' />
 						</div>
 					</div>
 				</div>
@@ -59,7 +61,9 @@ export const BlogCard = ({ blog, className, ...attr }: BlogCardProps) => {
 						href={`/blog/${blog.id}`}
 						className='text-nowrap flex group items-center gap-1'
 					>
-						<span>Читать статью</span>
+						<span>
+							<Text text='blog.readArticle' />
+						</span>
 						<GrowArrow className='scale-75 -mb-[1px]' />
 					</Link>
 				</div>

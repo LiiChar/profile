@@ -220,7 +220,7 @@ export const LinePortfolio = React.memo(() => {
 							cx={p.x}
 							cy={p.y}
 							r={7}
-							fill={active ? 'var(--primary)' : 'transparent'}
+							fill={active ? 'var(--primary)' : 'var(--background)'}
 							stroke='var(--primary)'
 							strokeWidth={2}
 							style={{ transition: 'fill 0.3s ease' }}

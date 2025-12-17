@@ -11,6 +11,7 @@ export const createBlog = async (
 		userId: number;
 		tags?: string;
 		image?: string;
+		description?: string;
 	}
 ) => {
 	if (!data.userId) {

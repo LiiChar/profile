@@ -10,4 +10,4 @@ export type LangParams = { params: Promise<{ lang: string }> };
 export type Dictionary = Awaited<ReturnType<typeof getDictionary>>;
 export type TextDict = Leaves<Dictionary>;
 export type EntityLangField = BlogLangField & ProjectLangField;
-export type FieldLangs = Record<'en', Partial<EntityLangField>>;
+export type FieldLangs = Record<'en', Partial<EntityLangField>> | null;

@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { getUrl } from '@/helpers/url';
 import Image from 'next/image';
 import { DEFAULT_IMAGE } from '@/const/image';
+import { Content } from '../text/Content';
 
 type ProjectCardProps = {
 	project: ProjectType;
@@ -56,7 +57,7 @@ const ProjectBackground = ({
 			<div className='absolute  inset-0 flex flex-col justify-end bg-gradient-to-t from-black/70 to-transparent p-4 opacity-100 translate-y-4 transition-all duration-300 group-hover:opacity-0 group-hover:translate-y-0'>
 				<a href={`/projects/${project.id}`}>
 					<h2 className=' font-bold text-lg m-0 p-0 border-0 mb-4'>
-						{project.title}
+						<Content data={project} field='title' />
 					</h2>
 				</a>
 			</div>
@@ -64,13 +65,13 @@ const ProjectBackground = ({
 			{/* Контент, который появляется при наведении */}
 			<div className='absolute  inset-0 flex flex-col justify-end bg-gradient-to-t from-black/70 to-transparent p-4 opacity-0 translate-y-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0'>
 				<a href={`/projects/${project.id}`}>
-					<h2 className=' font-bold m-0 p-0 border-0'>{project.title}</h2>
+					<h2 className=' font-bold m-0 p-0 border-0'><Content data={project} field='title' /></h2>
 				</a>
 				{project.description ? (
 					<p className=' my-3'>{project.description}</p>
 				) : (
 					<p className='  line-clamp-3 my-3'>
-						{project.content}
+						<Content data={project} field='content' />
 					</p>
 				)}
 				{project.tags && (
@@ -98,7 +99,10 @@ const ProjectBlur = ({
 
 	return (
 		<SpotlightCard {...props} className={cn('rounded-lg group', className)}>
-			<CardBlur wallpaper={project.image ? getUrl(project.image) : undefined} className={'!h-full '}>
+			<CardBlur
+				wallpaper={project.image ? getUrl(project.image) : undefined}
+				className={'!h-full '}
+			>
 				<h4 className='text-xl'>
 					{link ? (
 						<Link
@@ -111,11 +115,13 @@ const ProjectBlur = ({
 					) : (
 						project.title
 					)}
-				</h4>
+				</h4>			
 				{project.description ? (
 					<p className=' my-3'>{project.description}</p>
 				) : (
-					<p className='line-clamp-3 my-3'>{project.content}</p>
+					<p className='line-clamp-3 my-3'>
+						<Content data={project} field='content' />
+					</p>
 				)}
 				{project.tags && (
 					<TagList

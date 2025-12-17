@@ -130,6 +130,7 @@ export default async function RootLayout({
 			/>
 			<DictionaryProvider
 				dict={await getDictionary(resolvedParams.lang as 'en' | 'ru')}
+				lang={resolvedParams.lang as 'en' | 'ru'}
 			>
 				<body className='dark min-h-screen overflow-x-hidden relative z-[10]'>
 					<a

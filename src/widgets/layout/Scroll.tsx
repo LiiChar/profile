@@ -1,39 +1,33 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const Scroll = () => {
 	const [isVisible, setIsVisible] = useState(false);
+	const tickingRef = useRef(false);
 
-	const throttledScrollHandler = React.useCallback(() => {
-		let ticking = false;
-
-		const updateVisibility = () => {
-			setIsVisible(window.scrollY > 200);
-			ticking = false;
-		};
-
-		return () => {
-			if (!ticking) {
-				requestAnimationFrame(updateVisibility);
-				ticking = true;
-			}
-		};
+	const handleScroll = useCallback(() => {
+		if (!tickingRef.current) {
+			tickingRef.current = true;
+			requestAnimationFrame(() => {
+				setIsVisible(window.scrollY > 200);
+				tickingRef.current = false;
+			});
+		}
 	}, []);
 
 	useEffect(() => {
-		const handleScroll = throttledScrollHandler();
 		window.addEventListener('scroll', handleScroll, { passive: true });
 		return () => window.removeEventListener('scroll', handleScroll);
-	}, [throttledScrollHandler]);
+	}, [handleScroll]);
 
-	const scrollToTop = () => {
-		window.scrollTo({
-			top: 0,
-			behavior: 'smooth',
-		});
-	};
+	const scrollToTop = useCallback(() => {
+		window.scrollTo({ top: 0, behavior: 'smooth' });
+	}, []);
+
+	const buttonClasses =
+		'fixed top-[15%] w-12 left-6 min-[980px]:flex hidden min-[980px]:left-[calc(25%-238px)] group gap-2 flex-col justify-center items-center cursor-pointer';
 
 	return (
 		<AnimatePresence>
@@ -44,7 +38,7 @@ export const Scroll = () => {
 					animate={{ y: 0, opacity: 1 }}
 					exit={{ y: -50, opacity: 0 }}
 					transition={{ duration: 0.4, ease: 'easeOut' }}
-					className='fixed top-[15%] w-12  left-6 min-[980px]:flex hidden min-[980px]:left-[calc(25%-238px)] group gap-2 flex-col mode justify-center items-center cursor-pointer'
+					className={buttonClasses}
 				>
 					<svg
 						xmlns='http://www.w3.org/2000/svg'
@@ -52,7 +46,7 @@ export const Scroll = () => {
 						className='group-hover:-translate-y-1 fill-foreground transition-all w-[36px]'
 					>
 						<title>Jump back to top button</title>
-						<path d='M13,20H11V8L5.5,13.5L4.08,12.08L12,4.16L19.92,12.08L18.5,13.5L13,8V20Z'></path>
+						<path d='M13,20H11V8L5.5,13.5L4.08,12.08L12,4.16L19.92,12.08L18.5,13.5L13,8V20Z' />
 					</svg>
 					<p
 						style={{ writingMode: 'vertical-rl', textOrientation: 'sideways' }}

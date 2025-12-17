@@ -1,20 +1,23 @@
 'use client';
 
 import { ReactNode, useEffect } from 'react';
-import { Dictionary } from '@/types/i18n';
+import { Dictionary, Lang } from '@/types/i18n';
 import { useDictionaryStore } from './langStore';
 
 type Props = {
 	children: ReactNode;
 	dict: Dictionary;
+	lang: Lang;
 };
 
-export const DictionaryProvider = ({ children, dict }: Props) => {
+export const DictionaryProvider = ({ children, dict, lang }: Props) => {
 	const setDictionary = useDictionaryStore(state => state.setDictionary);
-	
+	const setLang = useDictionaryStore(state => state.setLang);
+
 	useEffect(() => {
 		setDictionary(dict);
-	}, [dict, setDictionary]);
+		setLang(lang);
+	}, [dict, lang, setDictionary, setLang]);
 
 	return <>{children}</>;
 };

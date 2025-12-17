@@ -41,6 +41,7 @@ export type ProjectLangField = {
 	content: string;
 	tags: string | null;
 	title: string;
+	description?: string | null | undefined;
 };
 export type ProjectLanguages = 'en';
 export type ProjectLang = Record<'en', Partial<ProjectLangField>>;

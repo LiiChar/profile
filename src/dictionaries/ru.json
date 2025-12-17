@@ -150,6 +150,12 @@
 	"blog": {
 		"coverAlt": "Обложка для",
 		"notFound": "Не найдено",
+		"readingTime": {
+			"minute": "минута",
+			"minutesFew": "минуты",
+			"minutesMany": "минут"
+		},
+		"readArticle": "Читать статью",
 		"create": {
 			"titlePlaceholder": "Название статьи",
 			"contentPlaceholder": "Введите содержание",

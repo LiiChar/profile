@@ -6,6 +6,7 @@ import { getCurrentUser, logout } from '@/action/auth/login';
 import { redirect } from 'next/navigation';
 import { UserProfileForm } from '@/components/auth/UserProfileForm';
 import { UserType } from '@/db/tables/user';
+import { Logout } from '@/components/auth/Logout';
 
 export default async function Settings() {
 	const user = await getCurrentUser();
@@ -13,12 +14,6 @@ export default async function Settings() {
 	if (!user) {
 		redirect('/login');
 	}
-
-	const handleLogout = async () => {
-		'use server';
-		await logout();
-		redirect('/');
-	};
 
 	return (
 		<main className='max-w-2xl mx-auto my-8 px-4 space-y-6'>
@@ -30,14 +25,12 @@ export default async function Settings() {
 					<UserProfileForm user={user as UserType} />
 				</CardContent>
 			</Card>
-
-			<Card>
+			<Card className='gap-0'>
+				<CardHeader>
+					<CardTitle>Удаление пользователя</CardTitle>
+				</CardHeader>
 				<CardContent className='pt-6'>
-					<form action={handleLogout}>
-						<Button type='submit' variant='destructive'>
-							Выйти
-						</Button>
-					</form>
+					<Logout />
 				</CardContent>
 			</Card>
 		</main>

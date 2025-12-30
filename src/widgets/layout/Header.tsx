@@ -24,7 +24,7 @@ export const Header = async () => {
 						'animate-in fade-in slide-in-from-top-6 duration-800 ease-out'
 					)}
 				>
-					<ScrollProgressBorder className='z-[-1] w-full' targetId='nav'>
+					<ScrollProgressBorder className='z-[-1] w-full' targetid='nav'>
 						<div className='relative flex items-center justify-between px-4 py-[3px] w-full'>
 							<LanguageSwitcher />
 							<NavigationLinks isAdmin={user?.isAdmin} />

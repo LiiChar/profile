@@ -9,7 +9,6 @@ import {
 	useMemo,
 	useCallback,
 } from 'react';
-import { gsap } from 'gsap';
 
 interface TextTypeProps {
 	className?: string;
@@ -94,18 +93,7 @@ const TextType = ({
 		return () => observer.disconnect();
 	}, [startOnVisible]);
 
-	useEffect(() => {
-		if (showCursor && cursorRef.current) {
-			gsap.set(cursorRef.current, { opacity: 1 });
-			gsap.to(cursorRef.current, {
-				opacity: 0,
-				duration: cursorBlinkDuration,
-				repeat: -1,
-				yoyo: true,
-				ease: 'power2.inOut',
-			});
-		}
-	}, [showCursor, cursorBlinkDuration]);
+	// CSS-based cursor blink for better performance (no GSAP needed)
 
 	useEffect(() => {
 		if (!isVisible) return;
@@ -194,9 +182,12 @@ const TextType = ({
 		showCursor && (
 			<span
 				ref={cursorRef}
-				className={`ml-1 inline-block opacity-100 ${
+				className={`ml-1 inline-block animate-pulse ${
 					shouldHideCursor ? 'hidden' : ''
 				} ${cursorClassName}`}
+				style={{
+					animationDuration: `${cursorBlinkDuration * 2}s`,
+				}}
 			>
 				{cursorCharacter}
 			</span>

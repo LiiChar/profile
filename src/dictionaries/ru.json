@@ -17,12 +17,15 @@
 				"title": "Портфолио",
 				"items": []
 			},
-			"knowledge": {
-				"title": "Мои навыки"
-			},
-			"blog": {
-				"title": "Блог"
-			},
+		"knowledge": {
+			"title": "Мои навыки"
+		},
+		"portfolio": {
+			"title": "Мои проекты"
+		},
+		"blog": {
+			"title": "Блог"
+		},
 			"projects": {
 				"title": "Проекты",
 				"items": [

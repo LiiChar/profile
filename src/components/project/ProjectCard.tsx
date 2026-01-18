@@ -37,52 +37,56 @@ const ProjectBackground = ({
 		<article
 			{...props}
 			className={cn(
-				'relative rounded-lg text-white group overflow-hidden cursor-pointer',
+				'relative rounded-lg text-white group overflow-hidden cursor-pointer hover-lift',
 				className
 			)}
 		>
 			{/* Блок с картинкой */}
-			
-			
 			<div className='relative w-full max-h-[300px] overflow-hidden'>
 				<Image
 					src={project.image ? getUrl(project.image) : DEFAULT_IMAGE}
 					alt={project.title}
 					width={800}
 					height={600}
-					className='w-full h-full object-cover transition-transform duration-500 group-hover:scale-105'
+					className='w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110'
 				/>
+				{/* Animated overlay */}
+				<div className='absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500' />
 			</div>
 
-			<div className='absolute  inset-0 flex flex-col justify-end bg-gradient-to-t from-black/70 to-transparent p-4 opacity-100 translate-y-4 transition-all duration-300 group-hover:opacity-0 group-hover:translate-y-0'>
+			<div className='absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/70 to-transparent p-4 opacity-100 translate-y-4 transition-all duration-500 ease-out group-hover:opacity-0 group-hover:translate-y-0'>
 				<a href={`/projects/${project.id}`}>
-					<h2 className=' font-bold text-lg m-0 p-0 border-0 mb-4'>
+					<h2 className='font-bold text-lg m-0 p-0 border-0 mb-4'>
 						<Content data={project} field='title' />
 					</h2>
 				</a>
 			</div>
 
 			{/* Контент, который появляется при наведении */}
-			<div className='absolute  inset-0 flex flex-col justify-end bg-gradient-to-t from-black/70 to-transparent p-4 opacity-0 translate-y-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0'>
+			<div className='absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/70 to-transparent p-4 opacity-0 translate-y-6 transition-all duration-500 ease-out group-hover:opacity-100 group-hover:translate-y-0'>
 				<a href={`/projects/${project.id}`}>
-					<h2 className=' font-bold m-0 p-0 border-0'><Content data={project} field='title' /></h2>
+					<h2 className='font-bold m-0 p-0 border-0 transition-colors duration-300 group-hover:text-primary'>
+						<Content data={project} field='title' />
+					</h2>
 				</a>
 				{project.description ? (
-					<p className=' my-3'>{project.description}</p>
+					<p className='my-3 transition-all duration-300 delay-75'>{project.description}</p>
 				) : (
-					<p className='  line-clamp-3 my-3'>
+					<p className='line-clamp-3 my-3 transition-all duration-300 delay-75'>
 						<Content data={project} field='content' />
 					</p>
 				)}
 				{project.tags && (
-					<TagList
-						limit={limitTag}
-						variant='default'
-						tags={project.tags}
-						separator={''}
-						tagStyle='text-white'
-						prefix={''}
-					/>
+					<div className='transition-all duration-300 delay-150'>
+						<TagList
+							limit={limitTag}
+							variant='default'
+							tags={project.tags}
+							separator={''}
+							tagStyle='text-white'
+							prefix={''}
+						/>
+					</div>
 				)}
 			</div>
 		</article>
@@ -96,19 +100,18 @@ const ProjectBlur = ({
 	link,
 	...props
 }: ProjectCardProps) => {
-
 	return (
-		<SpotlightCard {...props} className={cn('rounded-lg group', className)}>
+		<SpotlightCard {...props} className={cn('rounded-lg group hover-scale', className)}>
 			<CardBlur
 				wallpaper={project.image ? getUrl(project.image) : undefined}
-				className={'!h-full '}
+				className={'!h-full transition-all duration-300 group-hover:shadow-xl'}
 			>
-				<h4 className='text-xl'>
+				<h4 className='text-xl transition-colors duration-300 group-hover:text-primary'>
 					{link ? (
 						<Link
 							href={link}
 							passHref
-							className={'group-hover:no-underline group-hover:text-primary'}
+							className={'group-hover:no-underline group-hover:text-primary animated-underline'}
 						>
 							{project.title}
 						</Link>
@@ -117,9 +120,11 @@ const ProjectBlur = ({
 					)}
 				</h4>			
 				{project.description ? (
-					<p className=' my-3'>{project.description}</p>
+					<p className='my-3 text-foreground/70 transition-colors duration-300 group-hover:text-foreground/90'>
+						{project.description}
+					</p>
 				) : (
-					<p className='line-clamp-3 my-3'>
+					<p className='line-clamp-3 my-3 text-foreground/70 transition-colors duration-300 group-hover:text-foreground/90'>
 						<Content data={project} field='content' />
 					</p>
 				)}

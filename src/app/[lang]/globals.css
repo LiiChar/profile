@@ -112,20 +112,293 @@
 	--sidebar-ring: oklch(0.637 0.237 25.331);
 }
 
+/* ==============================================
+   PERFORMANCE OPTIMIZATIONS
+   ============================================== */
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}
+
+/* GPU acceleration for animated elements */
+.gpu-accelerated {
+	transform: translateZ(0);
+	backface-visibility: hidden;
+	perspective: 1000px;
+}
+
+/* Content containment for performance */
+.contain-layout {
+	contain: layout style;
+}
+
+.contain-paint {
+	contain: paint;
+}
+
+.contain-strict {
+	contain: strict;
+}
+
+/* Optimized will-change for animations */
+.will-animate {
+	will-change: transform, opacity;
+}
+
+/* ==============================================
+   MICRO-ANIMATIONS
+   ============================================== */
+
+/* Subtle hover lift effect */
+.hover-lift {
+	transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
+	            box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+	transform: translateY(-4px);
+	box-shadow: 0 12px 40px -12px oklch(0 0 0 / 0.3);
+}
+
+/* Glow effect on hover */
+.hover-glow {
+	transition: box-shadow 0.4s ease;
+}
+
+.hover-glow:hover {
+	box-shadow: 0 0 30px -5px var(--primary);
+}
+
+/* Smooth scale on hover */
+.hover-scale {
+	transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.hover-scale:hover {
+	transform: scale(1.02);
+}
+
+/* Underline animation */
+.animated-underline {
+	position: relative;
+	text-decoration: none !important;
+}
+
+.animated-underline::after {
+	content: '';
+	position: absolute;
+	bottom: -2px;
+	left: 0;
+	width: 0;
+	height: 2px;
+	background: var(--primary);
+	transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.animated-underline:hover::after {
+	width: 100%;
+}
+
+.animated-underline:hover {
+	text-decoration: none !important;
+}
+
+/* Shimmer loading effect */
+@keyframes shimmer {
+	0% { background-position: -200% 0; }
+	100% { background-position: 200% 0; }
+}
+
+.shimmer {
+	background: linear-gradient(
+		90deg,
+		transparent 0%,
+		oklch(1 0 0 / 0.1) 50%,
+		transparent 100%
+	);
+	background-size: 200% 100%;
+	animation: shimmer 1.5s infinite;
+}
+
+/* Pulse glow for interactive elements */
+@keyframes pulse-glow {
+	0%, 100% { box-shadow: 0 0 0 0 oklch(from var(--primary) l c h / 0.4); }
+	50% { box-shadow: 0 0 20px 4px oklch(from var(--primary) l c h / 0.2); }
+}
+
+.pulse-glow {
+	animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Fade in up animation */
+@keyframes fadeInUp {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.fade-in-up {
+	animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Staggered children animation */
+.stagger-children > * {
+	opacity: 0;
+	animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.1s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.2s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger-children > *:nth-child(6) { animation-delay: 0.3s; }
+
+/* Border gradient animation */
+@keyframes borderGradient {
+	0%, 100% { background-position: 0% 50%; }
+	50% { background-position: 100% 50%; }
+}
+
+.animated-border {
+	position: relative;
+	background: var(--card);
+	border-radius: var(--radius);
+}
+
+.animated-border::before {
+	content: '';
+	position: absolute;
+	inset: -1px;
+	border-radius: inherit;
+	padding: 1px;
+	background: linear-gradient(
+		90deg,
+		var(--primary),
+		oklch(from var(--primary) l c calc(h + 60)),
+		var(--primary)
+	);
+	background-size: 200% 100%;
+	animation: borderGradient 3s linear infinite;
+	mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+	mask-composite: exclude;
+	-webkit-mask-composite: xor;
+	opacity: 0;
+	transition: opacity 0.3s ease;
+}
+
+.animated-border:hover::before {
+	opacity: 1;
+}
+
+/* Floating animation */
+@keyframes float {
+	0%, 100% { transform: translateY(0); }
+	50% { transform: translateY(-6px); }
+}
+
+.float-animation {
+	animation: float 3s ease-in-out infinite;
+}
+
+/* Rotate on hover */
+.hover-rotate {
+	transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.hover-rotate:hover {
+	transform: rotate(5deg);
+}
+
+/* Typing cursor blink - optimized CSS animation */
+@keyframes cursor-blink {
+	0%, 50% { opacity: 1; }
+	51%, 100% { opacity: 0; }
+}
+
+.cursor-blink {
+	animation: cursor-blink 1s step-end infinite;
+}
+
+/* Smooth entrance for page elements */
+@keyframes slideUp {
+	from {
+		opacity: 0;
+		transform: translateY(30px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.slide-up {
+	animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Scale in animation */
+@keyframes scaleIn {
+	from {
+		opacity: 0;
+		transform: scale(0.9);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+.scale-in {
+	animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Subtle background pulse for cards */
+@keyframes subtle-pulse {
+	0%, 100% { 
+		box-shadow: 0 0 0 0 oklch(from var(--primary) l c h / 0);
+	}
+	50% { 
+		box-shadow: 0 0 20px 0 oklch(from var(--primary) l c h / 0.1);
+	}
+}
+
+.subtle-pulse:hover {
+	animation: subtle-pulse 2s ease-in-out infinite;
+}
+
 @layer base {
 	* {
 		@apply border-border outline-ring/50;
 	}
 	html {
-		@apply scroll-smooth ;
-		scroll-snap-type: y mandatory;
+		@apply scroll-smooth;
+		scroll-snap-type: y proximity;
 		transition: color 200ms ease-in-out;
 	}
 	body {
 		@apply bg-background text-foreground z-10 scroll-pt-[100px];
+		/* Prevent layout thrashing */
+		overflow-x: hidden;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+		text-rendering: optimizeLegibility;
 	}
 	main {
 		@apply mx-auto max-w-4xl relative z-10;
+		contain: layout style;
 	}
 	::-webkit-scrollbar {
 		background: transparent;

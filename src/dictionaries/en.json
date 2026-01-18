@@ -20,6 +20,9 @@
 			"knowledge": {
 				"title": "My Skills"
 			},
+			"portfolio": {
+				"title": "My Projects"
+			},
 			"blog": {
 				"title": "Blog"
 			},
@@ -150,7 +153,11 @@
 	"blog": {
 		"coverAlt": "Cover for",
 		"notFound": "Not found",
-		"readingTime": "min read",
+		"readingTime": {
+			"minute": "minute",
+			"minutesFew": "minutes",
+			"minutesMany": "minutes"
+		},
 		"readArticle": "Read article",
 		"create": {
 			"titlePlaceholder": "Article title",

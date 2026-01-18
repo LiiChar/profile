@@ -8,8 +8,9 @@ import {
 import { Text } from '@/components/ui/text-client';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import AutoScroll from 'embla-carousel-auto-scroll';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 import {
 	SiReact,
 	SiNextdotjs,
@@ -116,22 +117,28 @@ const KnowledgeData: Knowledge[] = [
 
  const Knowledge = React.memo(() => {
 	const [selected, setSelected] = useState<Knowledge | null>(null);
+	const reduceMotion = useReducedMotion();
+
+	// Memoize carousel plugins to prevent re-creation
+	const carouselPlugins = useMemo(() => 
+		reduceMotion ? [] : [
+			AutoScroll({
+				speed: 0.6,
+				stopOnMouseEnter: true,
+				stopOnInteraction: false,
+				playOnInit: true,
+			}),
+		],
+	[reduceMotion]);
 
 	return (
-		<div className='relative py-18' id='knowledge'>
+		<div className='relative py-18 contain-layout' id='knowledge'>
 			<h2 className='mb-10'>
 				<Text text='page.main.knowledge.title' />
 			</h2>
 
 			<Carousel
-				plugins={[
-					AutoScroll({
-						speed: 0.6,
-						stopOnMouseEnter: true,
-						stopOnInteraction: false,
-						playOnInit: true,
-					}),
-				]}
+				plugins={carouselPlugins}
 				opts={{
 					align: 'start',
 					loop: true,
@@ -146,13 +153,12 @@ const KnowledgeData: Knowledge[] = [
 							className='pl-4 basis-auto cursor-pointer select-none'
 							onClick={() => setSelected(skill)}
 						>
-							<motion.div
-								whileTap={{ scale: 0.95 }}
-								className='relative group p-6 rounded-2xl dark:bg-card/50 bg-card/20 backdrop-blur-sm border border-border/50 overflow-hidden'
+							<div
+								className='relative group p-6 rounded-2xl dark:bg-card/50 bg-card/20 backdrop-blur-sm border border-border/50 overflow-hidden hover-lift animated-border active:scale-95 transition-transform duration-150'
 								style={{ minWidth: '140px' }}
 							>
-								{/* Градиентный фон при hover */}
-								<motion.div
+								{/* Градиентный фон при hover - optimized with CSS */}
+								<div
 									className='absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300'
 									style={{
 										background: `radial-gradient(circle at 30% 30%, ${skill.color}20, transparent 70%)`,
@@ -162,30 +168,23 @@ const KnowledgeData: Knowledge[] = [
 								{/* Иконка */}
 								<div className='relative z-10 flex flex-col -mb-4 items-center gap-3 py-4'>
 									<div
-										className='transition-transform  scale-140 group-hover:scale-150'
+										className='transition-transform duration-300 scale-140 group-hover:scale-150 group-hover:rotate-6'
 										style={{ color: skill.color }}
 									>
 										{skill.icon}
 									</div>
 
-									{/* Название — всегда видно, но с анимацией */}
-									<AnimatePresence>
-										<motion.span
-											initial={{ opacity: 0, y: 10 }}
-											animate={{ opacity: 1, y: 0 }}
-											exit={{ opacity: 0, y: -10 }}
-											className='text-sm font-medium text-foreground/80'
-										>
-											{skill.title}
-										</motion.span>
-									</AnimatePresence>
+									{/* Название — CSS animation instead of Framer Motion */}
+									<span className='text-sm font-medium text-foreground/80 transition-all duration-300 group-hover:text-foreground'>
+										{skill.title}
+									</span>
 								</div>
 
 								{/* Уровень — маленький бейдж */}
 								<div className='absolute top-0 right-1'>
 									<span
 										className={cn(
-											'text-[10px] font-bold px-2 py-0.5 rounded-full',
+											'text-[10px] font-bold px-2 py-0.5 rounded-full transition-all duration-300 group-hover:scale-110',
 											skill.level === 'Эксперт' &&
 												'bg-emerald-500/20 text-emerald-400',
 											skill.level === 'Продвинутый' &&
@@ -197,32 +196,39 @@ const KnowledgeData: Knowledge[] = [
 										{skill.level}
 									</span>
 								</div>
-							</motion.div>
+							</div>
 						</CarouselItem>
 					))}
 				</CarouselContent>
 			</Carousel>
 
-			{/* Модальное окно с описанием при клике */}
+			{/* Модальное окно с описанием при клике - optimized */}
 			<AnimatePresence>
 				{selected && (
 					<motion.div
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
+						transition={{ duration: reduceMotion ? 0.1 : 0.2 }}
 						className='fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm'
 						onClick={() => setSelected(null)}
 					>
 						<motion.div
-							initial={{ scale: 0.9, y: 20 }}
-							animate={{ scale: 1, y: 0 }}
-							exit={{ scale: 0.9, y: 20 }}
+							initial={{ scale: 0.9, y: 20, opacity: 0 }}
+							animate={{ scale: 1, y: 0, opacity: 1 }}
+							exit={{ scale: 0.9, y: 20, opacity: 0 }}
+							transition={{ 
+								type: reduceMotion ? 'tween' : 'spring',
+								duration: reduceMotion ? 0.1 : undefined,
+								stiffness: 300,
+								damping: 25 
+							}}
 							onClick={e => e.stopPropagation()}
-							className='relative max-w-md w-full bg-card rounded-3xl p-8 shadow-2xl border border-border'
+							className='relative max-w-md w-full bg-card rounded-3xl p-8 shadow-2xl border border-border gpu-accelerated'
 						>
 							<button
 								onClick={() => setSelected(null)}
-								className='absolute top-4 right-4 text-foreground/50 hover:text-foreground transition'
+								className='absolute top-4 right-4 text-foreground/50 hover:text-foreground hover:rotate-90 transition-all duration-300'
 							>
 								<svg
 									className='w-6 h-6'
@@ -240,7 +246,12 @@ const KnowledgeData: Knowledge[] = [
 							</button>
 
 							<div className='flex items-center gap-4 mb-4'>
-								<div style={{ color: selected.color }}>{selected.icon}</div>
+								<div 
+									className='transition-transform duration-500 hover:scale-110 hover:rotate-12'
+									style={{ color: selected.color }}
+								>
+									{selected.icon}
+								</div>
 								<h3 className='text-2xl font-bold'>{selected.title}</h3>
 							</div>
 
@@ -249,6 +260,7 @@ const KnowledgeData: Knowledge[] = [
 									<strong>Уровень:</strong>{' '}
 									<span
 										className={cn(
+											'transition-colors duration-300',
 											selected.level === 'Эксперт' && 'text-emerald-400',
 											selected.level === 'Продвинутый' && 'text-blue-400',
 											selected.level === 'Средний' && 'text-amber-400'

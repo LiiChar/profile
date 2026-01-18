@@ -18,10 +18,14 @@ type BlogCardProps = {
 } & React.HTMLAttributes<HTMLDivElement>;
 
 export const BlogCard = ({ blog, className, ...attr }: BlogCardProps) => {
-	
-
 	return (
-		<div {...attr} className={cn('flex flex-col gap-4', className)}>
+		<div 
+			{...attr} 
+			className={cn(
+				'flex flex-col gap-4 group/card hover-lift transition-all duration-300',
+				className
+			)}
+		>
 			<Link
 				href={`/blog/${blog.id}`}
 				className='relative overflow-hidden rounded-md'
@@ -32,21 +36,25 @@ export const BlogCard = ({ blog, className, ...attr }: BlogCardProps) => {
 						fill={true}
 						loading='lazy'
 						src={blog.image ?? DEFAULT_IMAGE}
-						className='object-cover hover:scale-110 transition-all aspect-[16/10] w-full h-full rounded-md top-0 left-0 static!'
+						className='object-cover transition-transform duration-500 ease-out group-hover/card:scale-105 aspect-[16/10] w-full h-full rounded-md top-0 left-0 static!'
 					/>
 				)}
+				{/* Overlay gradient on hover */}
+				<div className='absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-300' />
 			</Link>
 			{/* Контейнер, занимающий всю высоту */}
 			<div className='w-full flex flex-col grow'>
 				<div>
 					<div className='flex gap-2 w-full items-center'>
 						<Date date={blog.createdAt} />
-						<Separator className='w-full' />
+						<Separator className='w-full transition-all duration-300 group-hover/card:bg-primary/30' />
 						<TimeRead content={blog.content} />
 					</div>
 					<div className='py-2 -m'>
-						<h3 className='text-[19px]'><Content data={blog} field='title'/></h3>
-						<div className='block sm:hidden lg:block md:hidden overflow-ellipsis h-[60px] overflow-hidden text-[16px] mt-[4px]'>
+						<h3 className='text-[19px] transition-colors duration-300 group-hover/card:text-primary'>
+							<Content data={blog} field='title'/>
+						</h3>
+						<div className='block sm:hidden lg:block md:hidden overflow-ellipsis h-[60px] overflow-hidden text-[16px] mt-[4px] text-foreground/70 transition-colors duration-300 group-hover/card:text-foreground/90'>
 							<ContentMarkdown data={blog} field='content' />
 						</div>
 					</div>
@@ -59,12 +67,12 @@ export const BlogCard = ({ blog, className, ...attr }: BlogCardProps) => {
 					<Separator />
 					<Link
 						href={`/blog/${blog.id}`}
-						className='text-nowrap flex group items-center gap-1'
+						className='text-nowrap flex group items-center gap-1 animated-underline transition-colors duration-300 hover:text-primary'
 					>
 						<span>
 							<Text text='blog.readArticle' />
 						</span>
-						<GrowArrow className='scale-75 -mb-[1px]' />
+						<GrowArrow className='scale-75 -mb-[1px] transition-transform duration-300 group-hover:translate-x-1' />
 					</Link>
 				</div>
 			</div>

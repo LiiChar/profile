@@ -4,24 +4,37 @@ import { getProjects } from '@/action/project/getProjects';
 import { ProjectType } from '@/db/tables/project';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ProjectCard } from '@/components/project/ProjectCard';
+import { throttle, useReducedMotion } from '@/hooks/useReducedMotion';
+import { Text } from '@/components/ui/text-client';
 
+// Красивая S-образная линия с изгибами
 const MAIN_PATH = `
-	M300 40
-	C180 160, 420 260, 300 380
-	S180 600, 300 720
-	S420 920, 300 1080
+	M300 60
+	C150 120, 450 200, 300 280
+	C150 360, 450 440, 300 520
+	C150 600, 450 680, 300 760
+	C150 840, 450 920, 300 1000
+	C150 1080, 450 1160, 300 1240
 `;
 
+// Декоративные ответвления
 const BRANCH_PATHS = [
-	'M300 380 C220 420, 180 480, 160 540',
-	'M300 720 C380 760, 440 820, 460 880',
+	'M300 280 C380 300, 420 350, 440 400',
+	'M300 280 C220 300, 180 350, 160 400',
+	'M300 520 C380 540, 430 590, 460 650',
+	'M300 520 C220 540, 170 590, 140 650',
+	'M300 760 C380 780, 420 830, 440 890',
+	'M300 760 C220 780, 180 830, 160 890',
+	'M300 1000 C380 1020, 430 1070, 460 1130',
+	'M300 1000 C220 1020, 170 1070, 140 1130',
 ];
 
-const POINT_T = [0.12, 0.32, 0.52, 0.72, 0.9];
+// Точки на линии (0-1)
+const POINT_T = [0.1, 0.28, 0.46, 0.64, 0.82];
 
-const CARD_W = 320;
-const GAP = 56;
-const OFFSET = 0.4;
+const CARD_W = 340;
+const GAP = 70;
+const OFFSET = 0.35;
 
 export const LinePortfolio = React.memo(() => {
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -60,33 +73,45 @@ export const LinePortfolio = React.memo(() => {
 		setPoints(pts);
 	}, []);
 
+	const reduceMotion = useReducedMotion();
+
+	const calculateProgress = useCallback(() => {
+		const rect = containerRef.current?.getBoundingClientRect();
+		if (!rect) return;
+		const windowH = window.innerHeight;
+
+		const start = windowH * 0.85;
+		const end = -rect.height * 0.15;
+
+		const p = (start - rect.top) / (start - end) - OFFSET;
+		setProgress(Math.min(1, Math.max(0, p)));
+	}, []);
+
 	const onScroll = useCallback(() => {
 		if (!containerRef.current) return;
 
-		cancelAnimationFrame(rafRef.current!);
+		if (rafRef.current) {
+			cancelAnimationFrame(rafRef.current);
+		}
 
-		rafRef.current = requestAnimationFrame(() => {
-			const rect = containerRef.current?.getBoundingClientRect();
-			if (!rect) return;
-			const windowH = window.innerHeight;
+		rafRef.current = requestAnimationFrame(calculateProgress);
+	}, [calculateProgress]);
 
-			const start = windowH * 0.85;
-			const end = -rect.height * 0.15;
-
-			const p = (start - rect.top) / (start - end) - OFFSET;
-			setProgress(Math.min(1, Math.max(0, p)));
-		});
-	}, []);
+	// Throttled scroll handler for better mobile performance
+	const throttledScroll = useMemo(
+		() => throttle(onScroll, reduceMotion ? 100 : 16),
+		[onScroll, reduceMotion]
+	);
 
 	useEffect(() => {
-		window.addEventListener('scroll', onScroll);
+		window.addEventListener('scroll', throttledScroll, { passive: true });
 		onScroll();
 
 		return () => {
-			window.removeEventListener('scroll', onScroll);
+			window.removeEventListener('scroll', throttledScroll);
 			if (rafRef.current) cancelAnimationFrame(rafRef.current);
 		};
-	}, [onScroll]);
+	}, [throttledScroll, onScroll]);
 
 	const drawnLength = useMemo(() => totalLength * progress, [totalLength, progress]);
 
@@ -102,40 +127,66 @@ export const LinePortfolio = React.memo(() => {
 					height: Math.max(1200, mobilePoints[mobilePoints.length - 1].y + 200),
 				}}
 			>
-				<h2 className='mb-24 text-center'>Мои проекты</h2>
+				<h2 className='mb-24 text-center'>
+					<Text text='page.main.portfolio.title' />
+				</h2>
 
-				<div className='absolute left-10 top-24'>
+				<div className='absolute left-6 top-24'>
 					<svg
-						width={12}
+						width={20}
 						height={mobilePoints[mobilePoints.length - 1].y + 100}
-						viewBox={`0 0 12 ${mobilePoints[mobilePoints.length - 1].y + 100}`}
+						viewBox={`0 0 20 ${mobilePoints[mobilePoints.length - 1].y + 100}`}
+						className='overflow-visible'
 					>
+						{/* Фоновая линия */}
 						<line
-							x1={6}
+							x1={10}
 							y1={0}
-							x2={6}
+							x2={10}
 							y2={mobilePoints[mobilePoints.length - 1].y + 50}
 							stroke='var(--primary)'
-							strokeWidth={4}
+							strokeWidth={2}
+							strokeOpacity={0.15}
+						/>
+						{/* Прогресс линия */}
+						<line
+							x1={10}
+							y1={0}
+							x2={10}
+							y2={mobilePoints[mobilePoints.length - 1].y + 50}
+							stroke='var(--primary)'
+							strokeWidth={3}
 							strokeDasharray={mobilePoints[mobilePoints.length - 1].y + 50}
 							strokeDashoffset={
 								(mobilePoints[mobilePoints.length - 1].y + 50) * (1 - progress)
 							}
-							style={{ transition: 'stroke-dashoffset 0.08s linear' }}
+							strokeLinecap='round'
+							style={{ transition: 'stroke-dashoffset 0.1s linear' }}
 						/>
 						{mobilePoints.map((p, i) => {
 							const active = progress >= i / (mobilePoints.length - 1);
 							return (
-								<circle
-									key={i}
-									cx={6}
-									cy={p.y - 50}
-									r={5}
-									fill={active ? 'var(--primary)' : 'transparent'}
-									stroke='var(--primary)'
-									strokeWidth={2}
-									style={{ transition: 'fill 0.3s ease' }}
-								/>
+								<g key={i}>
+									{/* Пульсирующий круг */}
+									<circle
+										cx={10}
+										cy={p.y - 50}
+										r={active ? 12 : 8}
+										fill={active ? 'var(--primary)' : 'transparent'}
+										opacity={active ? 0.2 : 0}
+										style={{ transition: 'all 0.4s ease' }}
+									/>
+									{/* Основной круг */}
+									<circle
+										cx={10}
+										cy={p.y - 50}
+										r={6}
+										fill={active ? 'var(--primary)' : 'var(--background)'}
+										stroke='var(--primary)'
+										strokeWidth={2}
+										style={{ transition: 'all 0.3s ease' }}
+									/>
+								</g>
 							);
 						})}
 					</svg>
@@ -150,20 +201,24 @@ export const LinePortfolio = React.memo(() => {
 					return (
 						<div
 							key={projects[i].id}
+							className="contain-layout"
 							style={{
 								position: 'absolute',
 								top: p.y,
-								left: '80px',
-								width: `calc(100vw - 100px)`,
+								left: '60px',
+								width: `calc(100vw - 80px)`,
 								maxWidth: '400px',
-								transform: 'translateY(-50%)',
+								transform: `translateY(-50%) ${active ? 'scale(1)' : 'scale(0.95)'}`,
 								opacity: active ? 1 : 0,
 								pointerEvents: active ? 'auto' : 'none',
-								transition: 'opacity 0.4s ease',
+								transition: reduceMotion 
+									? 'opacity 0.1s ease' 
+									: 'opacity 0.4s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
 								zIndex: 10,
+								willChange: 'transform, opacity',
 							}}
 						>
-							<ProjectCard className='' project={projects[i]} />
+							<ProjectCard className='hover-lift' project={projects[i]} />
 						</div>
 					);
 				})}
@@ -176,85 +231,158 @@ export const LinePortfolio = React.memo(() => {
 			ref={containerRef}
 			id='portfolio'
 			className='relative'
-			style={{ height: 1200 }}
+			style={{ height: 1400 }}
 		>
-			<h2 className='mb-24 text-center'>Мои проекты</h2>
+			<h2 className='mb-28 text-center'>
+				<Text text='page.main.portfolio.title' />
+			</h2>
 
 			<svg
-				className='absolute top-6 left-1/2 -translate-x-1/2 pointer-events-none'
+				className='absolute top-16 left-1/2 -translate-x-1/2 pointer-events-none'
 				width={600}
-				height={1100}
-				viewBox='0 0 600 1100'
+				height={1300}
+				viewBox='0 0 600 1300'
 			>
-				{/* Основная линия */}
+				<defs>
+					{/* Градиент для линии */}
+					<linearGradient id='lineGradient' x1='0%' y1='0%' x2='0%' y2='100%'>
+						<stop offset='0%' stopColor='var(--primary)' stopOpacity='0.3' />
+						<stop offset='50%' stopColor='var(--primary)' stopOpacity='1' />
+						<stop offset='100%' stopColor='var(--primary)' stopOpacity='0.3' />
+					</linearGradient>
+					{/* Свечение */}
+					<filter id='glow' x='-50%' y='-50%' width='200%' height='200%'>
+						<feGaussianBlur stdDeviation='4' result='coloredBlur' />
+						<feMerge>
+							<feMergeNode in='coloredBlur' />
+							<feMergeNode in='SourceGraphic' />
+						</feMerge>
+					</filter>
+				</defs>
+
+				{/* Фоновая линия */}
+				<path
+					d={MAIN_PATH}
+					fill='none'
+					stroke='var(--primary)'
+					strokeWidth={2}
+					strokeOpacity={0.1}
+				/>
+
+				{/* Декоративные ответвления с анимацией прозрачности */}
+				{BRANCH_PATHS.map((d, i) => {
+					const branchProgress = Math.floor(i / 2);
+					const branchActive = drawnLength >= POINT_T[branchProgress] * totalLength;
+					
+					return (
+						<path
+							key={i}
+							d={d}
+							fill='none'
+							stroke='var(--primary)'
+							strokeOpacity={branchActive ? 0.25 : 0.08}
+							strokeWidth={1.5}
+							strokeLinecap='round'
+							style={{ transition: 'stroke-opacity 0.5s ease' }}
+						/>
+					);
+				})}
+
+				{/* Основная линия с прогрессом */}
 				<path
 					ref={pathRef}
 					d={MAIN_PATH}
 					fill='none'
-					stroke='var(--primary)'
+					stroke='url(#lineGradient)'
 					strokeWidth={3}
+					strokeLinecap='round'
 					strokeDasharray={totalLength}
 					strokeDashoffset={totalLength - drawnLength}
-					style={{ transition: 'stroke-dashoffset 0.08s linear' }}
+					filter='url(#glow)'
+					style={{ transition: 'stroke-dashoffset 0.1s linear' }}
 				/>
 
-				{/* Ответвления */}
-				{BRANCH_PATHS.map((d, i) => (
-					<path
-						key={i}
-						d={d}
-						fill='none'
-						stroke='var(--primary)'
-						strokeOpacity={0.35}
-						strokeWidth={2}
-					/>
-				))}
-
-				{/* Точки строго на линии */}
+				{/* Точки на линии */}
 				{points.map((p, i) => {
 					const active = drawnLength >= POINT_T[i] * totalLength;
 
 					return (
-						<circle
-							key={i}
-							cx={p.x}
-							cy={p.y}
-							r={7}
-							fill={active ? 'var(--primary)' : 'var(--background)'}
-							stroke='var(--primary)'
-							strokeWidth={2}
-							style={{ transition: 'fill 0.3s ease' }}
-						/>
+						<g key={i}>
+							{/* Пульсирующий круг */}
+							<circle
+								cx={p.x}
+								cy={p.y}
+								r={active ? 18 : 10}
+								fill='var(--primary)'
+								opacity={active ? 0.15 : 0}
+								style={{ transition: 'all 0.5s ease' }}
+							/>
+							{/* Средний круг */}
+							<circle
+								cx={p.x}
+								cy={p.y}
+								r={active ? 12 : 8}
+								fill='var(--primary)'
+								opacity={active ? 0.3 : 0}
+								style={{ transition: 'all 0.4s ease' }}
+							/>
+							{/* Основной круг */}
+							<circle
+								cx={p.x}
+								cy={p.y}
+								r={8}
+								fill={active ? 'var(--primary)' : 'var(--background)'}
+								stroke='var(--primary)'
+								strokeWidth={2}
+								filter={active ? 'url(#glow)' : 'none'}
+								style={{ transition: 'fill 0.3s ease' }}
+							/>
+							{/* Центральная точка */}
+							<circle
+								cx={p.x}
+								cy={p.y}
+								r={3}
+								fill={active ? 'var(--background)' : 'var(--primary)'}
+								style={{ transition: 'fill 0.3s ease' }}
+							/>
+						</g>
 					);
 				})}
 			</svg>
 
-			{/* Карточки */}
+			{/* Карточки с перекрытием линии */}
 			{points.map((p, i) => {
 				if (!projects[i]) return null;
 
 				const active = drawnLength >= POINT_T[i] * totalLength;
-				const left =
-					i % 2 === 0
-						? `calc(50% - ${CARD_W + GAP}px)`
-						: `calc(50% + ${GAP}px)`;
+				const isLeft = i % 2 === 0;
+				
+				// Смещаем карточки ближе к линии для эффекта перекрытия
+				const left = isLeft
+					? `calc(50% - ${CARD_W + GAP - 30}px)`
+					: `calc(50% + ${GAP - 30}px)`;
+				const translateX = isLeft ? '30px' : '-30px';
 
 				return (
 					<div
 						key={projects[i].id}
+						className="contain-layout"
 						style={{
 							position: 'absolute',
-							top: p.y + 50,
+							top: p.y + 70,
 							left,
 							width: CARD_W,
-							transform: 'translateY(-50%)',
+							transform: `translateY(-50%) translateX(${active ? '0' : translateX}) scale(${active ? 1 : 0.92}) rotate(${active ? 0 : isLeft ? -2 : 2}deg)`,
 							opacity: active ? 1 : 0,
 							pointerEvents: active ? 'auto' : 'none',
-							transition: 'opacity 0.4s ease',
-							zIndex: 10,
+							transition: reduceMotion 
+								? 'opacity 0.1s ease' 
+								: 'opacity 0.6s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)',
+							zIndex: 20,
+							willChange: 'transform, opacity',
 						}}
 					>
-						<ProjectCard project={projects[i]} />
+						<ProjectCard className='hover-lift shadow-lg hover:shadow-2xl transition-shadow duration-300' project={projects[i]} />
 					</div>
 				);
 			})}

@@ -20,6 +20,7 @@ import { ContentMetrics } from '@/components/metrics/ContentMetrics';
 import { isAdmin } from '@/helpers/user';
 import { cn } from '@/lib/utils';
 import { ContentMarkdown } from '@/components/text/ContentMarkdown';
+import Portal from '@/components/ui/portal';
 
 export async function generateMetadata({
 	params,
@@ -117,12 +118,14 @@ export default async function Page({
 
 				{/* Контент статьи */}
 				<CardContent className='px-0'>
-					<div className=' max-w-3xl z-[100000000000] top-[50%] w-full pr-8 flex justify-end translate-y-[-50%] fixed'>
-						<ArticleNav
-							className=' relative   min-[1250px]:translate-x-[100%]'
-							targetSelect='.markdrow-content'
-						/>
-					</div>
+					<Portal>
+						<div className='max-w-3xl z-[100000000000] top-[50%] w-full pr-8 flex justify-end translate-y-[-50%] fixed'>
+							<ArticleNav
+								className='relative min-[1250px]:translate-x-[100%]'
+								targetSelect='.markdrow-content'
+							/>
+						</div>
+					</Portal>
 					<div className='prose prose-lg max-w-none markdrow-content px-4 sm:px-6 lg:px-8'>
 						<ContentMarkdown data={blog} field='content' />
 					</div>

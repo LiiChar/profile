@@ -2,39 +2,43 @@
 
 import { getProjects } from '@/action/project/getProjects';
 import { ProjectType } from '@/db/tables/project';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { ProjectCard } from '@/components/project/ProjectCard';
 import { throttle, useReducedMotion } from '@/hooks/useReducedMotion';
 import { Text } from '@/components/ui/text-client';
 
-// Красивая S-образная линия с изгибами
+const CANVAS_WIDTH = 600;
+const CANVAS_HEIGHT = 1400;
+
+// Более извилистая "речная" линия с крупной амплитудой и меньшим числом изгибов
 const MAIN_PATH = `
-	M300 60
-	C150 120, 450 200, 300 280
-	C150 360, 450 440, 300 520
-	C150 600, 450 680, 300 760
-	C150 840, 450 920, 300 1000
-	C150 1080, 450 1160, 300 1240
+	M300 40
+	C40 180, 560 280, 230 470
+	C20 680, 560 780, 360 980
+	C80 1160, 540 1240, 300 1360
 `;
 
-// Декоративные ответвления
-const BRANCH_PATHS = [
-	'M300 280 C380 300, 420 350, 440 400',
-	'M300 280 C220 300, 180 350, 160 400',
-	'M300 520 C380 540, 430 590, 460 650',
-	'M300 520 C220 540, 170 590, 140 650',
-	'M300 760 C380 780, 420 830, 440 890',
-	'M300 760 C220 780, 180 830, 160 890',
-	'M300 1000 C380 1020, 430 1070, 460 1130',
-	'M300 1000 C220 1020, 170 1070, 140 1130',
+// Точки на линии (0-1)
+const POINT_T = [0.1, 0.32, 0.54, 0.76, 0.92];
+
+const CARD_LAYOUT = [
+	{ side: 1, normal: 255, along: -30, shiftY: -20 },
+	{ side: -1, normal: 275, along: 35, shiftY: -10 },
+	{ side: 1, normal: 245, along: -25, shiftY: 15 },
+	{ side: -1, normal: 285, along: 40, shiftY: 25 },
+	{ side: 1, normal: 260, along: -20, shiftY: 35 },
 ];
 
-// Точки на линии (0-1)
-const POINT_T = [0.1, 0.28, 0.46, 0.64, 0.82];
-
-const CARD_W = 340;
-const GAP = 70;
 const OFFSET = 0.35;
+
+type PathPoint = {
+	x: number;
+	y: number;
+	nx: number;
+	ny: number;
+	tx: number;
+	ty: number;
+};
 
 export const LinePortfolio = React.memo(() => {
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -43,7 +47,7 @@ export const LinePortfolio = React.memo(() => {
 
 	const [projects, setProjects] = useState<ProjectType[]>([]);
 	const [progress, setProgress] = useState(0);
-	const [points, setPoints] = useState<{ x: number; y: number }[]>([]);
+	const [points, setPoints] = useState<PathPoint[]>([]);
 	const [totalLength, setTotalLength] = useState(1);
 	const [isMobile, setIsMobile] = useState(false);
 
@@ -59,18 +63,43 @@ export const LinePortfolio = React.memo(() => {
 	}, []);
 
 	// Получаем реальные координаты точек на линии
-	useEffect(() => {
+	useLayoutEffect(() => {
 		if (!pathRef.current) return;
 
-		const length = pathRef.current.getTotalLength();
-		setTotalLength(length);
+		let frameId = requestAnimationFrame(() => {
+			if (!pathRef.current) return;
+			const length = pathRef.current.getTotalLength();
+			setTotalLength(length);
 
-		const pts = POINT_T.map(t => {
-			const p = pathRef.current!.getPointAtLength(length * t);
-			return { x: p.x, y: p.y };
+			const delta = Math.max(1, length * 0.0015);
+
+			const pts = POINT_T.map(t => {
+				const at = length * t;
+				const p = pathRef.current!.getPointAtLength(at);
+				const pPrev = pathRef.current!.getPointAtLength(Math.max(0, at - delta));
+				const pNext = pathRef.current!.getPointAtLength(Math.min(length, at + delta));
+				const rawTx = pNext.x - pPrev.x;
+				const rawTy = pNext.y - pPrev.y;
+				const norm = Math.hypot(rawTx, rawTy) || 1;
+				const tx = rawTx / norm;
+				const ty = rawTy / norm;
+				const nx = -ty;
+				const ny = tx;
+
+				return {
+					x: p.x,
+					y: p.y,
+					nx,
+					ny,
+					tx,
+					ty,
+				};
+			});
+
+			setPoints(pts);
 		});
 
-		setPoints(pts);
+		return () => cancelAnimationFrame(frameId);
 	}, []);
 
 	const reduceMotion = useReducedMotion();
@@ -231,161 +260,165 @@ export const LinePortfolio = React.memo(() => {
 			ref={containerRef}
 			id='portfolio'
 			className='relative'
-			style={{ height: 1400 }}
+			style={{ height: CANVAS_HEIGHT + 260 }}
 		>
 			<h2 className='mb-28 text-center'>
 				<Text text='page.main.portfolio.title' />
 			</h2>
 
-			<svg
-				className='absolute top-16 left-1/2 -translate-x-1/2 pointer-events-none'
-				width={600}
-				height={1300}
-				viewBox='0 0 600 1300'
+			<div
+				className='absolute top-16 left-1/2 -translate-x-1/2 overflow-visible'
+				style={{ width: CANVAS_WIDTH, height: CANVAS_HEIGHT }}
 			>
-				<defs>
-					{/* Градиент для линии */}
-					<linearGradient id='lineGradient' x1='0%' y1='0%' x2='0%' y2='100%'>
-						<stop offset='0%' stopColor='var(--primary)' stopOpacity='0.3' />
-						<stop offset='50%' stopColor='var(--primary)' stopOpacity='1' />
-						<stop offset='100%' stopColor='var(--primary)' stopOpacity='0.3' />
-					</linearGradient>
-					{/* Свечение */}
-					<filter id='glow' x='-50%' y='-50%' width='200%' height='200%'>
-						<feGaussianBlur stdDeviation='4' result='coloredBlur' />
-						<feMerge>
-							<feMergeNode in='coloredBlur' />
-							<feMergeNode in='SourceGraphic' />
-						</feMerge>
-					</filter>
-				</defs>
+				<svg
+					className='absolute inset-0 pointer-events-none overflow-visible'
+					width={CANVAS_WIDTH}
+					height={CANVAS_HEIGHT}
+					viewBox={`0 0 ${CANVAS_WIDTH} ${CANVAS_HEIGHT}`}
+				>
+					<defs>
+						{/* Градиент для линии */}
+						<linearGradient id='lineGradient' x1='0%' y1='0%' x2='0%' y2='100%'>
+							<stop offset='0%' stopColor='var(--primary)' stopOpacity='0.25' />
+							<stop offset='50%' stopColor='var(--primary)' stopOpacity='1' />
+							<stop offset='100%' stopColor='var(--primary)' stopOpacity='0.25' />
+						</linearGradient>
+						{/* Свечение */}
+						<filter id='glow' x='-50%' y='-50%' width='200%' height='200%'>
+							<feGaussianBlur stdDeviation='4' result='coloredBlur' />
+							<feMerge>
+								<feMergeNode in='coloredBlur' />
+								<feMergeNode in='SourceGraphic' />
+							</feMerge>
+						</filter>
+					</defs>
 
-				{/* Фоновая линия */}
-				<path
-					d={MAIN_PATH}
-					fill='none'
-					stroke='var(--primary)'
-					strokeWidth={2}
-					strokeOpacity={0.1}
-				/>
+					{/* Мягкий "русловой" фон */}
+					<path
+						d={MAIN_PATH}
+						fill='none'
+						stroke='var(--primary)'
+						strokeWidth={12}
+						strokeOpacity={0.06}
+					/>
 
-				{/* Декоративные ответвления с анимацией прозрачности */}
-				{BRANCH_PATHS.map((d, i) => {
-					const branchProgress = Math.floor(i / 2);
-					const branchActive = drawnLength >= POINT_T[branchProgress] * totalLength;
-					
-					return (
-						<path
-							key={i}
-							d={d}
-							fill='none'
-							stroke='var(--primary)'
-							strokeOpacity={branchActive ? 0.25 : 0.08}
-							strokeWidth={1.5}
-							strokeLinecap='round'
-							style={{ transition: 'stroke-opacity 0.5s ease' }}
-						/>
-					);
-				})}
+					{/* Фоновая линия */}
+					<path
+						d={MAIN_PATH}
+						fill='none'
+						stroke='var(--primary)'
+						strokeWidth={2}
+						strokeOpacity={0.12}
+					/>
 
-				{/* Основная линия с прогрессом */}
-				<path
-					ref={pathRef}
-					d={MAIN_PATH}
-					fill='none'
-					stroke='url(#lineGradient)'
-					strokeWidth={3}
-					strokeLinecap='round'
-					strokeDasharray={totalLength}
-					strokeDashoffset={totalLength - drawnLength}
-					filter='url(#glow)'
-					style={{ transition: 'stroke-dashoffset 0.1s linear' }}
-				/>
+					{/* Основная линия с прогрессом */}
+					<path
+						ref={pathRef}
+						d={MAIN_PATH}
+						fill='none'
+						stroke='url(#lineGradient)'
+						strokeWidth={3}
+						strokeLinecap='round'
+						strokeDasharray={totalLength}
+						strokeDashoffset={totalLength - drawnLength}
+						filter='url(#glow)'
+						style={{ transition: 'stroke-dashoffset 0.1s linear' }}
+					/>
 
-				{/* Точки на линии */}
+					{/* Точки на линии */}
+					{points.map((p, i) => {
+						const active = drawnLength >= POINT_T[i] * totalLength;
+
+						return (
+							<g key={i}>
+								{/* Пульсирующий круг */}
+								<circle
+									cx={p.x}
+									cy={p.y}
+									r={active ? 18 : 10}
+									fill='var(--primary)'
+									opacity={active ? 0.15 : 0}
+									style={{ transition: 'all 0.5s ease' }}
+								/>
+								{/* Средний круг */}
+								<circle
+									cx={p.x}
+									cy={p.y}
+									r={active ? 12 : 8}
+									fill='var(--primary)'
+									opacity={active ? 0.3 : 0}
+									style={{ transition: 'all 0.4s ease' }}
+								/>
+								{/* Основной круг */}
+								<circle
+									cx={p.x}
+									cy={p.y}
+									r={8}
+									fill={active ? 'var(--primary)' : 'var(--background)'}
+									stroke='var(--primary)'
+									strokeWidth={2}
+									filter={active ? 'url(#glow)' : 'none'}
+									style={{ transition: 'fill 0.3s ease' }}
+								/>
+								{/* Центральная точка */}
+								<circle
+									cx={p.x}
+									cy={p.y}
+									r={3}
+									fill={active ? 'var(--background)' : 'var(--primary)'}
+									style={{ transition: 'fill 0.3s ease' }}
+								/>
+							</g>
+						);
+					})}
+				</svg>
+
+				{/* Карточки, "привязанные" к траектории */}
 				{points.map((p, i) => {
+					if (!projects[i]) return null;
+
+					const layout = CARD_LAYOUT[i] ?? {
+						side: i % 2 === 0 ? 1 : -1,
+						normal: 260,
+						along: 0,
+						shiftY: 0,
+					};
+					const side = layout.side ?? (i % 2 === 0 ? 1 : -1);
+					const normalOffset = (layout.normal ?? 260) * side;
+					const alongOffset = layout.along ?? 0;
+					const baseX = p.x + p.nx * normalOffset + p.tx * alongOffset;
+					const baseY =
+						p.y + p.ny * normalOffset + p.ty * alongOffset + (layout.shiftY ?? 0);
+
 					const active = drawnLength >= POINT_T[i] * totalLength;
 
 					return (
-						<g key={i}>
-							{/* Пульсирующий круг */}
-							<circle
-								cx={p.x}
-								cy={p.y}
-								r={active ? 18 : 10}
-								fill='var(--primary)'
-								opacity={active ? 0.15 : 0}
-								style={{ transition: 'all 0.5s ease' }}
+						<div
+							key={projects[i].id}
+							className='contain-layout'
+							style={{
+								position: 'absolute',
+								left: baseX,
+								top: baseY,
+								width: 'clamp(260px, 28vw, 340px)',
+								transform: `translate(-50%, -50%) scale(${active ? 1 : 0.96})`,
+								opacity: active ? 1 : 0,
+								pointerEvents: active ? 'auto' : 'none',
+								transition: reduceMotion
+									? 'opacity 0.1s ease'
+									: 'opacity 0.6s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)',
+								zIndex: 20,
+								willChange: 'transform, opacity',
+							}}
+						>
+							<ProjectCard
+								className='hover-lift shadow-lg hover:shadow-2xl transition-shadow duration-300'
+								project={projects[i]}
 							/>
-							{/* Средний круг */}
-							<circle
-								cx={p.x}
-								cy={p.y}
-								r={active ? 12 : 8}
-								fill='var(--primary)'
-								opacity={active ? 0.3 : 0}
-								style={{ transition: 'all 0.4s ease' }}
-							/>
-							{/* Основной круг */}
-							<circle
-								cx={p.x}
-								cy={p.y}
-								r={8}
-								fill={active ? 'var(--primary)' : 'var(--background)'}
-								stroke='var(--primary)'
-								strokeWidth={2}
-								filter={active ? 'url(#glow)' : 'none'}
-								style={{ transition: 'fill 0.3s ease' }}
-							/>
-							{/* Центральная точка */}
-							<circle
-								cx={p.x}
-								cy={p.y}
-								r={3}
-								fill={active ? 'var(--background)' : 'var(--primary)'}
-								style={{ transition: 'fill 0.3s ease' }}
-							/>
-						</g>
+						</div>
 					);
 				})}
-			</svg>
-
-			{/* Карточки с перекрытием линии */}
-			{points.map((p, i) => {
-				if (!projects[i]) return null;
-
-				const active = drawnLength >= POINT_T[i] * totalLength;
-				const isLeft = i % 2 === 0;
-				
-				// Смещаем карточки ближе к линии для эффекта перекрытия
-				const left = isLeft
-					? `calc(50% - ${CARD_W + GAP - 30}px)`
-					: `calc(50% + ${GAP - 30}px)`;
-				const translateX = isLeft ? '30px' : '-30px';
-
-				return (
-					<div
-						key={projects[i].id}
-						className="contain-layout"
-						style={{
-							position: 'absolute',
-							top: p.y + 70,
-							left,
-							width: CARD_W,
-							transform: `translateY(-50%) translateX(${active ? '0' : translateX}) scale(${active ? 1 : 0.92}) rotate(${active ? 0 : isLeft ? -2 : 2}deg)`,
-							opacity: active ? 1 : 0,
-							pointerEvents: active ? 'auto' : 'none',
-							transition: reduceMotion 
-								? 'opacity 0.1s ease' 
-								: 'opacity 0.6s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)',
-							zIndex: 20,
-							willChange: 'transform, opacity',
-						}}
-					>
-						<ProjectCard className='hover-lift shadow-lg hover:shadow-2xl transition-shadow duration-300' project={projects[i]} />
-					</div>
-				);
-			})}
+			</div>
 		</div>
 	);
 });

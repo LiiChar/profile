@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Monitor, FileText, LayoutDashboard, Book, Brain } from 'lucide-react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import Portal from '@/components/ui/portal';
 
 const MainComponents = {
 	hero: { title: 'Главная', icon: <Monitor className='w-5 h-5' /> },
@@ -49,7 +50,9 @@ export const Navigation = React.memo(({
 				});
 
 				if (best) {
-					setCurrentSection(best.target.id);
+					setCurrentSection(prev =>
+						prev === best!.target.id ? prev : best!.target.id
+					);
 				}
 			},
 			{
@@ -78,64 +81,105 @@ export const Navigation = React.memo(({
 
 	const componentEntries = useMemo(() => Object.entries(components), [components]);
 
+	useEffect(() => {
+		const componentKeys = Object.keys(components) as ComponentKey[];
+		if (componentKeys.length === 0) return;
+
+		let frameId: number | null = null;
+
+		const handleScroll = () => {
+			if (frameId !== null) return;
+			frameId = requestAnimationFrame(() => {
+				frameId = null;
+				const scrollEl = document.documentElement;
+				const scrollable = scrollEl.scrollHeight - window.innerHeight;
+				if (scrollable <= 0) return;
+
+				const isAtBottom =
+					window.scrollY + window.innerHeight >= scrollEl.scrollHeight - 4;
+
+				if (isAtBottom) {
+					setCurrentSection(componentKeys[componentKeys.length - 1]);
+				}
+			});
+		};
+
+		window.addEventListener('scroll', handleScroll, { passive: true });
+		handleScroll();
+
+		return () => {
+			window.removeEventListener('scroll', handleScroll);
+			if (frameId !== null) {
+				cancelAnimationFrame(frameId);
+			}
+		};
+	}, [components]);
+
 	return (
 		<>
 			{children}
 
-			<aside className='fixed top-1/2 w-12 z-[100] -translate-y-1/2 right-4 lg:right-6 min-[980px]:flex hidden group gap-2 flex-col' style={{ transform: 'translateY(-50%)' }}>
-				<div className='relative flex flex-col gap-0 bg-background/70 backdrop-blur-lg rounded-full border border-border shadow-2xl transition-shadow duration-300 hover:shadow-primary/10'>
-					<motion.div
-						layoutId='sidebar-marker'
-						className='absolute inset-0 -z-10 rounded-full bg-secondary/10 backdrop-blur-md border border-foreground'
-						transition={{ 
-							type: reduceMotion ? 'tween' : 'spring', 
-							stiffness: 400, 
-							damping: 35,
-							duration: reduceMotion ? 0.1 : undefined
-						}}
-					/>
+			<Portal>
+				<aside
+					className='fixed top-1/2 w-12 z-[100] -translate-y-1/2 right-4 lg:right-6 min-[980px]:flex hidden group gap-2 flex-col'
+					style={{ transform: 'translateY(-50%)' }}
+				>
+					<div className='relative flex flex-col gap-0 bg-background/70 backdrop-blur-lg rounded-full border border-border shadow-2xl transition-shadow duration-300 hover:shadow-primary/10'>
+						<motion.div
+							layoutId='sidebar-marker'
+							className='absolute inset-0 -z-10 rounded-full bg-secondary/10 backdrop-blur-md border border-foreground'
+							transition={{
+								type: reduceMotion ? 'tween' : 'spring',
+								stiffness: 400,
+								damping: 35,
+								duration: reduceMotion ? 0.1 : undefined,
+							}}
+						/>
 
-					{componentEntries.map(([key, { title, icon }]) => {
-						const isActive = currentSection === key;
+						{componentEntries.map(([key, { title, icon }]) => {
+							const isActive = currentSection === key;
 
-						return (
-							<div key={key} className='relative group/nav'>
-								<div className='absolute right-full top-1/2 -translate-y-1/2 ml-4 -mt-[1px] opacity-0 pointer-events-none lg:group-hover/nav:opacity-100 lg:group-hover/nav:-translate-x-2 transition-all duration-300 whitespace-nowrap'>
-									<span
+							return (
+								<div key={key} className='relative group/nav'>
+									<div className='absolute right-full top-1/2 -translate-y-1/2 ml-4 -mt-[1px] opacity-0 pointer-events-none lg:group-hover/nav:opacity-100 lg:group-hover/nav:-translate-x-2 transition-all duration-300 whitespace-nowrap'>
+										<span
+											className={cn(
+												'text-sm font-medium px-2 py-1 rounded-md bg-background/80 backdrop-blur-sm border border-border/50',
+												isActive ? 'text-primary' : 'text-foreground'
+											)}
+										>
+											{title}
+										</span>
+									</div>
+									<div
+										role='button'
+										tabIndex={0}
+										onClick={() => scrollToSection(key as ComponentKey)}
+										onKeyDown={(e) => e.key === 'Enter' && scrollToSection(key as ComponentKey)}
+										aria-current={isActive ? 'true' : 'false'}
+										aria-label={`Перейти к разделу ${title}`}
 										className={cn(
-											'text-sm font-medium px-2 py-1 rounded-md bg-background/80 backdrop-blur-sm border border-border/50',
-											isActive ? 'text-primary' : 'text-foreground'
+											'relative z-10 p-3 w-full translate-x-[1px] rounded-full transition-all duration-300',
+											isActive
+												? 'text-primary scale-110'
+												: 'text-muted-foreground hover:text-primary hover:scale-105 hover:rotate-6'
 										)}
 									>
-										{title}
-									</span>
+										<span
+											className={cn(
+												'block transition-transform duration-300',
+												isActive && 'animate-pulse'
+											)}
+										>
+											{icon}
+										</span>
+									</div>
 								</div>
-								<div
-									role='button'
-									tabIndex={0}
-									onClick={() => scrollToSection(key as ComponentKey)}
-									onKeyDown={(e) => e.key === 'Enter' && scrollToSection(key as ComponentKey)}
-									aria-current={isActive ? 'true' : 'false'}
-									aria-label={`Перейти к разделу ${title}`}
-									className={cn(
-										'relative z-10 p-3 w-full translate-x-[1px] rounded-full transition-all duration-300',
-										isActive
-											? 'text-primary scale-110'
-											: 'text-muted-foreground hover:text-primary hover:scale-105 hover:rotate-6'
-									)}
-								>
-									<span className={cn(
-										'block transition-transform duration-300',
-										isActive && 'animate-pulse'
-									)}>
-										{icon}
-									</span>
-								</div>
-							</div>
-						);
-					})}
-				</div>
-			</aside>
+							);
+						})}
+					</div>
+				</aside>
+			</Portal>
 		</>
 	);
 });

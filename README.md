@@ -1,133 +1,249 @@
-# Profile App
+<p align="center">
+  <img src="public/media/image/default.jpg" alt="Portfolio Logo" width="200" height="200" style="border-radius: 50%;" />
+</p>
 
-## Testing
+<h1 align="center">🚀 Personal Portfolio</h1>
 
-This project includes comprehensive tests for all functionality using multiple testing frameworks.
+<p align="center">
+  <strong>Современное портфолио Frontend-разработчика</strong>
+</p>
 
-### Testing Frameworks
+<p align="center">
+  <a href="#особенности">Особенности</a> •
+  <a href="#технологии">Технологии</a> •
+  <a href="#установка">Установка</a> •
+  <a href="#структура">Структура</a> •
+  <a href="#тестирование">Тестирование</a>
+</p>
 
-#### Vitest (Primary)
-Modern testing framework for unit and integration tests.
-- Fast with native ESM support
-- Used for most unit tests and component tests
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js" alt="Next.js" />
+  <img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react" alt="React" />
+  <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Tailwind-4-38B2AC?style=flat-square&logo=tailwind-css" alt="Tailwind" />
+  <img src="https://img.shields.io/badge/Drizzle-ORM-C5F74F?style=flat-square" alt="Drizzle" />
+</p>
 
-#### Jest (Alternative)
-Traditional testing framework as an alternative approach.
-- Well-established with extensive plugin ecosystem
-- Good for comparison and migration scenarios
+---
 
-#### Cypress (E2E)
-End-to-end testing for full application workflows.
-- Browser-based testing
-- Tests real user interactions
+## ✨ Особенности
 
-### Running Tests
+### 🎨 Дизайн и UX
+- **Адаптивный дизайн** — отлично выглядит на всех устройствах
+- **Тёмная/светлая тема** — автоматическое переключение по системным настройкам
+- **Плавные анимации** — Framer Motion для микро-взаимодействий
+- **Интерактивные элементы** — WebGL эффекты и SVG анимации
+- **Оптимизация для слабых устройств** — поддержка `prefers-reduced-motion`
+
+### 🌐 Интернационализация
+- **Мультиязычность** — полная поддержка русского и английского языков
+- **SEO оптимизация** — мета-теги, Open Graph, структурированные данные
+- **Локализованные URL** — `/ru/projects`, `/en/projects`
+
+### 📝 Контент
+- **Блог** — создание и редактирование статей с Markdown
+- **Проекты** — портфолио с подробными описаниями
+- **Комментарии** — система комментариев для статей
+- **Лайки** — интерактивные реакции на контент
+
+### 🔧 Функциональность
+- **Авторизация** — безопасная аутентификация пользователей
+- **Markdown редактор** — полноценный редактор с превью
+- **GitHub интеграция** — автоматическая загрузка коммитов
+- **AI генерация** — интеграция с GigaChat и Google Gemini
+- **Загрузка изображений** — поддержка загрузки и оптимизации
+
+---
+
+## 🛠 Технологии
+
+### Frontend
+| Технология | Описание |
+|------------|----------|
+| **Next.js 15** | React фреймворк с App Router |
+| **React 19** | UI библиотека |
+| **TypeScript** | Типизация JavaScript |
+| **Tailwind CSS 4** | Utility-first CSS фреймворк |
+| **Framer Motion** | Анимации и переходы |
+| **Zustand** | Управление состоянием |
+| **React Hook Form** | Формы с валидацией |
+| **Zod** | Схемы валидации |
+
+### Backend
+| Технология | Описание |
+|------------|----------|
+| **Drizzle ORM** | Type-safe ORM для базы данных |
+| **SQLite** | Легковесная база данных |
+| **Server Actions** | Серверные функции Next.js |
+| **JWT** | Токены авторизации |
+
+### Инструменты
+| Инструмент | Описание |
+|------------|----------|
+| **Vitest** | Юнит-тестирование |
+| **Cypress** | E2E тестирование |
+| **ESLint** | Линтинг кода |
+| **Prettier** | Форматирование кода |
+
+---
+
+## 🚀 Установка
+
+### Требования
+- Node.js 18+ 
+- Yarn или npm
+
+### Шаги установки
 
 ```bash
-# Run Vitest tests (primary, all tests)
+# Клонирование репозитория
+git clone https://github.com/LiiChar/profile.git
+cd profile
+
+# Установка зависимостей
+yarn install
+
+# Настройка переменных окружения
+cp .env.example .env.local
+
+# Инициализация базы данных
+yarn db:push
+
+# Запуск в режиме разработки
+yarn dev
+```
+
+Откройте [http://localhost:3000](http://localhost:3000) в браузере.
+
+### Переменные окружения
+
+```env
+# База данных
+DATABASE_URL="file:./db.sqlite"
+
+# Авторизация
+JWT_SECRET="your-secret-key"
+
+# AI интеграции (опционально)
+GIGACHAT_API_KEY="your-gigachat-key"
+GOOGLE_GEMINI_KEY="your-gemini-key"
+
+# GitHub (опционально)
+GITHUB_TOKEN="your-github-token"
+```
+
+---
+
+## 📁 Структура проекта
+
+```
+src/
+├── action/           # Server Actions
+│   ├── auth/         # Авторизация
+│   ├── blog/         # Блог CRUD
+│   ├── comment/      # Комментарии
+│   ├── project/      # Проекты CRUD
+│   └── ...
+├── app/              # Next.js App Router
+│   └── [lang]/       # Локализованные страницы
+│       ├── blog/
+│       ├── projects/
+│       ├── resume/
+│       └── ...
+├── components/       # React компоненты
+│   ├── ui/           # UI примитивы (shadcn/ui)
+│   ├── blog/         # Компоненты блога
+│   ├── project/      # Компоненты проектов
+│   └── ...
+├── db/               # База данных
+│   ├── schema.ts     # Drizzle схема
+│   └── tables/       # Определения таблиц
+├── dictionaries/     # Переводы (i18n)
+│   ├── en.json
+│   └── ru.json
+├── hooks/            # React хуки
+├── stores/           # Zustand сторы
+├── types/            # TypeScript типы
+└── widgets/          # Крупные компоненты
+    ├── layout/       # Header, Footer
+    └── main/         # Секции главной
+```
+
+---
+
+## 🧪 Тестирование
+
+### Запуск тестов
+
+```bash
+# Все тесты (Vitest)
 yarn test
 
-# Run tests with coverage
+# С покрытием
 yarn test:coverage
 
-# Run tests in watch mode
+# Watch режим
 yarn test:watch
 
-# Run Jest tests (alternative)
-yarn test:jest
-
-# Run Cypress E2E tests
+# E2E тесты (Cypress)
 yarn test:cypress
 
-# Open Cypress Test Runner
+# Открыть Cypress
 yarn test:cypress:open
 ```
 
-### Test Structure
+### Покрытие тестами
 
-#### Unit Tests (Vitest/Jest)
-- **Actions** (`test/action/`): Server actions for blog, comment, email, generate, git, like, project
-- **UI Components** (`test/ui/`): React components (Button, BorderProgress, Text)
-- **Widgets** (`test/widgets/`): Higher-level components (Hero)
-- **Lib** (`test/lib/`): Utility functions (cn for Tailwind merging)
-- **Stores** (`test/stores/`): Zustand store tests
-- **Helpers** (`test/helpers/`): Date, i18n, text, URL utilities
+- ✅ **Server Actions** — блог, комментарии, проекты, лайки
+- ✅ **UI компоненты** — Button, Text, BorderProgress
+- ✅ **Хелперы** — дата, i18n, текст, URL
+- ✅ **Сторы** — Zustand сторы
+- ✅ **E2E** — навигация, блог
 
-#### E2E Tests (Cypress)
-- **Navigation** (`cypress/e2e/navigation.cy.ts`): Page navigation and routing
-- **Blog** (`cypress/e2e/blog.cy.ts`): Blog functionality, comments, pagination
+---
 
-### Test Coverage
+## 📜 Скрипты
 
-#### Vitest Results:
-- 75+ passed tests from 17 test files
-- Tests cover unit and integration scenarios
+| Команда | Описание |
+|---------|----------|
+| `yarn dev` | Запуск в режиме разработки |
+| `yarn build` | Сборка для продакшена |
+| `yarn start` | Запуск продакшен сервера |
+| `yarn lint` | Проверка линтером |
+| `yarn test` | Запуск тестов |
+| `yarn db:push` | Применить миграции |
+| `yarn db:studio` | Открыть Drizzle Studio |
 
-#### Jest Results:
-- Alternative unit testing framework setup
-- Ready for component and utility testing
-- Configured for JavaScript/TypeScript with Babel
+---
 
-#### Cypress Results:
-- E2E testing framework configured
-- Navigation and blog functionality tests prepared
-- Requires running dev server for full execution
+## 🎯 Roadmap
 
-#### Coverage Areas:
-- Component rendering and interactions (Button, BorderProgress, Hero)
-- Server action functionality (blog, comment, generate, git, like, project actions)
-- Utility functions (cn for Tailwind merging)
-- Store management (Zustand language store)
-- External API integrations (GitHub, Google Gemini, GigaChat)
-- Database operations (Drizzle ORM mocks)
+- [x] Основной функционал портфолио
+- [x] Блог с Markdown
+- [x] Система комментариев
+- [x] Мультиязычность (RU/EN)
+- [x] Тёмная/светлая тема
+- [x] Адаптивный дизайн
+- [x] Тестирование (Vitest + Cypress)
+- [ ] RSS фид для блога
+- [ ] Уведомления по email
+- [ ] Административная панель
+- [ ] Аналитика посещений
 
-### Writing Tests
+---
 
-#### Vitest Example
-```typescript
-import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { Button } from '@/components/ui/button';
+## 📄 Лицензия
 
-describe('Button', () => {
-  it('renders with text', () => {
-    render(<Button>Test</Button>);
-    expect(screen.getByText('Test')).toBeInTheDocument();
-  });
-});
-```
+MIT © [Maksim Ivanov](https://github.com/LiiChar)
 
-#### Jest Example
-```javascript
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import { Button } from '@/components/ui/button';
+---
 
-test('renders button', () => {
-  render(<Button>Test</Button>);
-  expect(screen.getByText('Test')).toBeInTheDocument();
-});
-```
+<p align="center">
+  <strong>Сделано с ❤️ используя Next.js, React и TypeScript</strong>
+</p>
 
-#### Cypress E2E Example
-```typescript
-describe('Blog', () => {
-  it('should display posts', () => {
-    cy.visit('/blog');
-    cy.get('[data-testid="blog-post"]').should('have.length.greaterThan', 0);
-  });
-});
-```
-
-### Best Practices
-
-1. **Mock external dependencies** (database, APIs, file system)
-2. **Test user interactions** using React Testing Library
-3. **Use data-testid attributes** for E2E test selectors
-4. **Test error states** and edge cases
-5. **Mock timers** for time-dependent functionality
-6. **Test accessibility** where applicable
-
-### CI/CD Integration
-
-Tests can be integrated into CI/CD pipelines for automated testing on commits and deployments.
+<p align="center">
+  <a href="https://github.com/LiiChar">GitHub</a> •
+  <a href="https://t.me/lLItaV">Telegram</a> •
+  <a href="mailto:litavanchik@gmail.com">Email</a>
+</p>

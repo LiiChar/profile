@@ -3,7 +3,7 @@
 		"main": {
 			"hero": {
 				"title": "Hello, I'm Maksim",
-				"description": "Frontend / Fullstack developer focused on React, Next.js, Tailwind, WebSocket, and Node.js",
+				"description": "I'm a Frontend developer passionate about building modern web applications and interactive interfaces.",
 				"button1": "View Projects",
 				"button2": "Contact Me"
 			},
@@ -147,24 +147,42 @@
 		}
 	},
 	"comments": {
-		"empty": "It's empty here, but you can fix it",
-		"placeholder": "Leave your comment..."
+		"title": "Comments",
+		"empty": "No comments yet",
+		"emptySubtitle": "Be the first to leave a comment!",
+		"placeholder": "Write your comment...",
+		"submit": "Submit",
+		"sending": "Sending...",
+		"success": "Comment added",
+		"error": "Failed to add comment",
+		"login": "Log in to leave a comment",
+		"markdownHint": "Markdown supported. Ctrl+Enter to submit."
 	},
 	"blog": {
 		"coverAlt": "Cover for",
-		"notFound": "Not found",
+		"notFound": "Article not found",
+		"empty": "No articles yet",
+		"emptyDescription": "Interesting development articles coming soon",
 		"readingTime": {
 			"minute": "minute",
 			"minutesFew": "minutes",
 			"minutesMany": "minutes"
 		},
 		"readArticle": "Read article",
+		"allArticles": "All articles",
+		"latestArticles": "Latest articles",
 		"create": {
-			"titlePlaceholder": "Article title",
-			"contentPlaceholder": "Enter content",
-			"tagsPlaceholder": "Tags comma separated",
-			"imagePlaceholder": "Image link",
-			"button": "Create",
+			"title": "New Article",
+			"subtitle": "Create a new blog article",
+			"titlePlaceholder": "Article title...",
+			"contentPlaceholder": "Start writing your article...",
+			"tagsPlaceholder": "react, nextjs, typescript...",
+			"tagsHint": "Separate tags with commas",
+			"imagePlaceholder": "Article cover",
+			"button": "Publish",
+			"creating": "Creating...",
+			"readyToPublish": "Ready to publish",
+			"fillRequired": "Fill in required fields",
 			"validation": {
 				"titleMin": "Title must be at least 2 characters",
 				"contentMin": "Content must be at least 10 characters"
@@ -175,21 +193,41 @@
 		}
 	},
 	"project": {
+		"notFound": "Project not found",
+		"empty": "No projects yet",
+		"emptyDescription": "Interesting projects coming soon",
+		"allProjects": "All projects",
+		"featuredProjects": "Featured projects",
+		"viewProject": "View project",
+		"viewCode": "View code",
+		"technologies": "Technologies",
 		"create": {
-			"title": "Create project",
-			"urlPlaceholder": "Project URL",
-			"titlePlaceholder": "Project title",
-			"imagePlaceholder": "Image link",
+			"title": "New Project",
+			"subtitle": "Add a new project to your portfolio",
+			"urlPlaceholder": "https://example.com",
+			"urlLabel": "Project link",
+			"titlePlaceholder": "Project name...",
+			"imagePlaceholder": "https://example.com/image.jpg",
+			"imageLabel": "Project cover",
 			"coverAlt": "Project cover",
-			"authorPlaceholder": "Author",
-			"repoPlaceholder": "Repository name (GitHub)",
-			"descriptionPlaceholder": "Short description",
-			"contentPlaceholder": "Full description",
-			"tagsPlaceholder": "Tags (comma separated)",
-			"button": "Create",
+			"authorPlaceholder": "Your name",
+			"authorLabel": "Author",
+			"repoPlaceholder": "username/repo-name",
+			"repoLabel": "GitHub repository",
+			"descriptionPlaceholder": "Describe the project in a few sentences...",
+			"descriptionLabel": "Short description",
+			"contentPlaceholder": "Tell more about the project, technologies used, implementation details...",
+			"contentLabel": "Full project description",
+			"tagsPlaceholder": "react, nextjs, typescript, tailwind...",
+			"tagsLabel": "Technologies and tags",
+			"tagsHint": "Separate tags with commas",
+			"button": "Publish",
+			"creating": "Creating...",
+			"readyToPublish": "Ready to publish",
+			"fillRequired": "Fill in required fields",
 			"validation": {
 				"titleMin": "Title must be at least 2 characters",
-				"contentMin": "Content must be at least 10 characters"
+				"contentMin": "Description must be at least 10 characters"
 			},
 			"toast": {
 				"success": "Project created successfully"
@@ -197,7 +235,25 @@
 		}
 	},
 	"common": {
-		"author": "LiiChar"
+		"author": "LiiChar",
+		"loading": "Loading...",
+		"error": "An error occurred",
+		"retry": "Retry",
+		"cancel": "Cancel",
+		"save": "Save",
+		"delete": "Delete",
+		"edit": "Edit",
+		"create": "Create",
+		"submit": "Submit",
+		"back": "Back",
+		"next": "Next",
+		"search": "Search",
+		"noResults": "No results found",
+		"showMore": "Show more",
+		"showLess": "Show less",
+		"copyLink": "Copy link",
+		"copied": "Copied!",
+		"share": "Share"
 	},
 	"layout": {
 		"cookie": {

@@ -3,7 +3,7 @@
 		"main": {
 			"hero": {
 				"title": "Привет, я Максим",
-				"description": "Я Frontend разработчик, увлеченный системами проектирования и разработкой интерфейсов.",
+				"description": "Я Frontend разработчик, увлечённый созданием современных веб-приложений и интерактивных интерфейсов.",
 				"button1": "Смотреть проекты",
 				"button2": "Связаться"
 			},
@@ -147,24 +147,42 @@
 		}
 	},
 	"comments": {
-		"empty": "Тут пусто, но вы можете это исправить",
-		"placeholder": "Оставьте ваш комментарий..."
+		"title": "Комментарии",
+		"empty": "Пока нет комментариев",
+		"emptySubtitle": "Будьте первым, кто оставит комментарий!",
+		"placeholder": "Напишите ваш комментарий...",
+		"submit": "Отправить",
+		"sending": "Отправка...",
+		"success": "Комментарий добавлен",
+		"error": "Не удалось добавить комментарий",
+		"login": "Войдите, чтобы оставить комментарий",
+		"markdownHint": "Поддерживается Markdown. Ctrl+Enter для отправки."
 	},
 	"blog": {
 		"coverAlt": "Обложка для",
-		"notFound": "Не найдено",
+		"notFound": "Статья не найдена",
+		"empty": "Пока нет статей",
+		"emptyDescription": "Скоро здесь появятся интересные статьи о разработке",
 		"readingTime": {
 			"minute": "минута",
 			"minutesFew": "минуты",
 			"minutesMany": "минут"
 		},
 		"readArticle": "Читать статью",
+		"allArticles": "Все статьи",
+		"latestArticles": "Последние статьи",
 		"create": {
-			"titlePlaceholder": "Название статьи",
-			"contentPlaceholder": "Введите содержание",
-			"tagsPlaceholder": "Теги через запятую",
-			"imagePlaceholder": "Ссылка на изображение",
-			"button": "Создать",
+			"title": "Новая статья",
+			"subtitle": "Создайте новую статью для блога",
+			"titlePlaceholder": "Заголовок статьи...",
+			"contentPlaceholder": "Начните писать вашу статью...",
+			"tagsPlaceholder": "react, nextjs, typescript...",
+			"tagsHint": "Разделяйте теги запятыми",
+			"imagePlaceholder": "Обложка статьи",
+			"button": "Опубликовать",
+			"creating": "Создание...",
+			"readyToPublish": "Готово к публикации",
+			"fillRequired": "Заполните обязательные поля",
 			"validation": {
 				"titleMin": "Название должно быть не менее 2 символов",
 				"contentMin": "Содержание должно быть не менее 10 символов"
@@ -175,21 +193,41 @@
 		}
 	},
 	"project": {
+		"notFound": "Проект не найден",
+		"empty": "Пока нет проектов",
+		"emptyDescription": "Скоро здесь появятся интересные проекты",
+		"allProjects": "Все проекты",
+		"featuredProjects": "Избранные проекты",
+		"viewProject": "Смотреть проект",
+		"viewCode": "Исходный код",
+		"technologies": "Технологии",
 		"create": {
-			"title": "Создать проект",
-			"urlPlaceholder": "URL проекта",
-			"titlePlaceholder": "Название проекта",
-			"imagePlaceholder": "Ссылка на изображение",
+			"title": "Новый проект",
+			"subtitle": "Добавьте новый проект в портфолио",
+			"urlPlaceholder": "https://example.com",
+			"urlLabel": "Ссылка на проект",
+			"titlePlaceholder": "Название проекта...",
+			"imagePlaceholder": "https://example.com/image.jpg",
+			"imageLabel": "Обложка проекта",
 			"coverAlt": "Обложка проекта",
-			"authorPlaceholder": "Автор",
-			"repoPlaceholder": "Имя репозитория (GitHub)",
-			"descriptionPlaceholder": "Краткое описание",
-			"contentPlaceholder": "Полное описание",
-			"tagsPlaceholder": "Теги (через запятую)",
-			"button": "Создать",
+			"authorPlaceholder": "Ваше имя",
+			"authorLabel": "Автор",
+			"repoPlaceholder": "username/repo-name",
+			"repoLabel": "Репозиторий GitHub",
+			"descriptionPlaceholder": "Опишите проект в нескольких предложениях...",
+			"descriptionLabel": "Краткое описание",
+			"contentPlaceholder": "Расскажите подробнее о проекте, используемых технологиях, особенностях реализации...",
+			"contentLabel": "Полное описание проекта",
+			"tagsPlaceholder": "react, nextjs, typescript, tailwind...",
+			"tagsLabel": "Технологии и теги",
+			"tagsHint": "Разделяйте теги запятыми",
+			"button": "Опубликовать",
+			"creating": "Создание...",
+			"readyToPublish": "Готово к публикации",
+			"fillRequired": "Заполните обязательные поля",
 			"validation": {
 				"titleMin": "Название должно быть не менее 2 символов",
-				"contentMin": "Содержание должно быть не менее 10 символов"
+				"contentMin": "Описание должно быть не менее 10 символов"
 			},
 			"toast": {
 				"success": "Проект успешно создан"
@@ -197,7 +235,25 @@
 		}
 	},
 	"common": {
-		"author": "LiiChar"
+		"author": "LiiChar",
+		"loading": "Загрузка...",
+		"error": "Произошла ошибка",
+		"retry": "Повторить",
+		"cancel": "Отмена",
+		"save": "Сохранить",
+		"delete": "Удалить",
+		"edit": "Редактировать",
+		"create": "Создать",
+		"submit": "Отправить",
+		"back": "Назад",
+		"next": "Далее",
+		"search": "Поиск",
+		"noResults": "Ничего не найдено",
+		"showMore": "Показать ещё",
+		"showLess": "Свернуть",
+		"copyLink": "Копировать ссылку",
+		"copied": "Скопировано!",
+		"share": "Поделиться"
 	},
 	"layout": {
 		"cookie": {

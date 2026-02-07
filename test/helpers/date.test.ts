@@ -45,7 +45,15 @@ describe('getCurrentDateAtMinute', () => {
 
 describe('getDate', () => {
 	it('возвращает форматированную дату в ru-RU формате', () => {
-		expect(normalize(getDate('2024-07-20'))).toBe('20 июля 2024 г.');
+		expect(normalize(getDate('2024-07-20', 'ru'))).toBe('20 июля 2024 г.');
+	});
+
+	it('возвращает форматированную дату в en-US формате', () => {
+		expect(normalize(getDate('2024-07-20', 'en'))).toBe('July 20, 2024');
+	});
+
+	it('по умолчанию возвращает en-US формат', () => {
+		expect(normalize(getDate('2024-07-20'))).toBe('July 20, 2024');
 	});
 });
 

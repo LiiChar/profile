@@ -325,6 +325,7 @@ export default function Dither({
 	const [shouldDisableAnimation, setShouldDisableAnimation] = React.useState(false);
 
 	const [isClient, setIsClient] = React.useState(false);
+	const [isPageVisible, setIsPageVisible] = React.useState(true);
 
 	React.useEffect(() => {
 		setIsClient(true);
@@ -334,13 +335,20 @@ export default function Dither({
 	// В будущем можно использовать для вычислений шума или других расчетов
 
 	React.useEffect(() => {
+		const handleVisibility = () => setIsPageVisible(!document.hidden);
+		handleVisibility();
+		document.addEventListener('visibilitychange', handleVisibility);
+
 		const isMobile = window.innerWidth < 768;
 		const isLowEndDevice = navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4;
 		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 		// Отключаем анимацию на мобильных, слабых устройствах или если пользователь предпочитает минимум анимаций
 		setShouldDisableAnimation(disableAnimation || prefersReducedMotion || isMobile || !!isLowEndDevice);
-	}, []);
+		return () => document.removeEventListener('visibilitychange', handleVisibility);
+	}, [disableAnimation]);
+
+	const shouldAnimate = isPageVisible && !shouldDisableAnimation;
 	return (
 		<>
 			{isClient && (
@@ -348,7 +356,8 @@ export default function Dither({
 					className='w-scren z-[-2] h-screen blur-sm opacity-30 black:opacity-40 fixed! top-0 left-0 overflow-hidden'
 					camera={{ position: [0, 0, 6] }}
 					dpr={1}
-					gl={{ antialias: true, preserveDrawingBuffer: true }}
+					frameloop={shouldAnimate ? 'always' : 'demand'}
+					gl={{ antialias: true, powerPreference: 'high-performance' }}
 				>
 					<DitheredWaves
 						waveSpeed={waveSpeed}
@@ -358,7 +367,7 @@ export default function Dither({
 						colorNum={colorNum}
 						pixelSize={pixelSize}
 						disableAnimation={shouldDisableAnimation}
-						enableMouseInteraction={enableMouseInteraction}
+						enableMouseInteraction={enableMouseInteraction && shouldAnimate}
 						mouseRadius={mouseRadius}
 					/>
 				</Canvas>

@@ -146,6 +146,7 @@ export default function ArticleNav({ targetSelect, ...attr }: ArticleNavProps) {
 	const [indicatorStyle, setIndicatorStyle] = useState({ top: 0, height: 0 });
 	const headersRef = useRef<HTMLElement[]>([]);
 	const navRef = useRef<HTMLElement>(null);
+	const activeIdRef = useRef('');
 
 	useEffect(() => {
 		const rootNode = document.querySelector(targetSelect);
@@ -160,6 +161,22 @@ export default function ArticleNav({ targetSelect, ...attr }: ArticleNavProps) {
 		headersRef.current = headers;
 
 		const updateActiveHeader = () => {
+			if (headers.length === 0) return;
+
+			const scrollEl = document.documentElement;
+			const scrollable = scrollEl.scrollHeight - window.innerHeight;
+			if (scrollable > 0) {
+				const rootRect = rootNode.getBoundingClientRect();
+				const lastHeader = headers[headers.length - 1];
+				if (rootRect.bottom <= window.innerHeight + 4 && lastHeader) {
+					if (lastHeader.id !== activeIdRef.current) {
+						activeIdRef.current = lastHeader.id;
+						setActiveId(lastHeader.id);
+					}
+					return;
+				}
+			}
+
 			let closest: HTMLElement | null = null;
 			let minDistance = Infinity;
 
@@ -185,7 +202,8 @@ export default function ArticleNav({ targetSelect, ...attr }: ArticleNavProps) {
 				}
 			}
 
-			if (closest && closest.id !== activeId) {
+			if (closest && closest.id !== activeIdRef.current) {
+				activeIdRef.current = closest.id;
 				setActiveId(closest.id);
 			}
 		};
@@ -212,7 +230,7 @@ export default function ArticleNav({ targetSelect, ...attr }: ArticleNavProps) {
 			window.removeEventListener('scroll', handleScroll);
 			window.removeEventListener('resize', updateActiveHeader);
 		};
-	}, [targetSelect, activeId]);
+	}, [targetSelect]);
 
 	useLayoutEffect(() => {
 		if (!activeId || !navRef.current) return;
@@ -236,6 +254,7 @@ export default function ArticleNav({ targetSelect, ...attr }: ArticleNavProps) {
 
 		el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 		history.replaceState(null, '', `#${id}`);
+		activeIdRef.current = id;
 		setActiveId(id);
 	};
 

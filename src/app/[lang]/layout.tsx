@@ -147,7 +147,7 @@ export default async function RootLayout({
 							<Footer />
 							<Auth />
 							<Cookie />
-							{/* <Dither /> */}
+							<Dither />
 						</TooltipProvider>
 					</InitProvider>
 				</body>

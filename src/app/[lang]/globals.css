@@ -398,7 +398,6 @@
 	}
 	main {
 		@apply mx-auto max-w-4xl relative z-10;
-		contain: layout style;
 	}
 	::-webkit-scrollbar {
 		background: transparent;

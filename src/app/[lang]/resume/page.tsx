@@ -2,6 +2,7 @@ import { Text } from '@/components/ui/text-server';
 import { MapPin, Phone, Mail } from 'lucide-react';
 import { ResumeDownloadButtons } from '@/components/resume/ResumeDownloadButtons';
 import ArticleNav from '@/widgets/article/ArticleNavWrapper';
+import Portal from '@/components/ui/portal';
 
 export const dynamic = 'force-static';
 
@@ -309,12 +310,14 @@ export default function Resume() {
 
 				<ResumeDownloadButtons />
 			</div>
-			<div className='max-w-4xl w-full z-[100000000000] pr-8 md:pr-12 top-[50%] flex justify-end translate-y-[-50%] fixed'>
-				<ArticleNav
-					className='relative min-[1250px]:translate-x-[100%]'
-					targetSelect='.rusume-content'
-				/>
-			</div>
+			<Portal>
+				<div className='max-w-4xl w-full z-[100000000000] pr-8 md:pr-12 top-[50%] flex justify-end translate-y-[-50%] fixed'>
+					<ArticleNav
+						className='relative min-[1250px]:translate-x-[100%]'
+						targetSelect='.rusume-content'
+					/>
+				</div>
+			</Portal>
 		</main>
 	);
 }

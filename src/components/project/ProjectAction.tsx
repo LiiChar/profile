@@ -1,22 +1,27 @@
 'use client';
-
-import { ProjectType } from '@/db/tables/project';
 import { cn } from '@/lib/utils';
 import { Edit2, Trash } from 'lucide-react';
 import Link from 'next/link';
 
 type ProjectActionProps = {
-	project: ProjectType;
+	projectId: number;
+	basePath?: string;
 } & React.HTMLAttributes<HTMLDivElement>;
 
 export const ProjectAction = ({
-	project,
+	projectId,
+	basePath,
 	className,
 	...attr
 }: ProjectActionProps) => {
+	const prefix = basePath
+		? basePath.startsWith('/') ? basePath : `/${basePath}`
+		: '';
+	const href = `${prefix}/projects/${projectId}/update/`;
+
 	return (
 		<div {...attr} className={cn('flex gap-2 h-full items-center', className)}>
-			<Link href={`/projects/${project.id}/update/`}>
+			<Link href={href}>
 				<Edit2 size={16} />
 			</Link>
 			<div>

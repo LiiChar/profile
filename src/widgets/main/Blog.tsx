@@ -4,8 +4,9 @@ import { BlogCard } from '@/components/blog/BlogCard';
 import { Carousel, CarouselContent } from '@/components/ui/carousel';
 import { Text } from '@/components/ui/text-client';
 import { db } from '@/db/db';
+import { Lang } from '@/types/i18n';
 
-export const Blog = async () => {
+export const Blog = async ({ lang }: { lang: Lang }) => {
 	const blogs = await db.query.blogs.findMany({});
 
 	return (
@@ -20,6 +21,7 @@ export const Blog = async () => {
 							className='w-full sm:w-[calc(50%-16px)] md:w-[calc(33%-16px)] lg:w-[calc(25%-16px)] min-w-full sm:min-w-[calc(50%-16px)] lg:min-w-[calc(33%-16px)] '
 							key={b.id}
 							blog={b}
+							lang={lang}
 						/>
 					))}
 				</CarouselContent>

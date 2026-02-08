@@ -6,14 +6,10 @@ import { CommitTree } from '@/components/git/CommitTimeline';
 import { Button } from '@/components/ui/button';
 import { GrowArrow } from '@/components/ui/grow-arrow';
 import { Separator } from '@/components/ui/separator';
-import { ProjectAction } from '@/components/project/ProjectAction';
 import { getFieldLang } from '@/helpers/i18n';
 import { getCommits } from '@/action/git/getCommits';
 import { BackwardLink } from '@/components/ui/backward-link';
 import { ContentMetrics } from '@/components/metrics/ContentMetrics';
-import { addMetric } from '@/action/metrics/addMetric';
-import { getCurrentUser } from '@/action/auth/login';
-import { isAdmin } from '@/helpers/user';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
@@ -21,12 +17,31 @@ import { Lang } from '@/types/i18n';
 import type { Metadata } from 'next';
 import { SITE_URL } from '@/const/url';
 import { ContentMarkdown } from '@/components/text/ContentMarkdown';
+import { ProjectAdminActions } from '@/components/project/ProjectAdminActions';
+import { MetricTracker } from '@/components/metrics/MetricTracker';
+import { locales } from '@/const/i18n';
 
-export const generateMetadata = async ({ params }: { params: Promise<{ id: number; lang: Lang }> }): Promise<Metadata> => {
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+	const items = await db.query.projects.findMany({
+		columns: { id: true },
+	});
+
+	return locales.flatMap(lang =>
+		items.map(item => ({
+			lang,
+			id: String(item.id),
+		}))
+	);
+}
+
+export const generateMetadata = async ({ params }: { params: Promise<{ id: string; lang: Lang }> }): Promise<Metadata> => {
 	const { id, lang } = await params;
+	const projectId = Number(id);
 
 	const project = await db.query.projects.findFirst({
-		where: () => eq(projects.id, id),
+		where: () => eq(projects.id, projectId),
 	});
 
 	if (!project) {
@@ -58,7 +73,7 @@ export const generateMetadata = async ({ params }: { params: Promise<{ id: numbe
 			description,
 		},
 		alternates: {
-			canonical: `${SITE_URL}/${lang}/projects/${id}`,
+			canonical: `${SITE_URL}/${lang}/projects/${projectId}`,
 		},
 	};
 };
@@ -66,22 +81,18 @@ export const generateMetadata = async ({ params }: { params: Promise<{ id: numbe
 export default async function ProjectPage({
 	params,
 }: {
-	params: Promise<{ id: number, lang: Lang }>;
+	params: Promise<{ id: string; lang: Lang }>;
 }) {
 	const { id, lang } = await params;
+	const projectId = Number(id);
 	
 
 	const project = await db.query.projects.findFirst({
-		where: () => eq(projects.id, id),
+		where: () => eq(projects.id, projectId),
 		with: {
 			user: true,
 		},
 	});
-
-	const currentUser = await getCurrentUser();
-
-	
-	await addMetric({ action: 'view', targetType: 'project', targetId: id });
 
 	if (!project) {
 		return (
@@ -98,7 +109,8 @@ export default async function ProjectPage({
 
 	return (
 		<main className='max-w-3xl mx-auto my-8 px-4 relative'>
-			<BackwardLink href={'/projects'} />
+			<MetricTracker action='view' targetType='project' targetId={projectId} />
+			<BackwardLink href={`/${lang}/projects`} />
 				{url && (
 					<iframe
 						className='w-full mb-4 aspect-video rounded-lg border '
@@ -167,7 +179,7 @@ export default async function ProjectPage({
 								<div className='flex items-center min-w-[90%] w-full text-sm mt-auto'>
 									<TagList
 										className='flex-wrap w-full'
-										linkBase='/projects/tag/'
+										linkBase={`/${lang}/projects/tag/`}
 										tags={tags}
 										prefix={'#'}
 										variant='default'
@@ -177,11 +189,9 @@ export default async function ProjectPage({
 								</div>
 							)}
 							<Separator className='w-auto min-w-4' />
-							{isAdmin(currentUser) && (
-								<div>
-									<ProjectAction project={project} />
-								</div>
-							)}
+							<div>
+								<ProjectAdminActions projectId={project.id} lang={lang} />
+							</div>
 						</div>
 					</div>
 					{commits && (

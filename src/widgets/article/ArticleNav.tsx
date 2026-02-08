@@ -261,7 +261,11 @@ export default function ArticleNav({ targetSelect, ...attr }: ArticleNavProps) {
 	return (
 		<aside
 			{...attr}
-			className={cn('max-w-64 overflow-auto shrink-0', attr.className)}
+			className={cn(
+				'article-nav max-w-64 overflow-auto shrink-0 transition-transform duration-150',
+				expanded && '-translate-x-[6px]',
+				attr.className
+			)}
 		>
 			{/* {activeId && !expanded && <div className='pl-2 pb-2 text-sm'>{activeId}</div>} */}
 			<nav

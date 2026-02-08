@@ -1,4 +1,6 @@
-import { CommentWithUser } from '@/types/comments';
+'use client';
+
+import type { CommentWithUser } from '@/types/comments';
 import { CommentsCard } from './CommentsCard';
 import { CommentTextarea } from './CommentsTextarea';
 import { HTMLAttributes } from 'react';

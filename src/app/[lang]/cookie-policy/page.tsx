@@ -1,13 +1,12 @@
 import { Text } from '@/components/ui/text-server';
-import ArticleNav from '@/widgets/article/ArticleNavWrapper';
-import Portal from '@/components/ui/portal';
+import ArticleNavDock from '@/widgets/article/ArticleNavDock';
 
 export const dynamic = 'force-static';
 
 export default async function CookiePolicyPage() {
 	return (
 		<main className='min-h-screen px-6 py-24 cookie-policy-content'>
-			<div className='mx-auto max-w-4xl'>
+			<div className='mx-auto max-w-4xl cookie-policy-inner'>
 				<h1 className='mb-8 text-4xl font-bold'>
 					<Text text='layout.cookiePolicy.title' />
 				</h1>
@@ -84,14 +83,11 @@ export default async function CookiePolicyPage() {
 					</section>
 				</div>
 			</div>
-			<Portal>
-				<div className='max-w-4xl w-full z-[100000000000] pr-8 md:pr-12 top-[50%] flex justify-end translate-y-[-50%] fixed'>
-					<ArticleNav
-						className='relative min-[1250px]:translate-x-[100%]'
-						targetSelect='.cookie-policy-content'
-					/>
-				</div>
-			</Portal>
+			<ArticleNavDock
+				className='relative'
+				alignSelect='.cookie-policy-inner'
+				targetSelect='.cookie-policy-content'
+			/>
 		</main>
 	);
 }

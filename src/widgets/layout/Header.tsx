@@ -1,16 +1,16 @@
-'use server';
+'use client';
 
 import { ChangeTheme } from '../theme/ChangeTheme';
 import { cn } from '@/lib/utils';
 import { ScrollProgressBorder } from './ScrollProgress';
 import { NavigationLinks } from './NavigationLinks';
-import { getCurrentUser } from '@/action/auth/login';
 import LanguageSwitcher from './ChangeLang';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 
 
-export const Header = async () => {
-	const user = await getCurrentUser();
+export const Header = () => {
+	const { user } = useCurrentUser();
 	
 	return (
 		<header className='sticky top-0 z-50 w-full px-4 pt-4 pb-6' role='banner'>

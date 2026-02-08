@@ -12,6 +12,14 @@ export const NavigationLinks = ({isAdmin}: {isAdmin?: boolean}) => {
 	const pathname = usePathname();
 
 	const pathWithoutLocale = pathname.replace(/^\/[a-z]{2}/, '') || '/';
+	const localeMatch = pathname.match(/^\/([a-z]{2})(?:\/|$)/);
+	const locale = localeMatch?.[1];
+
+	const withLocale = (href: string) => {
+		if (!locale) return href;
+		if (href === '/') return `/${locale}`;
+		return `/${locale}${href}`;
+	};
 
 	const isActive = (href: string): boolean => {
 		const normalizedHref = href === '/' ? '/' : href.replace(/\/$/, '');
@@ -29,7 +37,7 @@ export const NavigationLinks = ({isAdmin}: {isAdmin?: boolean}) => {
 			{isAdmin && (
 				<>
 					<Link
-						href='/projects/create'
+						href={withLocale('/projects/create')}
 						className={cn(
 							'relative transition-all uration-300 hover:scale-105'
 						)}
@@ -49,7 +57,7 @@ export const NavigationLinks = ({isAdmin}: {isAdmin?: boolean}) => {
 			)}
 
 			<Link
-				href='/projects'
+				href={withLocale('/projects')}
 				className={cn(
 					'relative text-sm border-[1px] border-transparent font-medium transition-all p-1 rounded-md no-underline duration-300 hover:border-foreground',
 					isActive('/projects') &&
@@ -67,7 +75,7 @@ export const NavigationLinks = ({isAdmin}: {isAdmin?: boolean}) => {
 				)}
 			/>
 
-			<Link href='/' className='flex items-center' aria-label='Home'>
+			<Link href={withLocale('/')} className='flex items-center' aria-label='Home'>
 				<Rounded
 					className={cn(
 						'h-10 w-10 flex items-center justify-center text-lg transition-all duration-500'
@@ -86,7 +94,7 @@ export const NavigationLinks = ({isAdmin}: {isAdmin?: boolean}) => {
 			/>
 
 			<Link
-				href='/blog'
+				href={withLocale('/blog')}
 				className={cn(
 					'relative text-sm border-[1px] border-transparent font-medium transition-all p-1 rounded-md no-underline duration-300 hover:border-foreground',
 					isActive('/blog') &&
@@ -106,7 +114,7 @@ export const NavigationLinks = ({isAdmin}: {isAdmin?: boolean}) => {
 						)}
 					/>
 					<Link
-						href='/blog/create'
+						href={withLocale('/blog/create')}
 						className={cn(
 							'relative transition-all uration-300 hover:scale-105'
 						)}

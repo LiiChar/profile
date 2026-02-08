@@ -1,4 +1,6 @@
-import { CommentWithUser } from '@/types/comments';
+'use client';
+
+import type { CommentWithUser } from '@/types/comments';
 import { CommentCardAnimation } from '../animation/CommentCard';
 import { Markdown } from '../ui/markdown';
 import { Heart } from 'lucide-react';

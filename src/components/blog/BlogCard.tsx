@@ -12,12 +12,18 @@ import { Text } from '../ui/text-server';
 import { Date } from '../date/Date';
 import { Content } from '../text/Content';
 import { ContentMarkdown } from '../text/ContentMarkdown';
+import { Lang } from '@/types/i18n';
 
 type BlogCardProps = {
 	blog: BlogType;
+	lang: Lang;
 } & React.HTMLAttributes<HTMLDivElement>;
 
-export const BlogCard = ({ blog, className, ...attr }: BlogCardProps) => {
+export const BlogCard = ({ blog, lang, className, ...attr }: BlogCardProps) => {
+	const basePath = `/${lang}`;
+	const blogHref = `${basePath}/blog/${blog.id}`;
+	const tagBase = `${basePath}/blog/tag/`;
+
 	return (
 		<div 
 			{...attr} 
@@ -27,7 +33,7 @@ export const BlogCard = ({ blog, className, ...attr }: BlogCardProps) => {
 			)}
 		>
 			<Link
-				href={`/blog/${blog.id}`}
+				href={blogHref}
 				className='relative overflow-hidden rounded-md'
 			>
 				{(blog.image ?? DEFAULT_IMAGE) && (
@@ -62,11 +68,15 @@ export const BlogCard = ({ blog, className, ...attr }: BlogCardProps) => {
 
 				<div className='flex gap-3 items-center text-sm mt-auto'>
 					{blog.tags && (
-						<TagList tags={blog.tags} limit={blog.tags.length <= 24 ? 2 : 1} />
+						<TagList
+							tags={blog.tags}
+							limit={blog.tags.length <= 24 ? 2 : 1}
+							linkBase={tagBase}
+						/>
 					)}
 					<Separator />
 					<Link
-						href={`/blog/${blog.id}`}
+						href={blogHref}
 						className='text-nowrap flex group items-center gap-1 animated-underline transition-colors duration-300 hover:text-primary'
 					>
 						<span>

@@ -1,15 +1,14 @@
 import { Text } from '@/components/ui/text-server';
 import { MapPin, Phone, Mail } from 'lucide-react';
 import { ResumeDownloadButtons } from '@/components/resume/ResumeDownloadButtons';
-import ArticleNav from '@/widgets/article/ArticleNavWrapper';
-import Portal from '@/components/ui/portal';
+import ArticleNavDock from '@/widgets/article/ArticleNavDock';
 
 export const dynamic = 'force-static';
 
 export default function Resume() {
   return (
 		<main className='min-h-screen px-4 py-6 md:px-6 md:py-12 relative rusume-content'>
-			<div className='mx-auto max-w-4xl space-y-12'>
+			<div className='mx-auto max-w-4xl space-y-12 resume-content'>
 				<div className='space-y-6'>
 					<div className='text-center space-y-4'>
 						<h1 className='text-5xl md:text-6xl font-extrabold text-foreground tracking-tight'>
@@ -310,14 +309,11 @@ export default function Resume() {
 
 				<ResumeDownloadButtons />
 			</div>
-			<Portal>
-				<div className='max-w-4xl w-full z-[100000000000] pr-8 md:pr-12 top-[50%] flex justify-end translate-y-[-50%] fixed'>
-					<ArticleNav
-						className='relative min-[1250px]:translate-x-[100%]'
-						targetSelect='.rusume-content'
-					/>
-				</div>
-			</Portal>
+			<ArticleNavDock
+				className='relative'
+				alignSelect='.resume-content'
+				targetSelect='.rusume-content'
+			/>
 		</main>
 	);
 }

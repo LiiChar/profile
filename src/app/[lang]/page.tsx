@@ -4,10 +4,16 @@ import { Hero } from '@/widgets/main/Hero';
 import { Knowledge } from '@/widgets/main/Knowledge';
 import { LinePortfolio } from '@/widgets/main/LinePortfolio';
 import { Navigation } from '@/widgets/main/Navigation';
+import { Lang } from '@/types/i18n';
 
 export const dynamic = 'force-static';
 
-export default function Home() {
+export default async function Home({
+	params,
+}: {
+	params: Promise<{ lang: Lang }>;
+}) {
+	const { lang } = await params;
 	return (
 		<main
 			id='main-content'
@@ -18,7 +24,7 @@ export default function Home() {
 				<Description />
 				<Knowledge />
 				<LinePortfolio />
-				<Blog />
+				<Blog lang={lang} />
 			</Navigation>
 		</main>
 	);

@@ -4,6 +4,9 @@ import { db } from '@/db/db';
 import { blogs, BlogType } from '@/db/tables/blog';
 import { eq } from 'drizzle-orm';
 import translate from 'google-translate-api-x';
+import { revalidatePath } from 'next/cache';
+
+const LANGS = ['ru', 'en'] as const;
 
 export const updateBlog = async (
 	data: Partial<Pick<BlogType, 'id' | 'userId' | 'title' | 'content' | 'lang' | 'image'>>
@@ -66,4 +69,10 @@ export const updateBlog = async (
 	if (!updatedBlog[0]) {
 		throw Error('Произошла ошибка при обновлении статьи. Попробуйте позже');
 	}
+
+	LANGS.forEach((lang) => {
+		revalidatePath(`/${lang}`);
+		revalidatePath(`/${lang}/blog`);
+		revalidatePath(`/${lang}/blog/${data.id}`);
+	});
 };

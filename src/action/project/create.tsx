@@ -3,6 +3,9 @@
 import { db } from '@/db/db';
 import { projects, ProjectType } from '@/db/tables/project';
 import translate from 'google-translate-api-x';
+import { revalidatePath } from 'next/cache';
+
+const LANGS = ['ru', 'en'] as const;
 
 export const createProject = async (
 	data: Pick<ProjectType, 'userId' | 'title' | 'content' | 'image'>
@@ -50,6 +53,13 @@ export const createProject = async (
 	if (!newProject[0]) {
 		throw Error('Произошла ошибка при создании проекта. Попробуйте позже');
 	}
+
+	const projectId = newProject[0].id;
+	LANGS.forEach((lang) => {
+		revalidatePath(`/${lang}`);
+		revalidatePath(`/${lang}/projects`);
+		revalidatePath(`/${lang}/projects/${projectId}`);
+	});
 
 	return newProject[0];
 };

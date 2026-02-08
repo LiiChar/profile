@@ -3,6 +3,14 @@
 import { db } from '@/db/db';
 import { projects } from '@/db/tables/project';
 import translate from 'google-translate-api-x';
+import { revalidatePath } from 'next/cache';
+
+const LANGS = ['ru', 'en'] as const;
+const parseTags = (tags?: string) =>
+	(tags ?? '')
+		.split(',')
+		.map((tag) => tag.trim())
+		.filter(Boolean);
 
 export const createProject = async (
 	data: {
@@ -71,6 +79,15 @@ export const createProject = async (
 	if (!newProject[0]) {
 		throw Error('Error creating project');
 	}
+
+	const projectId = newProject[0].id;
+	const tags = parseTags(data.tags);
+	LANGS.forEach((lang) => {
+		revalidatePath(`/${lang}`);
+		revalidatePath(`/${lang}/projects`);
+		revalidatePath(`/${lang}/projects/${projectId}`);
+		tags.forEach((tag) => revalidatePath(`/${lang}/projects/tag/${tag}`));
+	});
 
 	return newProject[0];
 };

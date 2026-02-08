@@ -4,11 +4,26 @@ import { db } from '@/db/db';
 import { projects, ProjectType } from '@/db/tables/project';
 import { eq } from 'drizzle-orm';
 import translate from 'google-translate-api-x';
+import { revalidatePath } from 'next/cache';
 // import translate from 'google-translate-api-x';
 
 export const updateProject = async (
 	data: Partial<
-		Pick<ProjectType, 'id' | 'userId' | 'title' | 'content' | 'image' | 'description'>
+		Pick<
+			ProjectType,
+			| 'id'
+			| 'userId'
+			| 'title'
+			| 'content'
+			| 'image'
+			| 'description'
+			| 'author'
+			| 'repoName'
+			| 'url'
+			| 'tags'
+			| 'lang'
+			| 'gallery'
+		>
 	>
 ) => {
 	// TODO
@@ -73,4 +88,21 @@ export const updateProject = async (
 	if (!updatedBlog[0]) {
 		throw Error('Произошла ошибка при обновлении статьи. Попробуйте позже');
 	}
+
+	const LANGS = ['ru', 'en'] as const;
+	const parseTags = (tags?: string | null) =>
+		(tags ?? '')
+			.split(',')
+			.map((tag) => tag.trim())
+			.filter(Boolean);
+	const tagSet = new Set([
+		...parseTags(existedBlog.tags),
+		...parseTags(data.tags),
+	]);
+	LANGS.forEach((lang) => {
+		revalidatePath(`/${lang}`);
+		revalidatePath(`/${lang}/projects`);
+		revalidatePath(`/${lang}/projects/${data.id}`);
+		tagSet.forEach((tag) => revalidatePath(`/${lang}/projects/tag/${tag}`));
+	});
 };

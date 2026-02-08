@@ -3,6 +3,14 @@
 import { db } from '@/db/db';
 import { blogs } from '@/db/tables/blog';
 import translate from 'google-translate-api-x';
+import { revalidatePath } from 'next/cache';
+
+const LANGS = ['ru', 'en'] as const;
+const parseTags = (tags?: string) =>
+	(tags ?? '')
+		.split(',')
+		.map((tag) => tag.trim())
+		.filter(Boolean);
 
 export const createBlog = async (
 	data: {
@@ -49,6 +57,15 @@ export const createBlog = async (
 	if (!newBlog[0]) {
 		throw Error('Error creating blog');
 	}
+
+	const blogId = newBlog[0].id;
+	const tags = parseTags(data.tags);
+	LANGS.forEach((lang) => {
+		revalidatePath(`/${lang}`);
+		revalidatePath(`/${lang}/blog`);
+		revalidatePath(`/${lang}/blog/${blogId}`);
+		tags.forEach((tag) => revalidatePath(`/${lang}/blog/tag/${tag}`));
+	});
 
 	return newBlog[0];
 };

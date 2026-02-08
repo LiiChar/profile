@@ -37,5 +37,5 @@ export default function DitherLazy() {
 	}, []);
 
 	if (!enabled) return null;
-	return <Dither />;
+	return <Dither disableAnimation={true} />;
 }

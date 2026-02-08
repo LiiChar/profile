@@ -28,7 +28,7 @@ export const BlogCard = ({ blog, lang, className, ...attr }: BlogCardProps) => {
 		<div 
 			{...attr} 
 			className={cn(
-				'flex flex-col gap-4 group/card hover-lift transition-all duration-300',
+				'flex flex-col gap-4 group/card transition-all duration-300',
 				className
 			)}
 		>

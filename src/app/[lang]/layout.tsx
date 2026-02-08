@@ -13,7 +13,7 @@ import { InitProvider } from '@/widgets/layout/InitProvider';
 import { Scroll } from '@/widgets/layout/Scroll';
 import { TooltipProvider } from '@radix-ui/react-tooltip';
 import Script from 'next/script';
-import Dither from '@/components/background/Dither';
+import DitherLazy from '@/components/background/DitherLazy';
 import { Auth } from '@/widgets/layout/Auth';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { env } from '@/helpers/env.server';
@@ -94,13 +94,17 @@ export default async function RootLayout({
 	const resolvedParams = await params;
 	return (
 		<html lang={resolvedParams.lang}>
+			<head>
+				<link rel='preconnect' href='https://api.puter.com' />
+				<link rel='dns-prefetch' href='https://api.puter.com' />
+			</head>
 			{env.DEV! || env.DEV !== 'true' ? (
 				<>
 					<Analytics />
 					<SpeedInsights />
 				</>
 			) : ''}
-			<Script src='https://js.puter.com/v2/' strategy='afterInteractive' />
+			<Script src='https://js.puter.com/v2/' strategy='lazyOnload' />
 			<Script
 				id='structured-data'
 				type='application/ld+json'
@@ -146,8 +150,8 @@ export default async function RootLayout({
 							{children}
 							<Footer />
 							<Auth />
-							<Cookie />
-							<Dither />
+							<Cookie lang={resolvedParams.lang as 'en' | 'ru'} />
+							<DitherLazy />
 						</TooltipProvider>
 					</InitProvider>
 				</body>

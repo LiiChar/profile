@@ -262,7 +262,7 @@ export const LinePortfolio = React.memo(() => {
 			className='relative'
 			style={{ height: CANVAS_HEIGHT + 260 }}
 		>
-			<h2 className='mb-28 text-center'>
+			<h2 className='mb-28 '>
 				<Text text='page.main.portfolio.title' />
 			</h2>
 

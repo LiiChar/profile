@@ -1,5 +1,5 @@
 import { Text } from '@/components/ui/text-server';
-import ArticleNavDock from '@/widgets/article/ArticleNavDock';
+import ArticleNav from '@/widgets/article/ArticleNav';
 
 export const dynamic = 'force-static';
 
@@ -83,11 +83,12 @@ export default async function CookiePolicyPage() {
 					</section>
 				</div>
 			</div>
-			<ArticleNavDock
-				className='relative'
-				alignSelect='.cookie-policy-inner'
-				targetSelect='.cookie-policy-content'
-			/>
+			<div className=' max-w-3xl z-[100000000000] top-[50%] w-full pr-8 flex justify-end translate-y-[-50%] fixed pointer-events-none'>
+				<ArticleNav
+					className='max-w-64 overflow-auto shrink-0 relative min-[1250px]:translate-x-[100%] pointer-events-auto'
+					targetSelect='.cookie-policy-content'
+				/>
+			</div>
 		</main>
 	);
 }

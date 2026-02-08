@@ -28,6 +28,10 @@ cypress/downloads/
 
 # next.js
 /.next/
+/.vs/
+/.vscode/
+/certificates/
+/cypress/
 /out/
 
 # production

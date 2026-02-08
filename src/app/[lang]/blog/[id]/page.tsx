@@ -9,7 +9,6 @@ import Image from 'next/image';
 import { Metadata } from 'next';
 import { getFieldLang } from '@/helpers/i18n';
 import { TagList } from '@/components/tag/TagList';
-import ArticleNavDock from '@/widgets/article/ArticleNavDock';
 import { BackwardLink } from '@/components/ui/backward-link';
 import { ContentMetrics } from '@/components/metrics/ContentMetrics';
 import { cn } from '@/lib/utils';
@@ -20,6 +19,7 @@ import { CommentsListWithUser } from '@/components/comments/CommentsListWithUser
 import { MetricTracker } from '@/components/metrics/MetricTracker';
 import { locales } from '@/const/i18n';
 import { Lang } from '@/types/i18n';
+import ArticleNav from '@/widgets/article/ArticleNav';
 
 export const revalidate = 3600;
 
@@ -101,7 +101,12 @@ export default async function Page({
 			<MetricTracker action='view' targetType='blog' targetId={blogId} />
 			<BackwardLink href={`/${lang}/blog`} />
 			<Card className='relative blog-detail-card'>
-				<CardHeader className={cn('px-4 sm:px-6 lg:px-8 relative', image ? 'pb-4 -mt-6' : '')}>
+				<CardHeader
+					className={cn(
+						'px-4 sm:px-6 lg:px-8 relative',
+						image ? 'pb-4 -mt-6' : '',
+					)}
+				>
 					{image && (
 						<div className='px-4 sm:px-6 lg:px-8 mb-6'>
 							<Image
@@ -130,11 +135,12 @@ export default async function Page({
 
 				{/* Контент статьи */}
 				<CardContent className='px-0'>
-					<ArticleNavDock
-						className='relative'
-						alignSelect='.blog-detail-card'
-						targetSelect='.markdrow-content'
-					/>
+					<div className=' max-w-3xl z-[100000000000] top-[50%] w-full pr-8 flex justify-end translate-y-[-50%] fixed pointer-events-none'>
+						<ArticleNav
+							className='max-w-64 overflow-auto shrink-0 relative min-[1250px]:translate-x-[100%] pointer-events-auto'
+							targetSelect='.markdrow-content'
+						/>
+					</div>
 					<div className='prose prose-lg max-w-none markdrow-content px-4 sm:px-6 lg:px-8'>
 						<ContentMarkdown data={blog} field='content' />
 					</div>

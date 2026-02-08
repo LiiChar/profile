@@ -263,7 +263,7 @@ export default function ArticleNav({ targetSelect, ...attr }: ArticleNavProps) {
 			{...attr}
 			className={cn(
 				'article-nav max-w-64 overflow-auto shrink-0 transition-transform duration-150',
-				expanded && '-translate-x-[6px]',
+				expanded && '-translate-x-[6px] article-nav-expanded',
 				attr.className
 			)}
 		>

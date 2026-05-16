@@ -20,3 +20,13 @@ export async function POST(request: NextRequest) {
 
 	return response;
 }
+
+export async function GET(request: NextRequest) {
+	const response = NextResponse.redirect(getReturnUrl(request, null), 303);
+	response.cookies.set('allow-cookies', 'true', {
+		path: '/',
+		maxAge: 60 * 60 * 24 * 365,
+	});
+
+	return response;
+}

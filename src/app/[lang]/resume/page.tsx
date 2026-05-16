@@ -2,11 +2,45 @@ import { Text } from '@/components/ui/text-server';
 import { MapPin, Phone, Mail } from 'lucide-react';
 import { ResumeDownloadButtons } from '@/components/resume/ResumeDownloadButtons';
 import ArticleNav from '@/widgets/article/ArticleNav';
+import { getDictionary } from '@/dictionaries/dictionaries';
+import { getFromDict } from '@/helpers/i18n-client';
+import { LangParams } from '@/types/i18n';
 
 export const dynamic = 'force-static';
 
-export default function Resume() {
-  return (
+export default async function Resume({ params }: LangParams) {
+	const { lang } = await params;
+	const dict = await getDictionary(lang as 'en' | 'ru');
+	const t = (path: string) => getFromDict(dict, path);
+
+	const responsibilities =
+		(t('page.resume.experience.position1.responsibilities') as string[]) ??
+		[];
+	const achievements =
+		(t('page.resume.experience.position1.achievements') as string[]) ?? [];
+	const technicalSkills =
+		(t('page.resume.skills.technicalList') as string[]) ?? [];
+	const softSkills = (t('page.resume.skills.softList') as string[]) ?? [];
+
+	const experienceWebsite = t(
+		'page.resume.experience.position1.website'
+	) as string;
+	const experienceWebsiteUrl = experienceWebsite?.startsWith('http')
+		? experienceWebsite
+		: `https://${experienceWebsite}`;
+
+	const projectWebsite = t(
+		'page.resume.projects.project1.website'
+	) as string;
+	const projectWebsiteUrl = projectWebsite?.startsWith('http')
+		? projectWebsite
+		: `https://${projectWebsite}`;
+
+	const telegram = t('page.resume.contact.telegram') as string;
+	const email = t('page.resume.contact.email') as string;
+	const github = t('page.resume.contact.github') as string;
+
+	return (
 		<main className='min-h-screen px-4 py-6 md:px-6 md:py-12 relative rusume-content'>
 			<div className='mx-auto max-w-4xl space-y-12 resume-content'>
 				<div className='space-y-6'>
@@ -18,7 +52,6 @@ export default function Resume() {
 							<Text text='page.resume.personal.title' />
 						</h2>
 					</div>
-
 					<div className='flex flex-wrap justify-center gap-6 text-muted-foreground'>
 						<div className='flex items-center gap-2'>
 							<MapPin className='h-5 w-5 text-primary' />
@@ -43,96 +76,71 @@ export default function Resume() {
 
 				<div className='space-y-4'>
 					<h2 className='text-3xl font-bold text-foreground border-b-2 border-border pb-2'>
-						<Text text='page.resume.personal.about.title' />
+						{t('page.resume.personal.about.title')}
 					</h2>
 					<p className='text-foreground/90 leading-relaxed text-lg whitespace-pre-line'>
-						<Text text='page.resume.personal.about.content' />
+						{t('page.resume.personal.about.content')}
 					</p>
 				</div>
 
 				<div className='space-y-6'>
 					<h2 className='text-3xl font-bold text-foreground border-b-2 border-border pb-2'>
-						Опыт работы
+						<Text text='page.resume.sections.experience' />
 					</h2>
 					<div className='space-y-8'>
 						<div className='bg-card p-6 rounded-lg border border-border'>
 							<div className='flex flex-col md:flex-row md:items-center md:justify-between mb-4'>
 								<h3 className='text-xl font-semibold text-foreground'>
-									Разработчик
+									<Text text='page.resume.experience.position1.position' />
 								</h3>
 								<span className='bg-muted px-3 py-1 rounded-md text-sm font-medium text-muted-foreground mt-2 md:mt-0'>
-									06-2024 — 06-2025
+									<Text text='page.resume.experience.position1.date.start' /> —{' '}
+									<Text text='page.resume.experience.position1.date.end' />
 								</span>
 							</div>
 							<div className='space-y-4'>
 								<div className='flex items-center gap-4'>
 									<span className='text-lg font-medium text-foreground'>
-										ООО «Артена»
+										<Text text='page.resume.experience.position1.company' />
 									</span>
 									<a
-										href='https://artena.ru/'
+										href={experienceWebsiteUrl}
 										target='_blank'
 										className='text-primary hover:underline'
 									>
-										artena.ru/
+										{experienceWebsite}
 									</a>
 								</div>
-								<p className='text-muted-foreground'>Россия, Екатеринбург</p>
+								<p className='text-muted-foreground'>
+									<Text text='page.resume.experience.position1.location' />
+								</p>
 								<p className='text-foreground/90'>
-									Занимался разработкой, доработкой сайтов для бизнеса.
+									<Text text='page.resume.experience.position1.description' />
 								</p>
 
 								<div>
 									<h4 className='font-semibold text-foreground mb-3'>
-										Обязанности:
+										<Text text='page.resume.sections.responsibilities' />:
 									</h4>
 									<ul className='space-y-2 text-foreground/80 ml-6'>
-										<li className='list-disc'>
-											Дорабатывал и модернизировал готовые сайты клиентов на
-											1С-Bitrix24
-										</li>
-										<li className='list-disc'>
-											Выполнял задачи по ТЗ: новые страницы, формы, интеграции,
-											исправление багов
-										</li>
-										<li className='list-disc'>
-											Оптимизировал скорость загрузки и мобильную адаптивность
-											(PageSpeed 90+ баллов)
-										</li>
-										<li className='list-disc'>
-											Занимался доступностью (WCAG) и базовым SEO: метатеги,
-											ЧПУ, микроразметка schema.org
-										</li>
-										<li className='list-disc'>
-											Писал кастомные скрипты и виджеты на JavaScript, иногда
-											React/Vue для отдельных блоков
-										</li>
-										<li className='list-disc'>
-											Работал с конструкторами (Bitrix, wordpress, иногда
-											Tilda), вносил правки в PHP-шаблоны
-										</li>
-										<li className='list-disc'>
-											Получал обратную связь от менеджеров и клиентов, закрывал
-											задачи в срок
-										</li>
+										{responsibilities.map((item) => (
+											<li key={item} className='list-disc'>
+												{item}
+											</li>
+										))}
 									</ul>
 								</div>
 
 								<div>
 									<h4 className='font-semibold text-foreground mb-3'>
-										Достижения:
+										<Text text='page.resume.sections.achievements' />:
 									</h4>
 									<ul className='space-y-2 text-foreground/80 ml-6'>
-										<li className='list-disc'>
-											Сократил время отклика приложения на 30% за счет
-											оптимизации запросов к базе данных и внедрения
-											кэширования.
-										</li>
-										<li className='list-disc'>
-											Увеличил масштабируемость приложения, разработав новую
-											архитектуру API, что позволило обрабатывать на 50% больше
-											запросов в час пик.
-										</li>
+										{achievements.map((item) => (
+											<li key={item} className='list-disc'>
+												{item}
+											</li>
+										))}
 									</ul>
 								</div>
 							</div>
@@ -142,54 +150,55 @@ export default function Resume() {
 
 				<div className='space-y-6'>
 					<h2 className='text-3xl font-bold text-foreground border-b-2 border-border pb-2'>
-						Образование
+						<Text text='page.resume.sections.education' />
 					</h2>
 					<div className='bg-card p-6 rounded-lg border border-border'>
 						<div className='flex flex-col md:flex-row md:items-center md:justify-between mb-4'>
 							<h3 className='text-xl font-semibold text-foreground'>
-								Среднее профессиональное
+								<Text text='page.resume.education.education1.degree' />
 							</h3>
 							<span className='bg-muted px-3 py-1 rounded-md text-sm font-medium text-muted-foreground mt-2 md:mt-0'>
-								09-2020 — 05-2024
+								<Text text='page.resume.education.education1.date.start' /> —{' '}
+								<Text text='page.resume.education.education1.date.end' />
 							</span>
 						</div>
 						<div className='space-y-2'>
 							<p className='font-medium text-foreground'>
-								Нижнетагильский торгово-экономический колледж
+								<Text text='page.resume.education.education1.institution' />
 							</p>
-							<p className='text-muted-foreground'>Россия</p>
+							<p className='text-muted-foreground'>
+								<Text text='page.resume.education.education1.location' />
+							</p>
 						</div>
 					</div>
 				</div>
 
 				<div className='space-y-6'>
 					<h2 className='text-3xl font-bold text-foreground border-b-2 border-border pb-2'>
-						Проекты
+						<Text text='page.resume.sections.projects' />
 					</h2>
 					<div className='bg-card p-6 rounded-lg bo rder border-border'>
 						<div className='flex flex-col md:flex-row md:items-center md:justify-between mb-4'>
 							<h3 className='text-xl font-semibold text-foreground'>
-								Изменение структуры каталога сайта
+								<Text text='page.resume.projects.project1.title' />
 							</h3>
 							<span className='bg-muted px-3 py-1 rounded-md text-sm font-medium text-muted-foreground mt-2 md:mt-0'>
-								02-2025
+								<Text text='page.resume.projects.project1.date' />
 							</span>
 						</div>
 						<div className='space-y-4'>
-							<p className='font-medium text-foreground'>{`ООО "ПААЗ"`}</p>
+							<p className='font-medium text-foreground'>
+								<Text text='page.resume.projects.project1.company' />
+							</p>
 							<a
-								href='https://www.paaz.ru/'
+								href={projectWebsiteUrl}
 								target='_blank'
 								className='text-primary hover:underline'
 							>
-								www.paaz.ru/
+								{projectWebsite}
 							</a>
 							<p className='text-foreground/90'>
-								Занимался переработкой структуры основного каталога сайта, чтобы
-								повысить конверсию и исправить проблемы с ЧПУ. Добавил более
-								логичную навигацию и оптимизировал распределение категорий. В
-								итоге улучшилось поведение пользователей и повысилась видимость
-								страниц в поиске.
+								<Text text='page.resume.projects.project1.description' />
 							</p>
 						</div>
 					</div>
@@ -197,13 +206,15 @@ export default function Resume() {
 
 				<div className='space-y-6'>
 					<h2 className='text-3xl font-bold text-foreground border-b-2 border-border pb-2'>
-						Языки
+						<Text text='page.resume.sections.languages' />
 					</h2>
 					<div className='bg-card p-6 rounded-lg border border-border'>
 						<div className='flex items-center justify-between'>
-							<span className='font-medium text-foreground'>Английский</span>
+							<span className='font-medium text-foreground'>
+								<Text text='page.resume.languages.english.name' />
+							</span>
 							<span className='bg-muted px-3 py-1 rounded-md text-sm font-medium text-muted-foreground'>
-								B1
+								<Text text='page.resume.languages.english.level' />
 							</span>
 						</div>
 					</div>
@@ -211,40 +222,40 @@ export default function Resume() {
 
 				<div className='space-y-6'>
 					<h2 className='text-3xl font-bold text-foreground border-b-2 border-border pb-2'>
-						Ссылки
+						<Text text='page.resume.sections.links.title' />
 					</h2>
 					<div className='bg-card p-6 rounded-lg border border-border space-y-3'>
 						<div className='flex items-center gap-3'>
 							<strong className='font-semibold text-foreground min-w-[100px]'>
-								Telegram:
+								<Text text='page.resume.sections.links.telegram' />:
 							</strong>
 							<a
-								href='https://t.me/lLItaV'
+								href={telegram?.startsWith('http') ? telegram : `https://${telegram}`}
 								className='text-primary hover:underline'
 							>
-								t.me/lLItaV
+								{telegram}
 							</a>
 						</div>
 						<div className='flex items-center gap-3'>
 							<strong className='font-semibold text-foreground min-w-[100px]'>
-								Email:
+								<Text text='page.resume.sections.links.email' />:
 							</strong>
 							<a
-								href='mailto:litavanchik@gmail.com'
+								href={`mailto:${email}`}
 								className='text-primary hover:underline'
 							>
-								litavanchik@gmail.com
+								{email}
 							</a>
 						</div>
 						<div className='flex items-center gap-3'>
 							<strong className='font-semibold text-foreground min-w-[100px]'>
-								GitHub:
+								<Text text='page.resume.sections.links.github' />:
 							</strong>
 							<a
-								href='https://github.com/LiiChar'
+								href={github?.startsWith('http') ? github : `https://${github}`}
 								className='text-primary hover:underline'
 							>
-								github.com/LiiChar
+								{github}
 							</a>
 						</div>
 					</div>
@@ -252,28 +263,16 @@ export default function Resume() {
 
 				<div className='space-y-6'>
 					<h2 className='text-3xl font-bold text-foreground border-b-2 border-border pb-2'>
-						Навыки
+						<Text text='page.resume.sections.skills.title' />
 					</h2>
 
 					<div className='grid md:grid-cols-2 gap-6'>
 						<div className='bg-card p-6 rounded-lg border border-border space-y-4'>
 							<h3 className='text-lg font-semibold text-foreground'>
-								Технические навыки
+								<Text text='page.resume.sections.skills.technical' />
 							</h3>
 							<div className='flex flex-wrap gap-2'>
-								{[
-									'TypeScript',
-									'React',
-									'Git',
-									'Vue',
-									'Redux',
-									'Next.js',
-									'Tailwind',
-									'Node.js',
-									'CSS',
-									'HTML',
-									'Javascript',
-								].map(skill => (
+								{technicalSkills.map((skill) => (
 									<span
 										key={skill}
 										className='bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium'
@@ -286,15 +285,10 @@ export default function Resume() {
 
 						<div className='bg-card p-6 rounded-lg border border-border space-y-4'>
 							<h3 className='text-lg font-semibold text-foreground'>
-								Софт навыки
+								<Text text='page.resume.sections.skills.soft' />
 							</h3>
 							<div className='flex flex-wrap gap-2'>
-								{[
-									'Командная работа',
-									'Решение проблем',
-									'Коммуникация',
-									'Самостоятельность',
-								].map(skill => (
+								{softSkills.map((skill) => (
 									<span
 										key={skill}
 										className='bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-sm font-medium'

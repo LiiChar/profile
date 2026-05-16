@@ -143,6 +143,27 @@
 				"pdf": "Скачать PDF",
 				"image": "Скачать изображение",
 				"title": "Скачать резюме"
+			},
+			"skills": {
+				"technicalList": [
+					"TypeScript",
+					"React",
+					"Git",
+					"Vue",
+					"Redux",
+					"Next.js",
+					"Tailwind",
+					"Node.js",
+					"CSS",
+					"HTML",
+					"JavaScript"
+				],
+				"softList": [
+					"Командная работа",
+					"Решение проблем",
+					"Коммуникация",
+					"Самостоятельность"
+				]
 			}
 		}
 	},

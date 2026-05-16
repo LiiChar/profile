@@ -66,7 +66,7 @@ export const LinePortfolio = React.memo(() => {
 	useLayoutEffect(() => {
 		if (!pathRef.current) return;
 
-		let frameId = requestAnimationFrame(() => {
+		const frameId = requestAnimationFrame(() => {
 			if (!pathRef.current) return;
 			const length = pathRef.current.getTotalLength();
 			setTotalLength(length);

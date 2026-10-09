@@ -1,303 +1,293 @@
-	import { dbFactory } from '.';
-	import { projects, ProjectType } from '@/db/tables/project';
+import { dbFactory } from '.';
+import { projects, ProjectType } from '@/db/tables/project';
 
-	type ProjectFactoryInsert = Pick<
-		ProjectType,
-		'content' | 'tags' | 'title' | 'userId'
-	> & { repoName?: string } & Partial<ProjectType>;
+type ProjectFactoryInsert = Pick<
+	ProjectType,
+	'content' | 'tags' | 'title' | 'userId'
+> & Partial<Pick<ProjectType, 'description' | 'lang' | 'repoName' | 'url'>>;
 
-	export const projectFactory = async (content: ProjectFactoryInsert[]) => {
-		await dbFactory.insert(projects).values(content);
-	};
+export const projectFactory = async (content: ProjectFactoryInsert[]) => {
+	await dbFactory.insert(projects).values(content);
+};
 
-	export const projectFactoryReset = async () => {
-		await dbFactory.delete(projects).execute();
-	};
+export const projectFactoryReset = async () => {
+	await dbFactory.delete(projects).execute();
+};
 
-	export const runProjectFactory = async () => {
-		console.log('Начало миграции ProjectFactory');
-		await projectFactory(projectContent);
-		console.log(' - Конец миграции ProjectFactory', '\n');
-	};
+export const runProjectFactory = async () => {
+	console.log('Начало миграции ProjectFactory');
+	await projectFactory(projectContent);
+	console.log(' - Конец миграции ProjectFactory', '\n');
+};
 
-	const projectContent: ProjectFactoryInsert[] = [
-		{
-			title: 'Itihas - сайт для создания интерактивных историй',
-			repoName: 'itihas',
-			description:
-				'Интерактивная платформа для визуализации исторических данных и создания нелинейных историй',
-			content: `# Itihas — интерактивная платформа для исторических данных и нелинейных нарративов
+const projectContent: ProjectFactoryInsert[] = [
+	{
+		title: 'Itihas — интерактивные истории и временные шкалы',
+		repoName: 'itihas',
+		description: 'Проект для создания и изучения историй, связанных с последовательностью событий и временной шкалой.',
+		content: `# Itihas — истории, связанные со временем
 
-**Ссылка:** https://itihas.vercel.app  
-**Репозиторий:** https://github.com/LiiChar/itihas  
+Itihas — проект на стыке исторического материала и интерактивного повествования. Его идея — представить события в хронологическом контексте и помочь читателю увидеть, как отдельные эпизоды складываются в более широкую историю.
 
-## Общее описание и мотивация
-Itihas (санскр. «история») — это полноценная веб-платформа, позволяющая создавать, публиковать и изучать интерактивные исторические нарративы и визуализации временных шкал. Проект задумывался как инструмент для историков, преподавателей, музеев и энтузиастов, которым не хватает гибкости в существующих решениях типа TimelineJS или Tiki-Toki. Основная идея — объединить мощный редактор нелинейных историй с красивой интерактивной временной шкалой и возможностью встраивания мультимедиа.
+## Задача проекта
 
-## Технологический стек
-- **Frontend**: React 18 + TypeScript + Vite
-- **UI**: Tailwind CSS + Headless UI + custom компоненты
-- **Состояние**: Zustand (лёгкий и быстрый аналог Redux)
-- **Визуализация таймлайна**: Visx (низкоуровневая обёртка над D3.js) + custom zoom/pan логика
-- **Редактор блоков**: Tiptap (headless ProseMirror) с кастомными расширениями для эмбедов карт и таймлайнов
-- **Хранение данных**: SQLite через Drizzle ORM (локальная разработка) + Turso (libsql) в продакшене
-- **Бэкенд**: Node.js + Express + Drizzle ORM
-- **Аутентификация**: NextAuth.js (переиспользуется в API routes)
-- **Деплой**: Vercel (frontend + serverless API)
-
-## Уникальные фичи
-1. **Нелинейные ветвящиеся истории** — пользователь может создавать несколько веток событий с условными переходами.
-2. **Двухсторонняя связь редактора и таймлайна** — изменение даты в редакторе мгновенно отражается на шкале и наоборот.
-3. **Глубокий зум таймлайна** — от миллиардов лет до секунд с сохранением производительности (виртуализация + LOD).
-4. **Встроенные карты** — интеграция с Mapbox GL JS, события можно привязывать к геоточкам.
-5. **Экспорт в статический сайт** — один клик генерирует полностью автономный HTML с встроенными данными.
-6. **Мультиязычность контента** — каждое событие может иметь переводы, переключение языка на лету.
-7. **Версионирование историй** — как в Git: можно откатиться к любой версии.
-
-## Как запустить локально
-\`\`\`bash
-# Клонируем и заходим
-git clone https://github.com/LiiChar/itihas.git
-cd itihas
-
-# Устанавливаем зависимости
-npm install
-
-# Создаём .env (пример в .env.example)
-cp .env.example .env.local
-
-# Запускаем dev-сервер (одновременно фронт + бэк)
-npm run dev
-# → http://localhost:5173
-\`\`\`
-
-Для работы с Turso:
-\`\`\`bash
-npx turso dev # создаст локальную БД
-# или используй удалённую: turso db create itihas-prod
-\`\`\`
-
-## Roadmap (2025–2026)
-- Импорт данных из Wikipedia / Wikidata API
-- Коллаборативное редактирование в реальном времени (Y.js + Liveblocks)
-- AI-генерация событий по текстовому описанию эпохи
-- Плагины и темплейты от сообщества
-- Мобильное приложение (Tauri + React Native)
-- VR-режим для Oculus (WebXR)
-
-Itihas уже сейчас является одним из самых технически сложных и красивых open-source инструментов для работы с историческими данными. Проект активно развивается и приветствует контрибьюторов любого уровня.`,
-			tags: 'react,typescript,tailwind,zustand,visx,drizzle,turso,tiptap,history,education',
-			userId: 1,
-			url: 'https://itihas.vercel.app/',
-		},
-		{
-			title: 'Profile - личный сайт-портфолио нового поколения',
-			repoName: 'profile',
-			description:
-				'Современное реактивное портфолио с 3D-элементами и глубоким техническим контентом',
-			content: `## Profile — техническое портфолио с акцентом на производительность и опыт разработчика
-
-**Демо:** https://profile-orpin-zeta.vercel.app  
-**Репозиторий:** https://github.com/LiiChar/profile
-
-## Цель проекта
-Создать не просто «красивую страничку», а полноценное демонстрационное поле для всех современных веб-технологий, которые автор использует в реальных проектах. Это одновременно и портфолио, и sandbox, и технический блог.
-
-## Технологический стек
-- **Framework**: Next.js 14 (App Router) + React 19 (RC)
-- **Типизация**: TypeScript 5.5 с strict mode
-- **Стили**: Tailwind CSS + CSS Modules + GLSL шейдеры
-- **3D**: Three.js + @react-three/fiber + @react-three/drei
-- **Анимации**: Framer Motion + GSAP + custom spring physics
-- **Производительность**: Next.js Image, Font optimization, Script strategy=lazyOnload
-- **Тестирование**: Vitest + React Testing Library + Cypress E2E
-- **Аналитика**: Umami (self-hosted)
-
-## Ключевые технические особенности
-1. **100/100 Lighthouse** на всех метриках даже с включённым 3D-фоном.
-2. **Shader-based hero** — полностью на GPU, не тормозит даже на слабых устройствах.
-3. **Dynamic island** как на macOS — интерактивный элемент в правом нижнем углу.
-4. **MDX-блог** с живыми примерами кода (REPL прямо в статье).
-5. **Theme engine** с 12 предустановленными темами и возможностью создавать свои.
-6. **WebGL transitions** между страницами вместо обычных маршрутов.
-7. **Progressive enhancement** — работает даже без JS (текстовый fallback).
-
-## Запуск локально
-\`\`\`bash
-git clone https://github.com/LiiChar/profile.git
-cd profile
-npm install
-npm run dev
-# → http://localhost:3000
-\`\`\`
-
-Для сборки продакшена:
-\`\`\`bash
-npm run build && npm run start
-\`\`\`
-
-## Roadmap
-- Интеграция с CMS (Contentlayer → Sanity)
-- AI-ассистент для генерации статей
-- WebContainer-based live coding прямо на сайте
-- Версия на Tauri как десктоп-портфолио
-
-Этот проект — живое доказательство того, что портфолио может быть не только красивым, но и технически безупречным.`,
-			tags: 'nextjs,react,threejs,framer-motion,tailwind,portfolio,performance,webgl',
-			userId: 1,
-			url: 'https://profile-orpin-zeta.vercel.app',
-		},
-		{
-			title: 'Musa - кроссплатформенный музыкальный плеер',
-			repoName: 'musa',
-			description:
-				'Локальный музыкальный плеер с акцентом на приватность и кастомизацию',
-			content: `## Musa — музыкальный плеер, который уважает вашу приватность
-
-**Репозиторий:** https://github.com/LiiChar/musa
-
-## Концепция
-Musa — это ответ на переполненные рекламой и трекерами стриминговые приложения. Полностью оффлайн-плеер с поддержкой локальных библиотек, M3U плейлистов и мощными возможностями кастомизации.
+Обычный текст не всегда помогает быстро сопоставить даты и события. Временная шкала делает хронологию нагляднее, а формат истории позволяет связать факты в последовательное повествование. Проект исследует, как объединить эти способы представления информации в одном интерфейсе.
 
 ## Технологии
-- **Runtime**: Tauri 2.0 (Rust backend, < 5 МБ бинарник)
-- **Frontend**: Vue 3 + TypeScript + Pinia
-- **Сборщик**: Vite + Rust plugin
-- **Аудио-движок**: Howler.js + Web Audio API + custom equalizer
-- **Теги**: jsr:@aaashur/music-metadata (самый быстрый парсер тегов)
-- **UI**: UnoCSS + Radix Vue + custom компоненты
 
-## Главные фичи
-1. **Мгновенный поиск** по 100к+ трекам (индексация через Worker + SQLite FTS5).
-2. **10-полосный эквалайзер** с пресетами и возможностью сохранять свои.
-3. **Scrobbling** в Last.fm и ListenBrainz без посредников.
-4. **Плагины на WASM** — можно писать свои визуализации и эффекты.
-5. **Discord Rich Presence + медиаклавиши** (Windows/macOS/Linux).
-6. **Темы и кастомные CSS-переменные** — меняется всё.
-7. **Авто-тегирование** через AcousticID и MusicBrainz API.
+- React, TypeScript и Vite
+- Tailwind CSS и Zustand
+- Visx для визуализации данных
+- Tiptap для редактирования содержимого
+- Drizzle ORM и SQLite
 
-## Установка и запуск
-\`\`\`bash
-git clone https://github.com/LiiChar/musa.git
-cd musa
-npm install
-npm run tauri dev
-\`\`\`
+## Ссылки
 
-Сборка релизов:
-\`\`\`bash
-npm run tauri build
-# → dist/*.AppImage, *.dmg, *.msi
-\`\`\`
+- [Репозиторий на GitHub](https://github.com/LiiChar/itihas)
+- [Демо](https://itihas.vercel.app/)
 
-## Roadmap
-- Поддержка сетевых хранилищ (SMB/WebDAV)
-- Синхронизация плейлистов через Syncthing
-- AI-рекомендации на основе локальной библиотеки
-- Встроенный сервер для стриминга на телефон
+Проект объединяет повествовательный формат и наглядное представление хронологии.`,
+		tags: 'react,typescript,tailwind,zustand,visx,drizzle,tiptap,history,education',
+		userId: 1,
+		url: 'https://itihas.vercel.app/',
+		lang: {
+			en: {
+				title: 'Itihas — interactive stories and timelines',
+				description: 'A project for creating and exploring historical stories through connected events and timelines.',
+				tags: 'react,typescript,tailwind,zustand,visx,drizzle,tiptap,history,education',
+				content: `# Itihas — stories connected to time
 
-Musa — это плеер, который вы реально владеете.`,
-			tags: 'tauri,vue,typescript,music,offline,privacy,equalizer',
-			userId: 1,
+Itihas explores the intersection of historical material and interactive storytelling. Its goal is to place events in chronological context and help readers see how individual episodes form a broader story.
+
+## The project idea
+
+Plain text does not always make it easy to compare dates and events. A timeline can make chronology easier to scan, while a narrative can connect facts into a coherent sequence. The project explores how these approaches can work together in one interface.
+
+## Technologies
+
+- React, TypeScript, and Vite
+- Tailwind CSS and Zustand
+- Visx for data visualization
+- Tiptap for content editing
+- Drizzle ORM and SQLite
+
+## Links
+
+- [GitHub repository](https://github.com/LiiChar/itihas)
+- [Demo](https://itihas.vercel.app/)
+
+The project combines narrative content with a visual presentation of chronology.`,
+			},
 		},
-		{
-			title: 'Filu - универсальный медиа-даунлоадер и плеер',
-			repoName: 'filu',
-			description:
-				'Десктопное приложение для скачивания и просмотра видео с 5000+ сайтов',
-			content: `## Filu — всё-в-одном решение для работы с видео
+	},
+	{
+		title: 'Profile — личный сайт-портфолио',
+		repoName: 'profile',
+		description: 'Личный сайт с резюме, портфолио проектов и техническим блогом.',
+		content: `# Profile — личный сайт и портфолио
 
-**Репозиторий:** https://github.com/LiiChar/filu
+Profile объединяет резюме, список проектов и блог в одном сайте. Проект также служит площадкой для практики с Next.js и современным React-стеком.
 
-## Идея
-Объединить мощь yt-dlp с удобным GUI и встроенным плеером. Никаких больше терминала и отдельных плееров.
+## Что входит в проект
 
-## Стек
-- **Runtime**: Tauri 2.0 + Rust
-- **Frontend**: SvelteKit + TypeScript
-- **UI**: Skeleton UI + Tailwind
-- **Видеоплеер**: Video.js + HLS.js + custom controls
-- **Бэкенд**: yt-dlp (python) + custom Rust wrapper
-- **Очередь задач**: SQLite + BullMQ-style worker
-- **Форматы**: ffmpeg встроен, конвертация на лету
-
-## Ключевые возможности
-1. **Поддержка 5000+ сайтов** (все, что поддерживает yt-dlp)
-2. **Параллельная загрузка** до 20 потоков
-3. **Автоматические субтитры** + перевод через LibreTranslate
-4. **Локальная библиотека** с тегами и историей просмотра
-5. **Прямой стриминг** URL без скачивания (HLS/DASH)
-6. **Скриншоты и нарезка** клипов прямо в плеере
-7. **Плагины** — можно писать свои парсеры на TypeScript
-
-## Запуск
-\`\`\`bash
-git clone https://github.com/LiiChar/filu.git
-cd filu
-npm install
-# Убедитесь, что установлен Python 3.11+ и yt-dlp
-pip install yt-dlp
-npm run tauri dev
-\`\`\`
-
-## Roadmap
-- Торрент-клиент внутри
-- Интеграция с Jellyfin/Plex
-- AI-суммаризация видео
-- Мобильная версия (Tauri Mobile)
-
-Filu — это когда yt-dlp наконец-то получил красивый интерфейс.`,
-			tags: 'tauri,svelte,ytdlp,video,downloader,offline,ffmpeg',
-			userId: 1,
-		},
-		{
-			title: 'Book-styde - интерактивный курс по JavaScript',
-			repoName: 'book-styde',
-			description:
-				'Образовательная платформа с встроенным редактором и автопроверкой',
-			content: `## Book-styde — лучший способ выучить JavaScript в 2025 году
-
-**Демо:** https://book-styde.vercel.app  
-**Репозиторий:** https://github.com/LiiChar/book-styde
-
-## Концепция
-Полноценный интерактивный учебник по JavaScript с нуля до продвинутых тем, где каждое задание проверяется автоматически.
+- Главная страница и отдельные страницы проектов и статей
+- Русская и английская версии интерфейса
+- Резюме с контактной информацией и опытом работы
+- Авторизация и формы для управления публикациями
+- Адаптивная вёрстка, темы оформления и декоративный WebGL-фон
 
 ## Технологии
-- **Frontend**: React 18 + TypeScript + Vite
-- **Редактор**: Monaco Editor (тот же, что в VS Code)
-- **Состояние**: Redux Toolkit + RTK Query
-- **Стили**: Tailwind CSS + shadcn/ui
-- **Тестирование заданий**: custom sandbox на Web Workers + esbuild
-- **Прогресс**: localForage + синхронизация через Supabase (в будущем)
-- **Деплой**: Vercel
 
-## Особенности
-1. **Более 80 задач** от переменных до замыканий и асинхронности
-2. **Мгновенная проверка** кода без перезагрузки
-3. **Подсказки с объяснениями** и разбором ошибок
-4. **Тёмная/светлая тема**, адаптивность
-5. **Система достижений** и статистика прогресса
-6. **Полностью open-source** контент — можно форкнуть и учить своих студентов
+Next.js App Router, React, TypeScript, Tailwind CSS, Drizzle ORM и SQLite. Для интерфейса используются Zustand, Framer Motion и компоненты на базе Radix UI; WebGL-фон построен с Three.js и React Three Fiber.
 
-## Запуск локально
-\`\`\`bash
-git clone https://github.com/LiiChar/book-styde.git
-cd book-styde
-npm install
-npm run dev
-# → http://localhost:5173
-\`\`\`
+## Ссылки
 
-## Roadmap
-- Добавление курсов по React, TypeScript, Node.js
-- Мультиплеер: решать задачи вместе
-- Сертификаты с верификацией
-- Оффлайн-версия (PWA + Tauri)
+- [Репозиторий на GitHub](https://github.com/LiiChar/profile)
+- [Сайт](https://ivanov-maksim.vercel.app)
 
-Book-styde — это то, чего не хватало русскоязычному коммьюнити для качественного старта в JS.`,
-			tags: 'react,typescript,monaco,education,javascript,interactive,tailwind',
-			userId: 1,
-			url: 'https://book-styde.vercel.app/',
+В проекте продолжают меняться интерфейс, контент и техническая реализация.`,
+		tags: 'nextjs,react,typescript,tailwind,portfolio,blog,webgl',
+		userId: 1,
+		url: 'https://ivanov-maksim.vercel.app',
+		lang: {
+			en: {
+				title: 'Profile — personal portfolio website',
+				description: 'A personal website featuring a resume, project portfolio, and technical blog.',
+				tags: 'nextjs,react,typescript,tailwind,portfolio,blog,webgl',
+				content: `# Profile — personal website and portfolio
+
+Profile brings a resume, project list, and blog together in one website. It is also a place to work with Next.js and the modern React ecosystem.
+
+## What the project includes
+
+- A home page and separate project and article pages
+- Russian and English interface versions
+- A resume with contact details and work experience
+- Authentication and forms for managing publications
+- Responsive layouts, themes, and a decorative WebGL background
+
+## Technologies
+
+Next.js App Router, React, TypeScript, Tailwind CSS, Drizzle ORM, and SQLite. The interface uses Zustand, Framer Motion, and Radix UI-based components; the WebGL background uses Three.js and React Three Fiber.
+
+## Links
+
+- [GitHub repository](https://github.com/LiiChar/profile)
+- [Website](https://ivanov-maksim.vercel.app)
+
+The interface, content, and technical implementation continue to evolve.`,
+			},
 		},
-	];
+	},
+	{
+		title: 'Musa — музыкальный плеер для локальной библиотеки',
+		repoName: 'musa',
+		description: 'Концепция настольного приложения для воспроизведения и организации локальной музыкальной коллекции.',
+		content: `# Musa — музыкальный плеер для локальной коллекции
+
+Musa — проект настольного приложения для работы с музыкой, хранящейся на устройстве. Основной сценарий — собрать локальные аудиофайлы в библиотеку, просматривать и воспроизводить их, а также управлять плейлистами.
+
+## Направление проекта
+
+Вместо привязки к одному каталогу потокового сервиса приложение строится вокруг файлов пользователя. Важные части такого интерфейса — организация библиотеки, отображение информации о композициях и быстрый доступ к управлению воспроизведением.
+
+## Технологии
+
+Проект использует Tauri 2, Rust, Vue 3, TypeScript и Pinia. Для работы со звуком и метаданными применяются Web Audio API и библиотеки для чтения тегов.
+
+## Ссылка
+
+- [Репозиторий на GitHub](https://github.com/LiiChar/musa)
+
+Описание не фиксирует показатели производительности или полный список реализованных функций; они требуют отдельной проверки по текущему состоянию приложения.`,
+		tags: 'tauri,vue,typescript,music,offline,player',
+		userId: 1,
+		lang: {
+			en: {
+				title: 'Musa — a music player for a local library',
+				description: 'A desktop app concept for playing and organizing a local music collection.',
+				tags: 'tauri,vue,typescript,music,offline,player',
+				content: `# Musa — a player for a local music collection
+
+Musa is a desktop application project for working with music stored on a device. Its core use case is to organize local audio files into a library, browse and play them, and manage playlists.
+
+## Project direction
+
+Rather than depending on one streaming catalog, the application is built around the user's files. Key parts of this kind of interface include organizing the library, displaying track information, and providing convenient playback controls.
+
+## Planned stack
+
+The project uses Tauri 2, Rust, Vue 3, TypeScript, and Pinia. Audio and metadata handling use the Web Audio API and tag-reading libraries.
+
+## Link
+
+- [GitHub repository](https://github.com/LiiChar/musa)
+
+The project focuses on making a local music library easier to manage.`,
+			},
+		},
+	},
+	{
+		title: 'Filu — настольный загрузчик и плеер видео',
+		repoName: 'filu',
+		description: 'Проект настольного приложения для загрузки и просмотра видео с использованием yt-dlp.',
+		content: `# Filu — загрузка и просмотр видео в настольном приложении
+
+Filu — проект графического приложения, которое объединяет пользовательский интерфейс для работы с видео и инструменты загрузки на базе yt-dlp. Идея — упростить выбор источника, параметров загрузки и дальнейшую работу с сохранёнными файлами.
+
+## Техническое направление
+
+В описании проекта указаны Tauri и Rust для настольной оболочки, SvelteKit и TypeScript для интерфейса, а также yt-dlp как инструмент загрузки. Состав поддерживаемых сайтов определяется самим yt-dlp и может меняться.
+
+## На что обращено внимание
+
+- Понятный интерфейс для добавления задачи загрузки
+- Отображение состояния выполняемых задач
+- Работа с сохранёнными видеофайлами
+
+## Ссылка
+
+- [Репозиторий на GitHub](https://github.com/LiiChar/filu)
+
+Проект связывает настольный интерфейс с инструментами yt-dlp для работы с видеоматериалами.`,
+		tags: 'tauri,svelte,typescript,ytdlp,video,downloader',
+		userId: 1,
+		lang: {
+			en: {
+				title: 'Filu — desktop video downloader and player',
+				description: 'A desktop application project for downloading and viewing video with yt-dlp.',
+				tags: 'tauri,svelte,typescript,ytdlp,video,downloader',
+				content: `# Filu — downloading and viewing video in a desktop app
+
+Filu is a graphical application project that combines a video interface with download tools based on yt-dlp. The idea is to make it easier to choose a source and download options, then work with the saved files.
+
+## Technical direction
+
+The project description lists Tauri and Rust for the desktop shell, SvelteKit and TypeScript for the interface, and yt-dlp as the download tool. Supported sites depend on yt-dlp itself and may change over time.
+
+## Areas of focus
+
+- A clear interface for adding download tasks
+- Showing the status of running tasks
+- Working with saved video files
+
+## Link
+
+- [GitHub repository](https://github.com/LiiChar/filu)
+
+The project connects a desktop interface with yt-dlp tools for working with video.`,
+			},
+		},
+	},
+	{
+		title: 'Book-styde — интерактивное изучение JavaScript',
+		repoName: 'book-styde',
+		description: 'Образовательный проект с интерактивными заданиями и редактором кода.',
+		content: `# Book-styde — интерактивное изучение JavaScript
+
+Book-styde — проект образовательной платформы, в которой изучение JavaScript строится вокруг коротких объяснений и практических заданий. Встроенный редактор помогает писать код рядом с материалом, а проверка задания даёт обратную связь по решению.
+
+## Учебный сценарий
+
+Пользователь читает тему, пробует применить её в редакторе и получает результат проверки. Такой формат может поддержать последовательное изучение языка — от базовых конструкций к более сложным — без переключения между учебником и отдельной средой разработки.
+
+## Технологии
+
+Для интерфейса и редактора используются React, TypeScript, Vite, Monaco Editor и Redux Toolkit.
+
+## Ссылки
+
+- [Репозиторий на GitHub](https://github.com/LiiChar/book-styde)
+- [Демо](https://book-styde.vercel.app/)
+
+Проект задуман как открытая основа для интерактивных учебных материалов по JavaScript.`,
+		tags: 'react,typescript,monaco,education,javascript,interactive,tailwind',
+		userId: 1,
+		url: 'https://book-styde.vercel.app/',
+		lang: {
+			en: {
+				title: 'Book-styde — interactive JavaScript learning',
+				description: 'An educational project with interactive exercises and a code editor.',
+				tags: 'react,typescript,monaco,education,javascript,interactive,tailwind',
+				content: `# Book-styde — interactive JavaScript learning
+
+Book-styde is an educational platform project built around short explanations and hands-on JavaScript exercises. An integrated editor lets learners write code alongside the material, while exercise checks provide feedback on their solutions.
+
+## Learning flow
+
+The learner reads a topic, tries it in the editor, and receives a check result. This format can support a gradual path from basic language constructs to more advanced topics without switching between a textbook and a separate development environment.
+
+## Technologies
+
+The interface and editor use React, TypeScript, Vite, Monaco Editor, and Redux Toolkit.
+
+## Links
+
+- [GitHub repository](https://github.com/LiiChar/book-styde)
+- [Demo](https://book-styde.vercel.app/)
+
+The project is intended as an open foundation for interactive JavaScript learning materials.`,
+			},
+		},
+	},
+];

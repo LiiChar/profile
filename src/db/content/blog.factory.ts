@@ -4,7 +4,7 @@ import { blogs, BlogType } from '../tables/blog';
 type BlogFactoryInsert = Pick<
 	BlogType,
 	'content' | 'tags' | 'title' | 'userId'
->;
+> & Partial<Pick<BlogType, 'lang'>>;
 
 export const blogFactory = async (content: BlogFactoryInsert[]) => {
 	await dbFactory.insert(blogs).values(content);
@@ -22,415 +22,270 @@ export const runBlogFactory = async () => {
 
 const blogContent: BlogFactoryInsert[] = [
 	{
-		title: 'Как я оптимизировал рендер в React',
-		content: `## Как я оптимизировал рендер в React: реальный кейс с экономией 70% времени
+		title: 'Как находить и устранять лишние рендеры в React',
+		content: `## Оптимизация начинается с измерений
 
-Недавно я работал над дашбордом аналитики с сотнями строк в таблице и кучей графиков. Даже на мощном ноутбуке при скролле всё подтормаживало — профайлер показывал, что некоторые компоненты перерисовывались по 20–30 раз за одно действие. Я решил разобраться.
+Повторный рендер сам по себе не означает проблему. React может быстро обновлять небольшие компоненты, а преждевременная мемоизация добавляет сложности и иногда почти ничего не меняет. Сначала нужно воспроизвести замедление и понять, какая часть интерфейса занимает время.
 
-Первое, что я нашёл — огромный компонент \`TableRow\`, который рендерился целиком при любом изменении родителя. Решение было простым: обернул его в \`React.memo\`.
+Откройте React DevTools Profiler, запишите действие пользователя и посмотрите, какие компоненты рендерились и сколько занял commit. Дополнительно проверьте вкладку Performance в браузере: там видны длительные задачи, дорогие вычисления и работа layout/paint. Записывайте условия измерения, например размер списка и тип устройства, чтобы корректно сравнить изменения.
 
-\`\`\`tsx
-const TableRow = React.memo(({ row, onClick }) => { ... });
-\`\`\`
+## Уменьшайте работу, которая действительно повторяется
 
-Эффект — мгновенный: лишних рендеров стало 0, но таблица всё ещё тормозила при фильтрации.
-
-Вторым шагом я посмотрел на вычисления. В каждой строке считались сложные метрики (проценты, delta, цвет индикатора). Всё это пересчитывалось каждый раз, даже если данные не менялись. Добавил \`useMemo\`:
+Если дочерний компонент тяжёлый и получает те же props, его можно обернуть в \`memo\`. Это помогает только когда props сохраняют ссылочную идентичность: новые объекты и функции при каждом рендере всё равно считаются изменением.
 
 \`\`\`tsx
-const metrics = useMemo(() => calculateHeavyMetrics(row), [row.id]);
+import { memo } from 'react';
+
+type ResultRowProps = {
+  item: { id: string; name: string };
+  onSelect: (id: string) => void;
+};
+
+const ResultRow = memo(function ResultRow({ item, onSelect }: ResultRowProps) {
+  return <button onClick={() => onSelect(item.id)}>{item.name}</button>;
+});
 \`\`\`
 
-Третье узкое место — контекст. Мы хранили весь стейт фильтров и сортировки в одном большом контексте, и каждый \`setFilter\` вызывал ререндер всей таблицы. Разбил на два контекста: один только для выбранной строки (редко меняется), второй — для фильтров. Плюс сделал \`useContextSelector\` (из библиотеки \`react-tracked\`), чтобы компоненты подписывались только на нужные кусочки.
+Для создания стабильного callback иногда подходит \`useCallback\`, но добавляйте его вместе с измерением, а не автоматически. Аналогично, \`useMemo\` полезен для дорогих вычислений или стабильного значения для мемоизированного потомка. В массив зависимостей нужно включать все значения, от которых зависит результат; зависимость только от \`row.id\` небезопасна, если вычисление читает другие поля строки.
 
-Четвёртый приём — виртуализация. Перешёл с обычного \`<table>\` на \`react-window\` → \`FixedSizeList\`. Теперь рендерится только то, что видно на экране (15–20 строк вместо 500).
+## Проверьте границы состояния и размер списка
 
-И последнее, что дало ещё30% скорости — заменил \`useState\` \`useEffect\` на \`useSyncExternalStore\` для подписки на изменения из WebSocket-канала. Теперь React не делает лишних ререндеров при одинаковых данных.
+Обновление контекста уведомляет потребителей этого контекста. Если независимые части страницы часто меняются, разделение контекста по смыслу может сократить число лишних обновлений. Внешнее состояние подключайте через подходящий store или \`useSyncExternalStore\`, соблюдая требования к стабильному snapshot и подписке.
 
-**Результаты до и после:**
+Когда список содержит сотни или тысячи элементов, виртуализация может уменьшить количество одновременно смонтированных строк. Она требует аккуратной работы с высотой элементов, фокусом и доступностью, поэтому для коротких списков часто не нужна.
 
-| Метрика                    | Было    | Стало   | Улучшение |
-|----------------------------|---------|---------|-----------|
-| Время первого рендера      | 1800 мс | 420 мс  | ×4.3      |
-| FPS при скролле таблицы    | 22–28   | 58–60   | ×2.5      |
-| Количество ререндеров/сек  | ~340    | ~48     | ×7        |
+## Повторное измерение
 
-Мораль простая: начинайте с React DevTools Performance tab → ищите самые тяжёлые компоненты → memo useMemo → виртуализация → гранулярный стейт. Часто 80% прироста дают 2–3 точечных изменения.`,
+После каждого изменения повторите тот же сценарий в Profiler и сравните фактическое время и отзывчивость интерфейса. Не обещайте фиксированный прирост заранее: результат зависит от данных, устройства, браузера и конкретного узкого места. Практичный порядок такой: измерить → найти причину → внести одно изменение → измерить снова.`,
 		tags: ['react', 'оптимизация', 'performance'].join(','),
 		userId: 1,
+		lang: {
+			en: {
+				title: 'How to find and reduce unnecessary React renders',
+				tags: 'react,optimization,performance',
+				content: `## Start by measuring
+
+A repeated render is not automatically a performance problem. React can update small components quickly, while premature memoization adds complexity without a meaningful benefit. First reproduce the slowdown and identify the work that takes time.
+
+Use the React DevTools Profiler to record an interaction and inspect which components rendered and how long the commit took. The browser Performance panel can reveal long tasks, expensive calculations, and layout or paint work. Record the scenario, such as list size and device type, so you can compare changes fairly.
+
+## Reduce work that is actually repeated
+
+If a child component is expensive and receives the same props, \`memo\` may let React skip rendering it. This is most useful when its props keep the same references: newly created objects and functions still count as changed props.
+
+\`\`\`tsx
+import { memo } from 'react';
+
+type ResultRowProps = {
+  item: { id: string; name: string };
+  onSelect: (id: string) => void;
+};
+
+const ResultRow = memo(function ResultRow({ item, onSelect }: ResultRowProps) {
+  return <button onClick={() => onSelect(item.id)}>{item.name}</button>;
+});
+\`\`\`
+
+\`useCallback\` can preserve a function reference when that matters, but should be guided by profiling. Likewise, \`useMemo\` is useful for expensive calculations or stable values passed to memoized children. Include every value the calculation reads in its dependency list; depending only on \`row.id\` is unsafe if it also reads other row fields.
+
+## Review state boundaries and list size
+
+Updating context notifies its consumers. Splitting frequently changing, unrelated values into separate contexts can reduce unnecessary work. For external state, use a store or \`useSyncExternalStore\` with a stable snapshot and a correctly managed subscription.
+
+For hundreds or thousands of list items, virtualization can reduce how many rows are mounted at once. It adds requirements around item heights, focus, and accessibility, so it is often unnecessary for short lists.
+
+## Measure again
+
+Repeat the same interaction after each change and compare the recorded time and responsiveness. Avoid promising a fixed improvement in advance: results depend on the data, device, browser, and actual bottleneck. A useful loop is measure → identify the cause → make one change → measure again.`,
+			},
+		},
 	},
 	{
-		title: 'Интеграция WebSocket с React: как не сойти с ума',
-		content:
-`Вы когда-нибудь подключали WebSocket в React-приложении и через пару часов чувствовали, что теряете рассудок?  
-Подключение отвалилось → reconnect не сработал → состояние рассинхронизировалось → сообщения дублируются → память течёт → и всё это только на мобильном Safari.
+		title: 'WebSocket в React: подключение, переподключение и очистка',
+		content: `## Разделяйте соединение и состояние интерфейса
 
-Эта статья — спасательный круг. Мы разберём все подводные камни и покажем, как сделать надёжную, чистую и масштабируемую интеграцию WebSocket в React-приложении (включая Next.js, Vite, Remix и даже мобильные React Native через WebSocket).
+WebSocket — долгоживущее соединение. Если создавать его непосредственно при рендере компонента, повторные рендеры могут открыть несколько соединений. Обычно соединение создают в эффекте или отдельном сервисе, а при размонтировании компонента закрывают либо снимают подписку — в зависимости от того, кому принадлежит соединение.
 
-Но сначала давайте честно ответим на главный вопрос:
-
-## Зачем вообще мучаться с «сырыми» WebSocket, если есть Firebase, Supabase Realtime, Socket.io, Ably, Pusher?
-
-Потому что иногда тебе нужно:
-- Latency < 50 мс по всему миру
-- 100 000+ одновременных соединений на один бэкенд
-- Полный контроль над протоколом (бинарные сообщения, кастомная авторизация)
-- Экономия $10 000+ в месяц на сторонних сервисах
-
-Если вы здесь именно за этим — добро пожаловать в клуб сумасшедших.
-
-## 1. Базовая (и очень опасная) реализация
+Ниже минимальный пример для компонента, который владеет соединением:
 
 \`\`\`tsx
-function Chat() {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const ws = useRef<WebSocket | null>(null);
+import { useEffect, useState } from 'react';
+
+function useMessages(url: string) {
+  const [messages, setMessages] = useState<string[]>([]);
 
   useEffect(() => {
-    ws.current = new WebSocket(wss://api.example.com/ws);"
-    
-    ws.current.onopen = () => console.log(connected);"
-    ws.current.onmessage = (e) => {
-      const msg = JSON.parse(e.data);
-      setMessages(prev => [...prev, msg]); // ← вот тут начинаются проблемы
-    };
-
-    return () => ws.current?.close();
-  }, []);
-
-  // ...
-}
-\`\`\`
-
-Что здесь сломается через 5 минут в реальном мире:
-
-| Проблема                            | Последствия                                      |
-|-------------------------------------|--------------------------------------------------|
-| Нет reconnect логики                | Пользователь теряет соединение навсегда          |
-| Нет обработки ошибок                | WebSocket зависает в состоянии CONNECTING        |
-| setState после unmount              | Memory leak React warning                      |
-| Дублирование сообщений при reconnect| Чат показывает одно и то же сообщение 10 раз     |
-| Нет heartbeat                       | Сервер думает, что клиент жив, а он давно мёртв  |
-
-## 2. Правильная архитектура: WebSocket как сервис
-
-Лучше всего вынести логику в отдельный класс/сервис. Вот проверенный временем шаблон:
-
-\`\`\`ts
-// websocket.ts
-type Listener<T = any> = (data: T) => void;
-
-class WebSocketService {
-  private ws: WebSocket | null = null;
-  private listeners = new Map<string, Listener[]>();
-  private reconnectAttempts = 0;
-  private maxReconnectAttempts = 10;
-  private reconnectInterval = 1000;
-  private heartbeatInterval: NodeJS.Timeout | null = null;
-
-  connect(url: string, token?: string) {
-    this.ws = new WebSocket(\`\${url}?token=\${token}\`);
-
-    this.ws.onopen = () => {
-      console.log(WS connected);"
-      this.reconnectAttempts = 0;
-      this.startHeartbeat();
-    };
-
-    this.ws.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        this.emit(data.type, data.payload);
-      } catch (e) {
-        this.emit(raw, event.data);"
-      }
-    };
-
-    this.ws.onclose = (e) => {
-      console.log(WS closed, e.code, e.reason);"
-      this.stopHeartbeat();
-      if (e.code !== 1000) { // не нормальное закрытие
-        this.scheduleReconnect(url, token);
-      }
-    };
-
-    this.ws.onerror = (err) => {
-      console.error(WS error, err);"
-    };
-  }
-
-  private scheduleReconnect(url: string, token?: string) {
-    if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-      this.emit(reconnect_failed);"
-      return;
-    }
-
-    const delay = this.reconnectInterval * Math.pow(2, this.reconnectAttempts);
-    this.reconnectAttempts++;
-
-    setTimeout(() => {
-      console.log(\`Reconnect attempt \${this.reconnectAttempts}\`);
-      this.connect(url, token);
-    }, delay);
-  }
-
-  private startHeartbeat() {
-    this.heartbeatInterval = setInterval(() => {
-      this.send(ping, {});"
-    }, 15_000);
-  }
-
-  private stopHeartbeat() {
-    if (this.heartbeatInterval) {
-      clearInterval(this.heartbeatInterval);
-      this.heartbeatInterval = null;
-    }
-  }
-
-  on<T = any>(type: string, listener: Listener<T>) {
-    if (!this.listeners.has(type)) {
-      this.listeners.set(type, []);
-    }
-    this.listeners.get(type)!.push(listener);
-
-    return () => this.off(type, listener);
-  }
-
-  off<T = any>(type: string, listener: Listener<T>) {
-    const listeners = this.listeners.get(type);
-    if (listeners) {
-      this.listeners.set(type, listeners.filter(l => l !== listener));
-    }
-  }
-
-  private emit(type: string, payload?: any) {
-    const listeners = this.listeners.get(type) || [];
-    listeners.forEach(listener => listener(payload));
-  }
-
-  send(type: string, payload: any) {
-    if (this.ws?.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify({ type, payload }));
-    }
-  }
-
-  disconnect() {
-    this.stopHeartbeat();
-    this.ws?.close(1000);
-    this.ws = null;
-  }
-}
-
-export const wsService = new WebSocketService();
-\`\`\`
-
-## 3. React хук — единственная точка входа
-
-\`\`\`tsx
-// hooks/useWebSocket.ts
-import { useEffect, useRef } from react;
-import { wsService } from @/services/websocket;
-
-export function useWebSocket(
-  url: string,
-  options: {
-    token?: string;
-    shouldConnect?: boolean;
-    onConnected?: () => void;
-  } = {}
-) {
-  const { token, shouldConnect = true, onConnected } = options;
-  const connectedRef = useRef(false);
-
-  useEffect(() => {
-    if (!shouldConnect) return;
-
-    wsService.connect(url, token);
-
-    const handleConnected = () => {
-      connectedRef.current = true;
-      onConnected?.();
-    };
-
-    wsService.on(connect, handleConnected);"
-
-    return () => {
-      wsService.off(connect, handleConnected);"
-      // Не отключаем глобально — другие компоненты могут использовать
-    };
-  }, [url, token, shouldConnect, onConnected]);
-
-  return wsService;
-}
-\`\`\`
-
-## 4. Как пользоваться в компонентах
-
-\`\`\`tsx
-function ChatRoom({ roomId }: { roomId: string }) {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [online, setOnline] = useState(0);
-
-  const ws = useWebSocket(wss://api.example.com/ws, {"
-    token: user.token,
-    onConnected: () => ws.send(join, { roomId })"
-  });
-
-  useEffect(() => {
-    const unsubNewMsg = ws.on(new_message, (msg: Message) => {"
-      setMessages(prev => [...prev, msg]);
+    const socket = new WebSocket(url);
+    socket.addEventListener('message', event => {
+      setMessages(current => [...current, String(event.data)]);
     });
 
-    const unsubOnline = ws.on(online_count, (count: number) => {"
-      setOnline(count);
-    });
+    return () => socket.close();
+  }, [url]);
 
-    return () => {
-      unsubNewMsg();
-      unsubOnline();
-      ws.send(leave, { roomId });"
-    };
-  }, [ws, roomId]);
-
-  // ...
+  return messages;
 }
 \`\`\`
 
-## 5. Самые коварные баги и как их лечить
+В production-коде дополнительно обработайте \`open\`, \`error\` и \`close\`, покажите состояние подключения и определите, как приложение должно реагировать на неотправленные сообщения. Если соединение общее для нескольких экранов, его жизненным циклом должен управлять общий сервис, а компоненты должны подписываться и отписываться от событий.
 
-### 5.1 Дублирование сообщений при reconnect
+## Переподключение требует договорённости с сервером
 
-Решение — сервер должен присылать \`lastSeenMessageId\`, клиент шлёт его при reconnect, сервер отдает только новые сообщения.
+При неожиданном закрытии можно повторять попытку с увеличивающейся задержкой и случайным разбросом (exponential backoff with jitter). Ограничьте частоту попыток и сбрасывайте счётчик после успешного подключения. Перед повторной отправкой команд решите, допускает ли сервер повтор: для важных операций используйте идентификаторы сообщений и идемпотентную обработку.
 
-### 5.2 Память течёт из-за подписок
+WebSocket API браузера не предоставляет управляющие ping/pong-кадры JavaScript-коду. Если приложению нужен heartbeat, определите отдельные сообщения протокола и согласуйте их с сервером.
 
-Всегда возвращай функцию отписки из \`ws.on()\` и вызывай её в cleanup!
+## Учитывайте безопасность и фоновые вкладки
 
-### 5.3 WebSocket «зависает» в состоянии CONNECTING
+Не передавайте долгоживущие секреты в query-параметрах URL без оценки рисков: URL могут попадать в логи. Предпочтительнее использовать согласованный сервером механизм аутентификации и проверять origin. Браузер или мобильная сеть может приостановить неактивную вкладку и оборвать соединение, поэтому клиенту необходимо корректно восстанавливать состояние после возвращения.
 
-\`\`\`ts
-// Добавь таймаут на подключение
-const timeout = setTimeout(() => {
-  if (ws.readyState !== WebSocket.OPEN) {
-    ws.close();
-  }
-}, 10_000);
-
-ws.onopen = () => clearTimeout(timeout);
-\`\`\`
-
-### 5.4 Мобильные сети: соединение рвётся каждые 30 сек в фоне
-
-Используй WebSocket over HTTP/2 или хотя бы \`ping/pong\`.  
-Или переходи на библиотеку вроде \`reconnecting-websocket\`.
-
-### 5.5 Next.js App Router WebSocket = боль
-
-Решение — выноси сервис в отдельный файл вне компонентов и делай singleton.
-
-## 6. Готовые библиотеки (когда уже нет сил)
-
-| Библиотека              | Когда использовать                                                                 | Минусы                             |
-|-------------------------|------------------------------------------------------------------------------------|------------------------------------|
-| socket.io               | Быстрый старт, комнаты, fallback на long-polling                                  | Тяжёлый протокол, лишний overhead |
-| @microsoft/signalr      | Если бэкенд на .NET                                                                | Слишком enterprise                |
-| ably, pusher            | Когда деньги не проблема и нужен 99.999% uptime                                    | Очень дорого                      |
-| ws reconnecting-websocket | Максимальный контроль, минимум зависимостей                                    | Нужно писать reconnect вручную    |
-| rxjs WebSocketSubject | Если вы уже живёте в RxJS                                                          | Крутая кривая обучения            |
-
-Мой личный выбор в 2025 году: **чистый WebSocket собственный сервис** или **Socket.IO v4+** (если нужна поддержка старых браузеров).
-
-## 7. Чек-лист перед релизом в продакшен
-
-- [ ] Есть exponential backoff при reconnect
-- [ ] Есть heartbeat (ping/pong)
-- [ ] Все подписки отписываются в useEffect cleanup
-- [ ] Обработка неотправленных сообщений (очередь)
-- [ ] Тест на потерю сети (Chrome DevTools → Offline)
-- [ ] Тест на смену вкладки/блокировку экрана
-- [ ] Сервер присылает \`messageId\` и клиент игнорирует дубли
-- [ ] Поддержка \`ArrayBuffer\` / \`Blob\` для бинарных данных
-- [ ] Мониторинг: количество соединений, latency, reconnect rate
-
-## Заключение
-
-WebSocket в React — это как ручная коробка передач:  
-да, можно ездить на автомате (Pusher),  
-но когда ты научишься правильно переключаться — получаешь полный контроль и кайф.
-
-Главное правило: **никогда не создавай новый WebSocket внутри компонента без singleton-сервиса**.
-
-Сохрани эту статью в закладки.  
-Она спасёт тебя в 3 часа ночи, когда половина пользователей внезапно перестала получать сообщения, а ты уже третий час смотришь на \`readyState = 1\`.
-
-Удачи, и пусть твои сокеты всегда будут OPEN.`,
+Проверьте сценарии потери сети, повторного подключения, размонтирования компонента и дублирования сообщений. Надёжность складывается не только из клиентского хука: нужны согласованный протокол, очистка подписок и понятное поведение при временной недоступности сервера.`,
 		tags: ['websocket', 'react', 'реальное время'].join(','),
 		userId: 1,
+		lang: {
+			en: {
+				title: 'WebSockets in React: connections, reconnection, and cleanup',
+				tags: 'websocket,react,realtime',
+				content: `## Separate the connection from UI state
+
+A WebSocket is a long-lived connection. Creating it during render can open multiple connections as the component renders again. A component can create a connection in an effect and close it when unmounted, or a shared service can own the connection while components subscribe to its events.
+
+Here is a minimal example for a component that owns its connection:
+
+\`\`\`tsx
+import { useEffect, useState } from 'react';
+
+function useMessages(url: string) {
+  const [messages, setMessages] = useState<string[]>([]);
+
+  useEffect(() => {
+    const socket = new WebSocket(url);
+    socket.addEventListener('message', event => {
+      setMessages(current => [...current, String(event.data)]);
+    });
+
+    return () => socket.close();
+  }, [url]);
+
+  return messages;
+}
+\`\`\`
+
+Production code should also handle \`open\`, \`error\`, and \`close\`, expose connection status, and decide what happens to unsent messages. If several screens share a connection, let a service manage its lifetime and make components subscribe and unsubscribe to events.
+
+## Reconnection needs a server-side agreement
+
+After an unexpected close, a client can retry with exponential backoff and random jitter. Limit retry frequency and reset the counter after a successful connection. Before resending commands, decide whether the server can safely receive duplicates. Important operations should use message identifiers and idempotent handling.
+
+The browser WebSocket API does not expose protocol-level ping/pong control frames to JavaScript. If the application needs a heartbeat, define application messages and implement them on the server too.
+
+## Consider security and background tabs
+
+Avoid putting long-lived secrets in URL query parameters without assessing the risk of URLs appearing in logs. Use an authentication mechanism agreed with the server and validate the origin. Browsers and mobile networks can pause inactive tabs or drop connections, so the client should restore state when the user returns.
+
+Test network loss, reconnection, component unmounting, and duplicate messages. Reliability depends on the protocol, subscription cleanup, and clear behavior while the server is unavailable—not just on a client hook.`,
+			},
+		},
 	},
 	{
-		title: 'Почему Zustand — это лучше, чем Redux',
-		content: `## Почему Zustand — это лучше, чем Redux в 2025 году (мой опыт после 7 лет с Redux)
+		title: 'Zustand или Redux Toolkit: как выбрать управление состоянием',
+		content: `## Выбирайте по требованиям проекта
 
-Я начал использовать Redux в 2016 году. Тогда это был единственный нормальный способ управлять состоянием в больших приложениях. Сегодня у меня 14 коммерческих проектов за плечами, и в последних трёх я полностью отказался от Redux в пользу Zustand.
+Zustand и Redux Toolkit решают похожую задачу — хранят состояние, доступное нескольким частям приложения, — но предлагают разные соглашения. Zustand даёт компактный API и позволяет собирать store постепенно. Redux Toolkit задаёт более единообразную структуру через slices, actions и reducers и хорошо поддерживает явные потоки обновления данных.
 
-Первая причина — boilerplate. В Redux, чтобы добавить одно поле “isSidebarOpen”, нужно:
-
-- создать action type
-- создать action creator
-- написать case в редьюсере
-- написать селектор
-- подключить через useDispatch/useSelector
-
-В Zustand это одна строчка:
+Простой store в Zustand может выглядеть так:
 
 \`\`\`ts
-const useStore = create(() => ({
-  isSidebarOpen: false,
-  toggleSidebar: () => set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),
+import { create } from 'zustand';
+
+type CounterState = {
+  count: number;
+  increment: () => void;
+};
+
+const useCounter = create<CounterState>(set => ({
+  count: 0,
+  increment: () => set(state => ({ count: state.count + 1 })),
 }));
 \`\`\`
 
-Вторая причина — производительность из коробки. В Redux каждый dispatch → ререндер всех компонентов, которые используют любой кусочек стора (если не завернуть селекторы в reselect). В Zustand подписка гранулярная по умолчанию: компонент перерисовывается только если изменилось именно то поле, на которое он подписан.
-
-Третье — devtools. У Zustand они тоже есть и даже удобнее: можно путешествовать во времени, импортировать/экспортировать состояние одним кликом.
-
-Четвёртое — middleware. Мне часто нужны persist и devtools:
+В Redux Toolkit похожее состояние описывают через slice:
 
 \`\`\`ts
-const useStore = create(
-  persist(
-    devtools((set) => ({
-      user: null,
-      login: (user) => set({ user }),
-    }))
-  )
-);
-\`\`\`
+import { createSlice } from '@reduxjs/toolkit';
 
-В Redux это 20+ строк конфигурации.
-
-Пятое — TypeScript. В Zustand типизация просто летает. Никаких \`PayloadAction<...>\` и \`createSlice<{...}>\`. Всё выводится само.
-
-Шестое — размер. Zustand без devtools — 1 КБ. Redux Toolkit — 12–15 КБ (всё равно много для мобильных приложений).
-
-Седьмое — простота асинхронных действий. Никаких thunks и saga:
-
-\`\`\`ts
-const useStore = create((set) => ({
-  user: null,
-  fetchUser: async (id) => {
-    const user = await api.getUser(id);
-    set({ user });
+const counterSlice = createSlice({
+  name: 'counter',
+  initialState: { count: 0 },
+  reducers: {
+    increment(state) {
+      state.count += 1;
+    },
   },
-}));
+});
 \`\`\`
 
-Да, я знаю про RTK Query, но он решает только кэширование данных, а не весь стейт приложения.
+Оба примера типизируются и позволяют подписывать компоненты на нужные данные. Нельзя утверждать, что Redux перерисовывает всё приложение при каждом dispatch: React Redux использует селекторы, а компоненты обновляются при изменении выбранного результата. В Zustand результат также зависит от селектора и сравнения значений.
 
-Единственный случай, когда я всё ещё могу взять Redux — это огромные enterprise-приложения с 50+ разработчиками, где нужна строгая архитектура и code-generation. Во всех остальных случаях — Zustand.
+## Когда подойдёт каждый вариант
 
-Если вы до сих пор мучаетесь с Redux “потому что так принято” — попробуйте один маленький проект на Zustand. Скорее всего, назад дороги не будет.`,
+Zustand удобно рассмотреть для небольшого или среднего приложения, когда важны небольшой объём шаблонного кода и простая модель подписок. Redux Toolkit может быть хорошим выбором, когда команде нужны единые соглашения, явные actions, развитая экосистема middleware и предсказуемая отладка переходов состояния.
+
+Для серверных данных отдельно оцените специализированный кэш и загрузку данных. RTK Query — часть экосистемы Redux Toolkit, а не обязательное условие использования Redux для любого состояния; Zustand сам по себе тоже не заменяет кэширование запросов.
+
+Сравнивайте реальные требования: размер команды, сложность обновлений, инструменты отладки, SSR, тестируемость и знакомство разработчиков. Начните с локального состояния там, где оно достаточно, и выносите данные в общий store только когда ими действительно нужно управлять совместно.`,
 		tags: ['zustand', 'redux', 'состояние'].join(','),
 		userId: 1,
+		lang: {
+			en: {
+				title: 'Zustand or Redux Toolkit: choosing a state management approach',
+				tags: 'zustand,redux,state management',
+				content: `## Choose based on the project requirements
+
+Zustand and Redux Toolkit both manage state shared across parts of an application, but they encourage different conventions. Zustand offers a compact API and lets you build a store incrementally. Redux Toolkit provides a more structured approach with slices, actions, and reducers, making state transitions explicit.
+
+A small Zustand store can look like this:
+
+\`\`\`ts
+import { create } from 'zustand';
+
+type CounterState = {
+  count: number;
+  increment: () => void;
+};
+
+const useCounter = create<CounterState>(set => ({
+  count: 0,
+  increment: () => set(state => ({ count: state.count + 1 })),
+}));
+\`\`\`
+
+With Redux Toolkit, similar state can be described in a slice:
+
+\`\`\`ts
+import { createSlice } from '@reduxjs/toolkit';
+
+const counterSlice = createSlice({
+  name: 'counter',
+  initialState: { count: 0 },
+  reducers: {
+    increment(state) {
+      state.count += 1;
+    },
+  },
+});
+\`\`\`
+
+Both approaches support typed state and selectors. It is inaccurate to say that Redux rerenders the whole application on every dispatch: React Redux uses selectors, and a component updates when its selected result changes. Zustand behavior also depends on the selector and equality comparison.
+
+## When each option may fit
+
+Zustand is worth considering for small or medium applications where a compact API and a straightforward subscription model are useful. Redux Toolkit can be a good fit when a team wants shared conventions, explicit actions, a broad middleware ecosystem, and predictable debugging of state transitions.
+
+Evaluate server data caching separately. RTK Query is part of the Redux Toolkit ecosystem, but Redux does not require it for every kind of state; Zustand does not replace request caching either.
+
+Compare the actual needs: team size, update complexity, debugging tools, SSR, testability, and team familiarity. Start with local state when it is enough, and move data into a shared store only when multiple parts of the application need to coordinate it.`,
+			},
+		},
 	},
 ];

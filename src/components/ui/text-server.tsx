@@ -1,26 +1,4 @@
-'use server';
-
-import {
-	defaultLocale,
-	getDictionary,
-	getFromDict,
-} from '@/dictionaries/dictionaries';
-import { Dictionary, Lang } from '@/types/i18n';
-import { Leaves } from '@/types/utils';
-import { headers } from 'next/headers';
-
-type Text = Leaves<Dictionary>;
-
-type TextProps = {
-	text: Text;
-};
-
-export const Text = async ({ text }: TextProps) => {
-	const headerList = await headers();
-	const lang = headerList.get('x-current-language');
-	
-	const dict = await getDictionary((lang ?? defaultLocale) as Lang);
-	const value = getFromDict(dict, text);
-
-	return <>{value}</>;
-};
+// Keep a single translation implementation for both Server and Client Components.
+// The client component reads the locale dictionary from DictionaryProvider, which
+// avoids relying on request headers during static generation.
+export { Text } from './text-client';

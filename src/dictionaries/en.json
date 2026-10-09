@@ -14,14 +14,11 @@
 				"paragraf3": "My goal is to grow into a Senior Developer, dive deeper into application architecture, experiment with graphics, and create products with strong technical and visual foundations."
 			},
 			"portfolio": {
-				"title": "Portfolio",
+				"title": "My Projects",
 				"items": []
 			},
 			"knowledge": {
 				"title": "My Skills"
-			},
-			"portfolio": {
-				"title": "My Projects"
 			},
 			"blog": {
 				"title": "Blog"
@@ -45,15 +42,15 @@
 		},
 		"resume": {
 			"personal": {
-				"name": "Ivanov Maksim",
+				"name": "Maksim Yuryevich Ivanov",
 				"title": "Frontend Developer",
 				"about": {
 					"title": "About Me",
-					"content": "Frontend developer (React + TypeScript) with commercial development experience. During my year at a web studio, I optimized client websites using modern technology stack. Independently built several large applications, including an interactive platform with online code editor and automated testing.\n\nI confidently master the React ecosystem: RTK Query, TanStack Query, Zustand, Next.js 14 App Router, application architecture and performance optimization. I quickly learn new technologies, focus on clean code and quality results.\n\nReady to take on junior+ level challenges from day one and continuously develop towards a senior developer position."
+					"content": "Frontend developer with commercial experience, focused on React and TypeScript. I build and improve web applications and user interfaces, and integrate frontend applications with REST APIs and backend services.\n\nI have worked with React, Bitrix, and Websoft HCM, implementing features, fixing issues, and maintaining corporate web systems. My toolkit includes JavaScript, TypeScript, Next.js, Zustand, Redux, HTML, CSS, and Tailwind CSS.\n\nI also have experience with backend development using Node.js (NestJS, Express) and Python (FastAPI, Django), as well as SQL, PostgreSQL, and SQLite. I am interested in application architecture, performance, and code quality."
 				},
 				"location": "Yekaterinburg, Russia",
-				"phone": "+7 (902)-875-02-46",
-				"email": "litavanchik@gmail.com"
+				"phone": "+7 (902) 875-02-46",
+				"email": "yura22875@yandex.ru"
 			},
 			"sections": {
 				"experience": "Work Experience",
@@ -76,67 +73,74 @@
 				"achievements": "Achievements"
 			},
 			"experience": {
-				"position1": {
-					"position": "Frontend Developer",
-					"company": "LLC «Artena»",
-					"website": "artena.ru",
-					"location": "Russia, Yekaterinburg",
-					"date": {
-						"start": "06-2024",
-						"end": "06-2025"
+				"positions": [
+					{
+						"position": "Web Developer",
+						"company": "GlobexIT",
+						"website": "https://globexit.ru/",
+						"location": "Moscow, Russia",
+						"date": "Nov 2025 — May 2026",
+						"description": "Developed, enhanced, and maintained web services built with React, Bitrix, and Websoft HCM.",
+						"responsibilities": [
+							"Implemented and updated web application features and user interfaces.",
+							"Fixed defects and resolved technical issues in existing services.",
+							"Worked with JavaScript, SQL, and internal APIs.",
+							"Investigated user reports and supported corporate web systems."
+						]
 					},
-					"description": "Development and optimization of client websites",
-					"responsibilities": [
-						"Developed and modernized client websites on 1C-Bitrix24",
-						"Completed tasks according to specifications: new pages, forms, integrations, bug fixes",
-						"Optimized loading speed and mobile responsiveness (PageSpeed 90+ scores)",
-						"Worked on accessibility (WCAG) and basic SEO: meta tags, friendly URLs, schema.org markup",
-						"Wrote custom scripts and widgets in JavaScript, sometimes React/Vue for individual blocks",
-						"Worked with constructors (Bitrix, wordpress, sometimes Tilda), made changes to PHP templates",
-						"Received feedback from managers and clients, completed tasks on time"
-					],
-					"achievements": [
-						"Reduced application response time by 30% through database query optimization and caching implementation",
-						"Increased application scalability by developing a new API architecture, allowing processing of 50% more requests during peak hours"
-					]
-				}
+					{
+						"position": "Developer",
+						"company": "Artena LLC",
+						"website": "https://artena.ru/contacts/",
+						"location": "Yekaterinburg, Russia",
+						"date": "Jul 2024 — Jun 2025",
+						"description": "Developed and maintained the client side of websites and web applications.",
+						"responsibilities": [
+							"Developed and improved frontend functionality for web applications.",
+							"Created and updated interfaces and functional components.",
+							"Fixed defects and supported existing web projects.",
+							"Worked with HTML, CSS, and JavaScript, and contributed to application stability and performance."
+						]
+					}
+				]
 			},
 			"education": {
 				"education1": {
-					"degree": "Vocational Education",
+					"degree": "Vocational education",
 					"institution": "Nizhny Tagil Trade and Economics College",
-					"location": "Russia",
-					"date": {
-						"start": "09-2020",
-						"end": "05-2024"
-					}
+					"date": "2024",
+					"program": "Information Systems and Programming, Web Development"
 				}
 			},
 			"projects": {
-				"project1": {
-					"title": "Website Catalog Structure Changes",
-					"company": "LLC 'PAAZ'",
-					"website": "www.paaz.ru",
-					"date": "02-2025",
-					"description": "Worked on restructuring the main website catalog to improve conversion and fix friendly URL issues. Added more logical navigation and optimized category distribution. As a result, user behavior improved and page visibility in search increased."
-				}
-			},
-			"honors": {
-				"honor1": {
-					"title": "Winner of 'Future Technologies' Hackathon",
-					"date": "2022",
-					"description": "As part of a team, developed an application for automating processes in education. The application received high marks from the jury for innovation and practical value."
-				}
+				"items": [
+					{
+						"title": "Profile — portfolio website",
+						"description": "Personal portfolio website and blog, bringing together the resume, projects, and articles.",
+						"url": "https://github.com/LiiChar/profile"
+					},
+					{
+						"title": "Itihas — interactive stories",
+						"description": "A project for presenting historical information through interactive stories and timelines.",
+						"url": "https://github.com/LiiChar/itihas"
+					}
+				]
 			},
 			"languages": {
-				"english": {
-					"name": "English",
-					"level": "B1"
-				}
+				"items": [
+					{
+						"name": "Russian",
+						"level": "Native"
+					},
+					{
+						"name": "English",
+						"level": "B1 — Intermediate"
+					}
+				]
 			},
 			"contact": {
 				"telegram": "t.me/lLItaV",
-				"email": "litavanchik@gmail.com",
+				"email": "yura22875@yandex.ru",
 				"github": "github.com/LiiChar"
 			},
 			"download": {
@@ -146,23 +150,30 @@
 			},
 			"skills": {
 				"technicalList": [
-					"TypeScript",
 					"React",
-					"Git",
-					"Vue",
-					"Redux",
+					"TypeScript",
+					"JavaScript",
 					"Next.js",
-					"Tailwind",
+					"HTML5",
+					"CSS3",
+					"Tailwind CSS",
+					"Zustand",
+					"Redux",
+					"REST APIs",
+					"WebSocket",
+					"Git",
+					"GitHub",
+					"SQL",
+					"PostgreSQL",
+					"SQLite",
 					"Node.js",
-					"CSS",
-					"HTML",
-					"JavaScript"
-				],
-				"softList": [
-					"Teamwork",
-					"Problem Solving",
-					"Communication",
-					"Self-direction"
+					"NestJS",
+					"Express",
+					"Python",
+					"FastAPI",
+					"Django",
+					"Responsive Design",
+					"SPA"
 				]
 			}
 		}

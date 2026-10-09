@@ -24,13 +24,26 @@ export function proxy(request: NextRequest) {
 	const urlHasLocale = locales.includes(segment);
 
 	if (urlHasLocale) {
-		return NextResponse.next();
+		const requestHeaders = new Headers(request.headers);
+		requestHeaders.set('x-current-language', segment);
+		requestHeaders.set('x-current-path', pathname);
+		const response = NextResponse.next({ request: { headers: requestHeaders } });
+		if (request.cookies.get('lang')?.value !== segment) {
+			response.cookies.set('lang', segment, {
+				path: '/',
+				maxAge: 60 * 60 * 24 * 365,
+			});
+		}
+		return response;
 	}
 
 	const cookieLang = request.cookies.get('lang')?.value as Lang | undefined;
+	const hostLocale = request.nextUrl.hostname.split('.')[0] as Lang;
 
 	const lang: Lang =
-		cookieLang && locales.includes(cookieLang)
+		locales.includes(hostLocale)
+			? hostLocale
+			: cookieLang && locales.includes(cookieLang)
 			? cookieLang
 			: detectFromAcceptLanguage(request);
 

@@ -13,28 +13,29 @@ export default async function Resume({ params }: LangParams) {
 	const dict = await getDictionary(lang as 'en' | 'ru');
 	const t = (path: string) => getFromDict(dict, path);
 
-	const responsibilities =
-		(t('page.resume.experience.position1.responsibilities') as string[]) ??
-		[];
-	const achievements =
-		(t('page.resume.experience.position1.achievements') as string[]) ?? [];
+	const experienceItems =
+		(t('page.resume.experience.positions') as Array<{
+			position: string;
+			company: string;
+			website: string;
+			location: string;
+			date: string;
+			description: string;
+			responsibilities: string[];
+		}>) ?? [];
 	const technicalSkills =
 		(t('page.resume.skills.technicalList') as string[]) ?? [];
-	const softSkills = (t('page.resume.skills.softList') as string[]) ?? [];
-
-	const experienceWebsite = t(
-		'page.resume.experience.position1.website'
-	) as string;
-	const experienceWebsiteUrl = experienceWebsite?.startsWith('http')
-		? experienceWebsite
-		: `https://${experienceWebsite}`;
-
-	const projectWebsite = t(
-		'page.resume.projects.project1.website'
-	) as string;
-	const projectWebsiteUrl = projectWebsite?.startsWith('http')
-		? projectWebsite
-		: `https://${projectWebsite}`;
+	const projects =
+		(t('page.resume.projects.items') as Array<{
+			title: string;
+			description: string;
+			url: string;
+		}>) ?? [];
+	const languages =
+		(t('page.resume.languages.items') as Array<{
+			name: string;
+			level: string;
+		}>) ?? [];
 
 	const telegram = t('page.resume.contact.telegram') as string;
 	const email = t('page.resume.contact.email') as string;
@@ -88,34 +89,35 @@ export default async function Resume({ params }: LangParams) {
 						<Text text='page.resume.sections.experience' />
 					</h2>
 					<div className='space-y-8'>
-						<div className='bg-card p-6 rounded-lg border border-border'>
+						{experienceItems.map((experience) => (
+						<div key={`${experience.company}-${experience.date}`} className='bg-card p-6 rounded-lg border border-border'>
 							<div className='flex flex-col md:flex-row md:items-center md:justify-between mb-4'>
 								<h3 className='text-xl font-semibold text-foreground'>
-									<Text text='page.resume.experience.position1.position' />
+									{experience.position}
 								</h3>
 								<span className='bg-muted px-3 py-1 rounded-md text-sm font-medium text-muted-foreground mt-2 md:mt-0'>
-									<Text text='page.resume.experience.position1.date.start' /> —{' '}
-									<Text text='page.resume.experience.position1.date.end' />
+									{experience.date}
 								</span>
 							</div>
 							<div className='space-y-4'>
 								<div className='flex items-center gap-4'>
 									<span className='text-lg font-medium text-foreground'>
-										<Text text='page.resume.experience.position1.company' />
+										{experience.company}
 									</span>
 									<a
-										href={experienceWebsiteUrl}
+										href={experience.website}
 										target='_blank'
+										rel='noreferrer'
 										className='text-primary hover:underline'
 									>
-										{experienceWebsite}
+										{experience.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}
 									</a>
 								</div>
 								<p className='text-muted-foreground'>
-									<Text text='page.resume.experience.position1.location' />
+									{experience.location}
 								</p>
 								<p className='text-foreground/90'>
-									<Text text='page.resume.experience.position1.description' />
+									{experience.description}
 								</p>
 
 								<div>
@@ -123,20 +125,7 @@ export default async function Resume({ params }: LangParams) {
 										<Text text='page.resume.sections.responsibilities' />:
 									</h4>
 									<ul className='space-y-2 text-foreground/80 ml-6'>
-										{responsibilities.map((item) => (
-											<li key={item} className='list-disc'>
-												{item}
-											</li>
-										))}
-									</ul>
-								</div>
-
-								<div>
-									<h4 className='font-semibold text-foreground mb-3'>
-										<Text text='page.resume.sections.achievements' />:
-									</h4>
-									<ul className='space-y-2 text-foreground/80 ml-6'>
-										{achievements.map((item) => (
+										{experience.responsibilities.map((item) => (
 											<li key={item} className='list-disc'>
 												{item}
 											</li>
@@ -145,6 +134,7 @@ export default async function Resume({ params }: LangParams) {
 								</div>
 							</div>
 						</div>
+						))}
 					</div>
 				</div>
 
@@ -158,16 +148,15 @@ export default async function Resume({ params }: LangParams) {
 								<Text text='page.resume.education.education1.degree' />
 							</h3>
 							<span className='bg-muted px-3 py-1 rounded-md text-sm font-medium text-muted-foreground mt-2 md:mt-0'>
-								<Text text='page.resume.education.education1.date.start' /> —{' '}
-								<Text text='page.resume.education.education1.date.end' />
+								<Text text='page.resume.education.education1.date' />
 							</span>
 						</div>
 						<div className='space-y-2'>
 							<p className='font-medium text-foreground'>
 								<Text text='page.resume.education.education1.institution' />
 							</p>
-							<p className='text-muted-foreground'>
-								<Text text='page.resume.education.education1.location' />
+			<p className='text-muted-foreground'>
+				<Text text='page.resume.education.education1.program' />
 							</p>
 						</div>
 					</div>
@@ -177,30 +166,16 @@ export default async function Resume({ params }: LangParams) {
 					<h2 className='text-3xl font-bold text-foreground border-b-2 border-border pb-2'>
 						<Text text='page.resume.sections.projects' />
 					</h2>
-					<div className='bg-card p-6 rounded-lg bo rder border-border'>
-						<div className='flex flex-col md:flex-row md:items-center md:justify-between mb-4'>
-							<h3 className='text-xl font-semibold text-foreground'>
-								<Text text='page.resume.projects.project1.title' />
-							</h3>
-							<span className='bg-muted px-3 py-1 rounded-md text-sm font-medium text-muted-foreground mt-2 md:mt-0'>
-								<Text text='page.resume.projects.project1.date' />
-							</span>
-						</div>
-						<div className='space-y-4'>
-							<p className='font-medium text-foreground'>
-								<Text text='page.resume.projects.project1.company' />
-							</p>
-							<a
-								href={projectWebsiteUrl}
-								target='_blank'
-								className='text-primary hover:underline'
-							>
-								{projectWebsite}
-							</a>
-							<p className='text-foreground/90'>
-								<Text text='page.resume.projects.project1.description' />
-							</p>
-						</div>
+					<div className='grid gap-4 md:grid-cols-2'>
+						{projects.map((project) => (
+							<div key={project.title} className='bg-card p-6 rounded-lg border border-border space-y-3'>
+								<h3 className='text-xl font-semibold text-foreground'>{project.title}</h3>
+								<p className='text-foreground/90'>{project.description}</p>
+								<a href={project.url} target='_blank' rel='noreferrer' className='text-primary hover:underline'>
+									{project.url.replace(/^https?:\/\//, '')}
+								</a>
+							</div>
+						))}
 					</div>
 				</div>
 
@@ -208,15 +183,13 @@ export default async function Resume({ params }: LangParams) {
 					<h2 className='text-3xl font-bold text-foreground border-b-2 border-border pb-2'>
 						<Text text='page.resume.sections.languages' />
 					</h2>
-					<div className='bg-card p-6 rounded-lg border border-border'>
-						<div className='flex items-center justify-between'>
-							<span className='font-medium text-foreground'>
-								<Text text='page.resume.languages.english.name' />
-							</span>
-							<span className='bg-muted px-3 py-1 rounded-md text-sm font-medium text-muted-foreground'>
-								<Text text='page.resume.languages.english.level' />
-							</span>
-						</div>
+					<div className='bg-card p-6 rounded-lg border border-border space-y-4'>
+						{languages.map((language) => (
+							<div key={language.name} className='flex items-center justify-between'>
+								<span className='font-medium text-foreground'>{language.name}</span>
+								<span className='bg-muted px-3 py-1 rounded-md text-sm font-medium text-muted-foreground'>{language.level}</span>
+							</div>
+						))}
 					</div>
 				</div>
 
@@ -266,13 +239,12 @@ export default async function Resume({ params }: LangParams) {
 						<Text text='page.resume.sections.skills.title' />
 					</h2>
 
-					<div className='grid md:grid-cols-2 gap-6'>
-						<div className='bg-card p-6 rounded-lg border border-border space-y-4'>
-							<h3 className='text-lg font-semibold text-foreground'>
-								<Text text='page.resume.sections.skills.technical' />
-							</h3>
-							<div className='flex flex-wrap gap-2'>
-								{technicalSkills.map((skill) => (
+					<div className='bg-card p-6 rounded-lg border border-border space-y-4'>
+						<h3 className='text-lg font-semibold text-foreground'>
+							<Text text='page.resume.sections.skills.technical' />
+						</h3>
+						<div className='flex flex-wrap gap-2'>
+							{technicalSkills.map((skill) => (
 									<span
 										key={skill}
 										className='bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium'
@@ -281,23 +253,6 @@ export default async function Resume({ params }: LangParams) {
 									</span>
 								))}
 							</div>
-						</div>
-
-						<div className='bg-card p-6 rounded-lg border border-border space-y-4'>
-							<h3 className='text-lg font-semibold text-foreground'>
-								<Text text='page.resume.sections.skills.soft' />
-							</h3>
-							<div className='flex flex-wrap gap-2'>
-								{softSkills.map((skill) => (
-									<span
-										key={skill}
-										className='bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-sm font-medium'
-									>
-										{skill}
-									</span>
-								))}
-							</div>
-						</div>
 					</div>
 				</div>
 

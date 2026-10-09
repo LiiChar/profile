@@ -132,11 +132,11 @@ export default async function RootLayout({
 					}),
 				}}
 			/>
-			<DictionaryProvider
-				dict={await getDictionary(resolvedParams.lang as 'en' | 'ru')}
-				lang={resolvedParams.lang as 'en' | 'ru'}
-			>
-				<body className='dark min-h-screen overflow-x-hidden relative z-[10]'>
+			<body className='dark min-h-screen overflow-x-hidden relative z-[10]'>
+				<DictionaryProvider
+					dict={await getDictionary(resolvedParams.lang as 'en' | 'ru')}
+					lang={resolvedParams.lang as 'en' | 'ru'}
+				>
 					<a
 						href='#main-content'
 						className='sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary text-primary-foreground px-4 py-2 rounded z-50'
@@ -154,8 +154,8 @@ export default async function RootLayout({
 							<DitherLazy />
 						</TooltipProvider>
 					</InitProvider>
-				</body>
-			</DictionaryProvider>
+				</DictionaryProvider>
+			</body>
 		</html>
 	);
 }

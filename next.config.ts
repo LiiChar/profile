@@ -2,7 +2,6 @@ import type { NextConfig } from 'next';
 import path from 'path';
 
 const nextConfig: NextConfig = {
-	productionBrowserSourceMaps: true,
 	headers: async () => [
 		{
 			source: '/_next/static/(.*)',
@@ -34,22 +33,8 @@ const nextConfig: NextConfig = {
 		},
 	},
 	webpack: config => {
-		config.optimization.splitChunks = {
-			chunks: 'all',
-			minSize: 20000,
-			maxSize: 244000,
-			minChunks: 1,
-			maxAsyncRequests: 30,
-			maxInitialRequests: 30,
-		};
 		config.externals = [...config.externals, 'bcrypt'];
 		config.resolve.alias['@'] = path.resolve(__dirname, 'src');
-		config.optimization = {
-			...config.optimization,
-			splitChunks: {
-				chunks: 'all',
-			},
-		};
 
 		return config;
 	},

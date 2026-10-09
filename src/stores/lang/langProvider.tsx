@@ -1,23 +1,25 @@
 'use client';
 
-import { ReactNode, useEffect } from 'react';
+import { createContext, ReactNode, useContext } from 'react';
 import { Dictionary, Lang } from '@/types/i18n';
-import { useDictionaryStore } from './langStore';
 
-type Props = {
-	children: ReactNode;
+type DictionaryValue = {
 	dict: Dictionary;
 	lang: Lang;
 };
 
-export const DictionaryProvider = ({ children, dict, lang }: Props) => {
-	const setDictionary = useDictionaryStore(state => state.setDictionary);
-	const setLang = useDictionaryStore(state => state.setLang);
+type Props = DictionaryValue & { children: ReactNode };
 
-	useEffect(() => {
-		setDictionary(dict);
-		setLang(lang);
-	}, [dict, lang, setDictionary, setLang]);
+export const DictionaryContext = createContext<DictionaryValue | null>(null);
 
-	return <>{children}</>;
+export const DictionaryProvider = ({ children, dict, lang }: Props) => (
+	<DictionaryContext.Provider value={{ dict, lang }}>
+		{children}
+	</DictionaryContext.Provider>
+);
+
+export const useDictionary = () => {
+	const value = useContext(DictionaryContext);
+	if (!value) throw new Error('useDictionary must be used inside DictionaryProvider');
+	return value;
 };

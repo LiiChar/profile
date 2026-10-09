@@ -2,7 +2,7 @@
 
 import { getReadingTimeText, timeRead } from "@/helpers/text";
 import { cn } from "@/lib/utils";
-import { useDictionaryStore } from "@/stores/lang/langStore";
+import { useDictionary } from "@/stores/lang/langProvider";
 import { memo } from "react";
 
 type TimeReadProps = {
@@ -10,9 +10,9 @@ type TimeReadProps = {
 } & React.HTMLAttributes<HTMLDivElement>;
 
 const TimeRead = memo(({ content, ...attr }: TimeReadProps) => {
-  const lang = useDictionaryStore(state => state.lang);
+  const { lang } = useDictionary();
 
-  const readingTimeText = getReadingTimeText(timeRead(content), lang ?? 'ru');
+	  const readingTimeText = getReadingTimeText(timeRead(content), lang);
 
 	return (
 		<div {...attr} className={cn('text-nowrap text-sm', attr.className)}>

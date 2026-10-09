@@ -1,7 +1,7 @@
 'use client';
 
 import { getFieldLang } from "@/helpers/i18n-client";
-import { useDictionaryStore } from "@/stores/lang/langStore";
+import { useDictionary } from "@/stores/lang/langProvider";
 import { EntityLangField, FieldLangs } from "@/types/i18n";
 import { memo } from "react";
 
@@ -11,11 +11,11 @@ type ContentProps = {
 };
 
 const Content = memo(({ data, field }: ContentProps) => {
-  const lang = useDictionaryStore(state => state.lang);
+	  const { lang } = useDictionary();
 
 	return (
 		<>
-			{getFieldLang(data, field, lang ?? 'ru')}
+			{getFieldLang(data, field, lang)}
 		</>
 	);
 });

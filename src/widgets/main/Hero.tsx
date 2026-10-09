@@ -11,12 +11,12 @@ const ContactModal = dynamic(() => import('../modal/ContactModal.js').then(mod =
 });
 import TextType from '@/components/ui/text-type';
 import { getText } from '@/helpers/i18n-client';
-import { useDictionaryStore } from '@/stores/lang/langStore';
+import { useDictionary } from '@/stores/lang/langProvider';
 import Link from 'next/link';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 export const Hero = ({}) => {
-	const dict = useDictionaryStore(state => state.dictionary);
+	const { dict } = useDictionary();
 	const reduceMotion = useReducedMotion();
 
 	// Simplified animations for reduced motion
@@ -51,9 +51,9 @@ export const Hero = ({}) => {
 			</div>
 			<div className='text-lg mt-5 md:text-xl mb-4 text-foreground/70 sm:px-8 px-4'>
 				{reduceMotion ? (
-					<span>{getText('page.main.hero.description', dict!)}</span>
+					<span>{getText('page.main.hero.description', dict)}</span>
 				) : (
-					<TextType text={[getText('page.main.hero.description', dict!)]} />
+					<TextType text={[getText('page.main.hero.description', dict)]} />
 				)}
 			</div>
 

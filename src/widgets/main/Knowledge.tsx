@@ -164,7 +164,9 @@ const Knowledge = React.memo(() => {
 		[dict],
 	);
 
-	const totalSkills = KnowledgeData.length;\n\tconst getLevelLabel = (level: Knowledge['level']) =>\n\t\tgetFromDict(dict, `page.main.knowledge.levels.${levelKeys[level]}`) as string;
+	const totalSkills = KnowledgeData.length;
+	const getLevelLabel = (level: Knowledge['level']) =>
+		getFromDict(dict, `page.main.knowledge.levels.${levelKeys[level]}`) as string;
 
 	return (
 		<section

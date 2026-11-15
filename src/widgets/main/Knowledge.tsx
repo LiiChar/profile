@@ -112,7 +112,7 @@ const KnowledgeData: Knowledge[] = [
 ];
 
 
-const skillGroups = [
+const levelKeys: Record<Knowledge['level'], string> = {\n\tЭксперт: 'expert',\n\tПродвинутый: 'advanced',\n\tСредний: 'intermediate',\n\tОзнакомлен: 'familiar',\n};\n\nconst skillGroups = [
 	{
 		id: 'frontend',
 		titleKey: 'frontend',
@@ -180,7 +180,7 @@ const Knowledge = React.memo(() => {
 					</h2>
 					<div
 						aria-hidden='true'
-						className='mx-auto mt-3 h-px w-16 bg-[var(--site-accent)]'
+						className='mx-auto mt-3 h-px w-16 bg-[var(--site-foreground)]'
 					/>
 					<p className='site-section-description mx-auto'>
 						<Text text='page.main.knowledge.subtitle' />
@@ -219,7 +219,7 @@ const Knowledge = React.memo(() => {
 										aria-label={`${skill.title}: ${skill.level}. ${getFromDict(dict, 'page.main.knowledge.openDetails')}`}
 									>
 										<span className='mb-1.5 flex items-center justify-between gap-3 text-sm'>
-											<span className='font-medium text-[var(--site-text)] transition-colors group-hover/skill:text-[var(--site-accent)]'>
+											<span className='font-medium text-[var(--site-foreground)] transition-colors group-hover/skill:text-[var(--site-accent)]'>
 												{skill.title}
 											</span>
 											<span className='shrink-0 text-xs text-[var(--site-muted)]'>

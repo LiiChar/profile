@@ -1,5 +1,6 @@
 import { Blog } from '@/widgets/main/Blog';
 import { Description } from '@/widgets/main/Description';
+import { Experience } from '@/widgets/main/Experience';
 import { Hero } from '@/widgets/main/Hero';
 import { Knowledge } from '@/widgets/main/Knowledge';
 import { LinePortfolio } from '@/widgets/main/LinePortfolio';
@@ -22,6 +23,7 @@ export default async function Home({
 			<Navigation>
 				<Hero />
 				<Description />
+				<Experience />
 				<Knowledge />
 				<LinePortfolio />
 				<Blog lang={lang} />

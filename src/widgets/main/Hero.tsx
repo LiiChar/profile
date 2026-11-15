@@ -36,11 +36,15 @@ export const Hero = () => {
     : {
         initial: { scaleX: 0 },
         animate: { scaleX: 1 },
+<<<<<<< HEAD
         transition: {
           duration: 0.85,
           delay: 0.35,
           ease: 'easeOut' as const,
         },
+=======
+        transition: { duration: 0.85, delay: 0.35, ease: 'easeOut' as const },
+>>>>>>> 59a71592f36d324f28a30cf71afabfc84cf1b6c5
       };
 
   const actionsIn = reduceMotion
@@ -59,6 +63,10 @@ export const Hero = () => {
       aria-labelledby="hero-title"
       className="site-container relative z-20 flex min-h-[calc(100svh-5rem)] flex-col justify-center overflow-hidden py-24 sm:min-h-[calc(100svh-6rem)] sm:py-28 contain-layout"
     >
+<<<<<<< HEAD
+=======
+      {/* Subtle background detail keeps the hero connected to the rest of the page. */}
+>>>>>>> 59a71592f36d324f28a30cf71afabfc84cf1b6c5
       <div
         aria-hidden="true"
         className="pointer-events-none absolute -right-32 top-1/2 h-[28rem] w-[28rem] -translate-y-1/2 rounded-full opacity-50 blur-3xl"

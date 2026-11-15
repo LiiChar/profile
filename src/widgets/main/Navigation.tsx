@@ -34,9 +34,8 @@ export const Navigation = React.memo(({
 	const reduceMotion = useReducedMotion();
 
 	useEffect(() => {
-		// Use fewer threshold values on mobile for better performance
 		const thresholds = reduceMotion ? [0, 0.5, 1] : [0, 0.25, 0.5, 0.75, 1];
-		
+
 		const observer = new IntersectionObserver(
 			entries => {
 				let best: IntersectionObserverEntry | null = null;
@@ -124,7 +123,7 @@ export const Navigation = React.memo(({
 					className='fixed w-12 z-[100] top-1/2 -translate-y-1/2 right-4 min-[980px]:right-[calc((100%-896px)/4)] translate-x-3 min-[980px]:flex hidden group gap-2 flex-col'
 					style={{ transform: 'translateY(-50%)' }}
 				>
-					<div className='relative flex flex-col gap-0 bg-background/70 backdrop-blur-lg rounded-full border border-border shadow-2xl transition-shadow duration-300 hover:shadow-primary/10'>
+					<div className='relative flex flex-col gap-0 bg-background/70 backdrop-blur-lg rounded-full border border-border/40 shadow-2xl transition-shadow duration-300 hover:shadow-primary/10 py-1'>
 						<motion.div
 							layoutId='sidebar-marker'
 							className='absolute inset-0 -z-10 rounded-full bg-secondary/10 backdrop-blur-md border border-foreground'
@@ -141,11 +140,10 @@ export const Navigation = React.memo(({
 
 							return (
 								<div key={key} className='relative group/nav'>
-									<div className='absolute right-full top-1/2 -translate-y-1/2 ml-4 -mt-[1px] opacity-0 pointer-events-none lg:group-hover/nav:opacity-100 lg:group-hover/nav:-translate-x-2 transition-all duration-300 whitespace-nowrap'>
+									<div className='absolute right-full top-1/2  -translate-y-1/2 ml-4 -mt-[1px] opacity-0 pointer-events-none lg:group-hover/nav:opacity-100 lg:group-hover/nav:-translate-x-2 transition-all duration-300 whitespace-nowrap '>
 										<span
 											className={cn(
 												'text-sm font-medium px-2 py-1 rounded-md bg-background/80 backdrop-blur-sm border border-border/50',
-												isActive ? 'text-primary' : 'text-foreground',
 											)}
 										>
 											{title}
@@ -164,13 +162,12 @@ export const Navigation = React.memo(({
 											'relative z-10 p-3 w-full translate-x-[1px] rounded-full transition-all duration-300',
 											isActive
 												? 'text-primary scale-110'
-												: 'text-muted-foreground hover:text-primary hover:scale-105 hover:rotate-6',
+												: 'text-muted-foreground hover:text-primary hover:scale-105',
 										)}
 									>
 										<span
 											className={cn(
-												'block transition-transform duration-300',
-												isActive && 'animate-pulse',
+												'block transition-transform duration-300'
 											)}
 										>
 											{icon}

@@ -16,13 +16,13 @@ export const Description = () => {
 
 	// Simplified 3D effect - disable on reduced motion
 	const rotateX = useTransform(
-		scrollYProgress, 
-		[0, 1], 
+		scrollYProgress,
+		[0, 1],
 		reduceMotion ? [0, 0] : [8, -4]
 	);
 	const y = useTransform(
-		scrollYProgress, 
-		[0, 1], 
+		scrollYProgress,
+		[0, 1],
 		reduceMotion ? [0, 0] : [60, -40]
 	);
 	const opacity = useTransform(
@@ -68,21 +68,12 @@ export const Description = () => {
 								delay: reduceMotion ? 0 : index * 0.25,
 								ease: 'easeOut',
 							}}
-							className='relative pl-8 before:absolute before:left-0 before:top-3 before:w-1 before:h-8 before:bg-primary/30 before:rounded-full before:transition-all before:duration-300 hover:before:h-full hover:before:bg-primary/50'
+							className='relative pl-8 before:absolute before:left-0 before:top-3 before:w-1 before:h-8 before:bg-primary/30 before:rounded-full before:transition-all before:duration-300 hover:before:h-[calc(100%-20px)] hover:before:bg-primary/50'
 						>
 							<Text text={key as any} />
 						</motion.p>
 					))}
 				</motion.div>
-
-				{/* Декоративный элемент внизу */}
-				<motion.div
-					initial={reduceMotion ? {} : { scaleX: 0 }}
-					whileInView={{ scaleX: 1 }}
-					viewport={{ once: true }}
-					transition={{ duration: reduceMotion ? 0 : 1.2, delay: reduceMotion ? 0 : 0.8 }}
-					className='h-px bg-gradient-to-r translate-y-6 from-transparent via-primary/30 to-transparent origin-left'
-				/>
 			</div>
 		</section>
 	);

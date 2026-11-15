@@ -13,7 +13,7 @@ const VariantStyle: Record<
 	}
 > = {
 	default: {
-		item: 'bg-primary/10 hover:bg-primary/20 text-primary text-sm rounded-full px-3 py-1',
+		item: 'bg-secondary/40 backdrop-blur-lg hover:bg-secondary/60 border border-[1px] hover:border-border/40 border-transparent  text-primary text-sm rounded-full px-3 py-1',
 		wrapper: '',
 	},
 	separator: {

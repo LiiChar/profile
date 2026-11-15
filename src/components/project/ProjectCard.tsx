@@ -63,19 +63,12 @@ const ProjectBackground = ({
 			</div>
 
 			{/* Контент, который появляется при наведении */}
-			<div className='absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/70 to-transparent p-4 opacity-0 translate-y-6 transition-all duration-500 ease-out group-hover:opacity-100 group-hover:translate-y-0'>
+			<div className='absolute inset-0 flex flex-col justify-between bg-gradient-to-t from-black/70 to-transparent p-4 opacity-0 translate-y-6 transition-all duration-500 ease-out group-hover:opacity-100 group-hover:translate-y-0'>
 				<a href={`/projects/${project.id}`}>
-					<h2 className='font-bold m-0 p-0 border-0 transition-colors duration-300 group-hover:text-primary'>
+					<h2 className='font-bold m-0 p-0 border-0 transition-colors duration-300'>
 						<Content data={project} field='title' />
 					</h2>
 				</a>
-				{project.description ? (
-					<p className='my-3 transition-all duration-300 delay-75'>{project.description}</p>
-				) : (
-					<p className='line-clamp-3 my-3 transition-all duration-300 delay-75'>
-						<Content data={project} field='content' />
-					</p>
-				)}
 				{project.tags && (
 					<div className='transition-all duration-300 delay-150'>
 						<TagList
@@ -118,7 +111,7 @@ const ProjectBlur = ({
 					) : (
 						project.title
 					)}
-				</h4>			
+				</h4>
 				{project.description ? (
 					<p className='my-3 text-foreground/70 transition-colors duration-300 group-hover:text-foreground/90'>
 						{project.description}

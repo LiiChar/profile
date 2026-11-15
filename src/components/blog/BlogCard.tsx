@@ -11,7 +11,6 @@ import { TimeRead } from '../text/TimeRead';
 import { Text } from '../ui/text-server';
 import { Date } from '../date/Date';
 import { Content } from '../text/Content';
-import { ContentMarkdown } from '../text/ContentMarkdown';
 import { Lang } from '@/types/i18n';
 
 type BlogCardProps = {
@@ -25,8 +24,8 @@ export const BlogCard = ({ blog, lang, className, ...attr }: BlogCardProps) => {
 	const tagBase = `${basePath}/blog/tag/`;
 
 	return (
-		<div 
-			{...attr} 
+		<div
+			{...attr}
 			className={cn(
 				'flex flex-col gap-4 group/card transition-all duration-300',
 				className
@@ -45,10 +44,7 @@ export const BlogCard = ({ blog, lang, className, ...attr }: BlogCardProps) => {
 						className='object-cover transition-transform duration-500 ease-out group-hover/card:scale-105 aspect-[16/10] w-full h-full rounded-md top-0 left-0 static!'
 					/>
 				)}
-				{/* Overlay gradient on hover */}
-				<div className='absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-300' />
 			</Link>
-			{/* Контейнер, занимающий всю высоту */}
 			<div className='w-full flex flex-col grow'>
 				<div>
 					<div className='flex gap-2 w-full items-center'>
@@ -60,9 +56,6 @@ export const BlogCard = ({ blog, lang, className, ...attr }: BlogCardProps) => {
 						<h3 className='text-[19px] transition-colors duration-300 group-hover/card:text-primary'>
 							<Content data={blog} field='title'/>
 						</h3>
-						<div className='block sm:hidden lg:block md:hidden overflow-ellipsis h-[60px] overflow-hidden text-[16px] mt-[4px] text-foreground/70 transition-colors duration-300 group-hover/card:text-foreground/90'>
-							<ContentMarkdown data={blog} field='content' />
-						</div>
 					</div>
 				</div>
 

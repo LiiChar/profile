@@ -1,0 +1,206 @@
+/*
+ * Portfolio design system
+ * Direction: editorial / technical
+ * Scope: visual foundation only; existing sections, behavior and animation
+ * utilities remain in globals.css and component styles.
+ */
+
+:root {
+  color-scheme: light;
+  --site-background: oklch(0.985 0.003 85);
+  --site-surface: oklch(0.995 0.002 85);
+  --site-surface-raised: oklch(1 0 0);
+  --site-foreground: oklch(0.19 0.008 260);
+  --site-muted: oklch(0.49 0.012 260);
+  --site-subtle: oklch(0.66 0.01 260);
+  --site-border: oklch(0.89 0.006 260);
+  --site-accent: oklch(0.61 0.2 27);
+  --site-container: 72rem;
+  --site-reading-width: 46rem;
+  --site-radius-sm: 0.5rem;
+  --site-radius-md: 0.75rem;
+  --site-radius-lg: 1rem;
+  --site-section-space: clamp(5rem, 10vw, 8rem);
+  --site-motion-fast: 180ms;
+  --site-motion-base: 280ms;
+  --site-ease: cubic-bezier(0.2, 0.75, 0.25, 1);
+}
+
+.dark {
+  color-scheme: dark;
+  --site-background: oklch(0.145 0.006 260);
+  --site-surface: oklch(0.18 0.007 260);
+  --site-surface-raised: oklch(0.205 0.008 260);
+  --site-foreground: oklch(0.94 0.004 260);
+  --site-muted: oklch(0.68 0.012 260);
+  --site-subtle: oklch(0.53 0.012 260);
+  --site-border: oklch(1 0 0 / 0.11);
+  --site-accent: oklch(0.68 0.19 28);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
+}
+
+body {
+  background-color: var(--site-background);
+  color: var(--site-foreground);
+  font-family: var(--font-geist-sans), Arial, sans-serif;
+  font-feature-settings: "ss01" on, "cv11" on;
+  letter-spacing: -0.012em;
+}
+
+::selection {
+  color: var(--site-background);
+  background: var(--site-accent);
+}
+
+main {
+  width: min(100% - 3rem, var(--site-container));
+  max-width: var(--site-container);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  color: var(--site-foreground);
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: clamp(2.75rem, 7vw, 5.5rem);
+  line-height: 0.98;
+  font-weight: 650;
+  letter-spacing: -0.065em;
+}
+
+h2 {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  font-size: clamp(1.8rem, 3.5vw, 2.65rem);
+  line-height: 1.08;
+  font-weight: 600;
+  letter-spacing: -0.045em;
+}
+
+h3 {
+  font-size: clamp(1.25rem, 2vw, 1.65rem);
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+}
+
+p {
+  color: inherit;
+  line-height: 1.75;
+}
+
+a {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+button,
+[role="button"] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Reusable primitives for the upcoming component migration. */
+.site-container {
+  width: min(100% - 3rem, var(--site-container));
+  margin-inline: auto;
+}
+
+.site-reading-width {
+  width: min(100%, var(--site-reading-width));
+}
+
+.site-section {
+  position: relative;
+  scroll-margin-top: 6rem;
+  padding-block: var(--site-section-space);
+}
+
+.site-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: var(--site-muted);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.site-eyebrow::before {
+  width: 1.35rem;
+  height: 1px;
+  content: "";
+  background: var(--site-accent);
+}
+
+.site-section-title {
+  margin: 0;
+  color: var(--site-foreground);
+  font-size: clamp(1.8rem, 3.5vw, 2.65rem);
+  line-height: 1.08;
+  font-weight: 600;
+  letter-spacing: -0.045em;
+}
+
+.site-section-description {
+  max-width: 42rem;
+  margin-top: 1rem;
+  color: var(--site-muted);
+  font-size: clamp(1rem, 1.5vw, 1.125rem);
+  line-height: 1.75;
+}
+
+.site-surface {
+  background: var(--site-surface);
+  border: 1px solid var(--site-border);
+  border-radius: var(--site-radius-md);
+}
+
+.site-surface-raised {
+  background: var(--site-surface-raised);
+  border: 1px solid var(--site-border);
+  border-radius: var(--site-radius-md);
+}
+
+.site-muted {
+  color: var(--site-muted);
+}
+
+.site-accent {
+  color: var(--site-accent);
+}
+
+.site-divider {
+  width: 100%;
+  height: 1px;
+  border: 0;
+  background: var(--site-border);
+}
+
+@media (max-width: 640px) {
+  main,
+  .site-container {
+    width: min(100% - 2rem, var(--site-container));
+  }
+
+  .site-section {
+    padding-block: clamp(3.75rem, 14vw, 5rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

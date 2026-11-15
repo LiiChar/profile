@@ -13,6 +13,7 @@ import TextType from '@/components/ui/text-type';
 import { getText } from '@/helpers/i18n-client';
 import { useDictionary } from '@/stores/lang/langProvider';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { Description } from './Description.js';
 
 const ContactModal = dynamic(
   () => import('../modal/ContactModal.js').then((mod) => mod.ContactModal),
@@ -36,15 +37,11 @@ export const Hero = () => {
     : {
         initial: { scaleX: 0 },
         animate: { scaleX: 1 },
-<<<<<<< HEAD
         transition: {
           duration: 0.85,
           delay: 0.35,
           ease: 'easeOut' as const,
         },
-=======
-        transition: { duration: 0.85, delay: 0.35, ease: 'easeOut' as const },
->>>>>>> 59a71592f36d324f28a30cf71afabfc84cf1b6c5
       };
 
   const actionsIn = reduceMotion
@@ -55,7 +52,7 @@ export const Hero = () => {
         transition: { duration: 0.55, delay: 0.45 },
       };
 
-  const description = getText('page.main.hero.description', dict);
+  const heroText = getText('page.main.hero.title', dict);
 
   return (
     <section
@@ -63,10 +60,6 @@ export const Hero = () => {
       aria-labelledby="hero-title"
       className="site-container relative z-20 flex min-h-[calc(100svh-5rem)] flex-col justify-center overflow-hidden py-24 sm:min-h-[calc(100svh-6rem)] sm:py-28 contain-layout"
     >
-<<<<<<< HEAD
-=======
-      {/* Subtle background detail keeps the hero connected to the rest of the page. */}
->>>>>>> 59a71592f36d324f28a30cf71afabfc84cf1b6c5
       <div
         aria-hidden="true"
         className="pointer-events-none absolute -right-32 top-1/2 h-[28rem] w-[28rem] -translate-y-1/2 rounded-full opacity-50 blur-3xl"
@@ -82,7 +75,7 @@ export const Hero = () => {
             id="hero-title"
             className="gpu-accelerated max-w-5xl text-left"
           >
-            <Text text="page.main.hero.title" />
+            <TextType text={[heroText]} />
           </h1>
 
           <motion.div
@@ -94,13 +87,9 @@ export const Hero = () => {
 
         <motion.div
           {...actionsIn}
-          className="mt-7 max-w-2xl text-left text-base leading-relaxed text-muted-foreground sm:mt-8 sm:text-lg"
+          className=" mt-5 max-w-2xl text-left text-base leading-relaxed text-muted-foreground "
         >
-          {reduceMotion ? (
-            <span>{description}</span>
-          ) : (
-            <TextType text={[description]} />
-          )}
+          <Description />
         </motion.div>
 
         <motion.div
@@ -141,14 +130,14 @@ export const Hero = () => {
       </div>
 
       <a
-        href="#description"
-        aria-label="Scroll down to description"
+        href="#experience"
+        aria-label="Scroll down to experience"
         className="group absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2 text-muted-foreground transition-colors duration-300 hover:text-primary sm:bottom-10"
       >
         <span className="font-mono text-[10px] uppercase tracking-[0.18em]">
           Scroll
         </span>
-        <ArrowDown className="h-7 w-4 float-animation" strokeWidth={1.5} />
+        <ArrowDown className="float-animation" size={28} strokeWidth={1.5} />
       </a>
     </section>
   );

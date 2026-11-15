@@ -3,13 +3,12 @@
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Monitor, FileText, LayoutDashboard, Book, Brain, BriefcaseBusiness } from 'lucide-react';
+import { Monitor, LayoutDashboard, Book, Brain, BriefcaseBusiness } from 'lucide-react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import Portal from '@/components/ui/portal';
 
 const MainComponents = {
 	hero: { title: 'Главная', icon: <Monitor className='w-5 h-5' /> },
-	description: { title: 'Обо мне', icon: <FileText className='w-5 h-5' /> },
 	experience: { title: 'Опыт', icon: <BriefcaseBusiness className='w-5 h-5' /> },
 	knowledge: { title: 'Навыки', icon: <Brain className='w-5 h-5' /> },
 	portfolio: {

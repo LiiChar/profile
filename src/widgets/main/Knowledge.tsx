@@ -157,7 +157,7 @@ const Knowledge = React.memo(() => {
 		[dict],
 	);
 
-	const totalSkills = KnowledgeData.length;
+	const totalSkills = KnowledgeData.length;\n\tconst getLevelLabel = (level: Knowledge['level']) =>\n\t\tgetFromDict(dict, `page.main.knowledge.levels.${levelKeys[level]}`) as string;
 
 	return (
 		<section
@@ -187,7 +187,7 @@ const Knowledge = React.memo(() => {
 					</p>
 				</motion.header>
 
-				<div className='grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3'>
+				<div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
 					{groupedSkills.map((group, groupIndex) => (
 						<motion.section
 							key={group.id}
@@ -216,7 +216,7 @@ const Knowledge = React.memo(() => {
 										type='button'
 										onClick={() => setSelected(skill)}
 										className='group/skill block w-full rounded-md text-left outline-none focus-visible:ring-2 focus-visible:ring-[var(--site-accent)] focus-visible:ring-offset-4 focus-visible:ring-offset-[var(--site-surface)]'
-										aria-label={`${skill.title}: ${skill.level}. ${getFromDict(dict, 'page.main.knowledge.openDetails')}`}
+										aria-label={`${skill.title}: ${getLevelLabel(skill.level)}. ${getFromDict(dict, 'page.main.knowledge.openDetails')}`}
 									>
 										<span className='mb-1.5 flex items-center justify-between gap-3 text-sm'>
 											<span className='font-medium text-[var(--site-foreground)] transition-colors group-hover/skill:text-[var(--site-accent)]'>
@@ -329,7 +329,7 @@ const Knowledge = React.memo(() => {
 							<button
 								type='button'
 								onClick={() => setSelected(null)}
-								className='absolute right-4 top-4 rounded-md p-2 text-[var(--site-muted)] transition-colors hover:text-[var(--site-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--site-accent)]'
+								className='absolute right-4 top-4 rounded-md p-2 text-[var(--site-muted)] transition-colors hover:text-[var(--site-foreground)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--site-accent)]'
 								aria-label={String(
 									getFromDict(dict, 'page.main.knowledge.close'),
 								)}

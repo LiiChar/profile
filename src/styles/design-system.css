@@ -61,6 +61,13 @@ main {
   max-width: var(--site-container);
 }
 
+/* The home page currently carries a max-w-4xl utility; this selector
+   intentionally widens only its main content container. */
+main#main-content {
+  width: min(100% - 3rem, var(--site-container));
+  max-width: var(--site-container);
+}
+
 h1,
 h2,
 h3,

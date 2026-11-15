@@ -35,6 +35,40 @@
 						"description": "A block-based editor for building object behavior, featuring drag-and-drop, JSON export, and a built-in interpreter."
 					}
 				]
+			},
+			"experience": {
+				"title": "Work experience",
+				"subtitle": "Professional experience in web application development and maintenance.",
+				"positions": [
+					{
+						"position": "Web Developer",
+						"company": "GlobexIT",
+						"website": "https://globexit.ru/",
+						"location": "Moscow, Russia",
+						"date": "Nov 2025 — May 2026",
+						"description": "Developed, enhanced, and maintained web services and corporate systems.",
+						"responsibilities": [
+							"Implemented and updated web application features and user interfaces.",
+							"Fixed defects and resolved technical issues in existing services.",
+							"Worked with JavaScript, SQL, and internal APIs.",
+							"Investigated user reports and supported corporate web systems."
+						]
+					},
+					{
+						"position": "Developer",
+						"company": "Artena LLC",
+						"website": "https://artena.ru/contacts/",
+						"location": "Yekaterinburg, Russia",
+						"date": "Jul 2024 — Jun 2025",
+						"description": "Developed and maintained the client side of websites and web applications.",
+						"responsibilities": [
+							"Developed and improved frontend functionality for web applications.",
+							"Created and updated interfaces and functional components.",
+							"Fixed defects and supported existing web projects.",
+							"Worked with HTML, CSS, and JavaScript, and contributed to application stability and performance."
+						]
+					}
+				]
 			}
 		},
 		"project": {

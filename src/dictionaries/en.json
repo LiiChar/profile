@@ -18,7 +18,24 @@
 				"items": []
 			},
 			"knowledge": {
-				"title": "My Skills"
+				"title": "My Skills",
+				"subtitle": "Technologies and tools I use to build web applications.",
+				"groups": {
+					"frontend": "Frontend Development",
+					"backend": "Backend & Tools",
+					"platform": "Web Platform"
+				},
+				"overviewTitle": "Technology stack",
+				"overviewDescription": "The main areas and technologies in my current toolkit.",
+				"skillsCountLabel": "technologies listed",
+				"openDetails": "Open skill details",
+				"close": "Close",
+				"levels": {
+					"expert": "Expert",
+					"advanced": "Advanced",
+					"intermediate": "Intermediate",
+					"familiar": "Familiar"
+				}
 			},
 			"blog": {
 				"title": "Blog"

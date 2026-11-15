@@ -1,15 +1,11 @@
 'use client';
 
-import {
-	Carousel,
-	CarouselContent,
-	CarouselItem,
-} from '@/components/ui/carousel';
 import { Text } from '@/components/ui/text-client';
+import { getFromDict } from '@/helpers/i18n-client';
+import { useDictionary } from '@/stores/lang/langProvider';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import React, { useState, useMemo } from 'react';
-import AutoScroll from 'embla-carousel-auto-scroll';
+import React, { useMemo, useState } from 'react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import {
 	SiReact,
@@ -115,172 +111,286 @@ const KnowledgeData: Knowledge[] = [
 	},
 ];
 
- const Knowledge = React.memo(() => {
+
+const levelKeys: Record<Knowledge['level'], string> = {
+	Эксперт: 'expert',
+	Продвинутый: 'advanced',
+	Средний: 'intermediate',
+	Ознакомлен: 'familiar',
+};
+
+const skillGroups = [
+	{
+		id: 'frontend',
+		titleKey: 'frontend',
+		skills: ['React', 'Next.js', 'TypeScript'],
+	},
+	{
+		id: 'backend',
+		titleKey: 'backend',
+		skills: ['Node.js', 'NestJS', 'Laravel', 'PHP', 'SQLite'],
+	},
+	{
+		id: 'platform',
+		titleKey: 'platform',
+		skills: ['HTML', 'CSS'],
+	},
+] as const;
+
+const levelProgress: Record<Knowledge['level'], number> = {
+	Эксперт: 95,
+	Продвинутый: 80,
+	Средний: 62,
+	Ознакомлен: 38,
+};
+
+const Knowledge = React.memo(() => {
 	const [selected, setSelected] = useState<Knowledge | null>(null);
+	const { dict } = useDictionary();
 	const reduceMotion = useReducedMotion();
 
-	// Memoize carousel plugins to prevent re-creation
-	const carouselPlugins = useMemo(() => 
-		reduceMotion ? [] : [
-			AutoScroll({
-				speed: 0.6,
-				stopOnMouseEnter: true,
-				stopOnInteraction: false,
-				playOnInit: true,
-			}),
-		],
-	[reduceMotion]);
+	const groupedSkills = useMemo(
+		() =>
+			skillGroups.map(group => ({
+				...group,
+				title: getFromDict(
+					dict,
+					`page.main.knowledge.groups.${group.titleKey}`,
+				) as string,
+				items: group.skills
+					.map(title => KnowledgeData.find(skill => skill.title === title))
+					.filter((skill): skill is Knowledge => Boolean(skill)),
+			})),
+		[dict],
+	);
+
+	const totalSkills = KnowledgeData.length;
+	const getLevelLabel = (level: Knowledge['level']) =>
+		getFromDict(dict, `page.main.knowledge.levels.${levelKeys[level]}`) as string;
 
 	return (
-		<div className='relative py-18 contain-layout' id='knowledge'>
-			<h2 className='mb-10'>
-				<Text text='page.main.knowledge.title' />
-			</h2>
+		<section
+			id='knowledge'
+			className='site-section contain-layout'
+		>
+			<div className='site-container'>
+				<motion.header
+					initial={reduceMotion ? {} : { opacity: 0, y: 24 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					viewport={{ once: true }}
+					transition={{
+						duration: reduceMotion ? 0 : 0.65,
+						ease: 'easeOut',
+					}}
+					className='mb-10 text-center md:mb-14'
+				>
+					<h2 className='site-section-title'>
+						<Text text='page.main.knowledge.title' />
+					</h2>
+					<div
+						aria-hidden='true'
+						className='mx-auto mt-3 h-px w-16 bg-[var(--site-foreground)]'
+					/>
+					<p className='site-section-description mx-auto'>
+						<Text text='page.main.knowledge.subtitle' />
+					</p>
+				</motion.header>
 
-			<Carousel
-				plugins={carouselPlugins}
-				opts={{
-					align: 'start',
-					loop: true,
-					dragFree: true,
-				}}
-				className='overflow-hidden'
-			>
-				<CarouselContent className='-ml-4'>
-					{KnowledgeData.map(skill => (
-						<CarouselItem
-							key={skill.title}
-							className='pl-4 basis-auto cursor-pointer select-none'
-							onClick={() => setSelected(skill)}
+				<div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
+					{groupedSkills.map((group, groupIndex) => (
+						<motion.section
+							key={group.id}
+							initial={reduceMotion ? {} : { opacity: 0, y: 22 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							viewport={{ once: true, margin: '-60px' }}
+							transition={{
+								duration: reduceMotion ? 0 : 0.55,
+								delay: reduceMotion ? 0 : groupIndex * 0.1,
+								ease: 'easeOut',
+							}}
+							className='site-surface min-w-0 p-5 sm:p-6'
+							aria-labelledby={`knowledge-${group.id}`}
 						>
-							<div
-								className='relative group p-6 rounded-2xl dark:bg-card/50 bg-card/20 backdrop-blur-sm border border-border/50 overflow-hidden hover-lift animated-border active:scale-95 transition-transform duration-150'
-								style={{ minWidth: '140px' }}
+							<h3
+								id={`knowledge-${group.id}`}
+								className='mb-6 text-center text-base font-medium tracking-tight'
 							>
-								{/* Градиентный фон при hover - optimized with CSS */}
-								<div
-									className='absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300'
-									style={{
-										background: `radial-gradient(circle at 30% 30%, ${skill.color}20, transparent 70%)`,
-									}}
-								/>
+								{group.title}
+							</h3>
 
-								{/* Иконка */}
-								<div className='relative z-10 flex flex-col -mb-4 items-center gap-3 py-4'>
-									<div
-										className='transition-transform duration-300 scale-140 group-hover:scale-150 group-hover:rotate-6'
-										style={{ color: skill.color }}
+							<div className='space-y-4'>
+								{group.items.map((skill, skillIndex) => (
+									<button
+										key={skill.title}
+										type='button'
+										onClick={() => setSelected(skill)}
+										className='group/skill block w-full rounded-md text-left outline-none focus-visible:ring-2 focus-visible:ring-[var(--site-accent)] focus-visible:ring-offset-4 focus-visible:ring-offset-[var(--site-surface)]'
+										aria-label={`${skill.title}: ${getLevelLabel(skill.level)}. ${getFromDict(dict, 'page.main.knowledge.openDetails')}`}
 									>
-										{skill.icon}
-									</div>
+										<span className='mb-1.5 flex items-center justify-between gap-3 text-sm'>
+											<span className='font-medium text-[var(--site-foreground)] transition-colors group-hover/skill:text-[var(--site-accent)]'>
+												{skill.title}
+											</span>
+											<span className='shrink-0 text-xs text-[var(--site-muted)]'>
+												{getLevelLabel(skill.level)}
+											</span>
+										</span>
 
-									{/* Название — CSS animation instead of Framer Motion */}
-									<span className='text-sm font-medium text-foreground/80 transition-all duration-300 group-hover:text-foreground'>
-										{skill.title}
-									</span>
-								</div>
-
-								{/* Уровень — маленький бейдж */}
-								<div className='absolute top-0 right-1'>
-									<span
-										className={cn(
-											'text-[10px] font-bold px-2 py-0.5 rounded-full transition-all duration-300 group-hover:scale-110',
-											skill.level === 'Эксперт' &&
-												'bg-emerald-500/20 text-emerald-400',
-											skill.level === 'Продвинутый' &&
-												'bg-blue-500/20 text-blue-400',
-											skill.level === 'Средний' &&
-												'bg-amber-500/20 text-amber-400'
-										)}
-									>
-										{skill.level}
-									</span>
-								</div>
+										<span aria-hidden='true' className='block h-1.5 overflow-hidden rounded-full bg-[var(--site-border)]'>
+											<motion.span
+												initial={reduceMotion ? false : { scaleX: 0 }}
+												whileInView={{ scaleX: 1 }}
+												viewport={{ once: true }}
+												transition={{
+													duration: reduceMotion ? 0 : 0.8,
+													delay: reduceMotion ? 0 : 0.12 * skillIndex,
+													ease: 'easeOut',
+												}}
+												className='block h-full origin-left rounded-full bg-[var(--site-foreground)]'
+												style={{
+													width: `${levelProgress[skill.level]}%`,
+												}}
+											/>
+										</span>
+									</button>
+								))}
 							</div>
-						</CarouselItem>
+						</motion.section>
 					))}
-				</CarouselContent>
-			</Carousel>
+				</div>
 
-			{/* Модальное окно с описанием при клике - optimized */}
+				<motion.aside
+					initial={reduceMotion ? {} : { opacity: 0, y: 20 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					viewport={{ once: true, margin: '-60px' }}
+					transition={{
+						duration: reduceMotion ? 0 : 0.65,
+						delay: reduceMotion ? 0 : 0.15,
+					}}
+					className='site-surface mx-auto mt-8 max-w-3xl px-5 py-7 text-center sm:px-8 sm:py-8'
+				>
+					<h3 className='text-lg font-medium tracking-tight'>
+						<Text text='page.main.knowledge.overviewTitle' />
+					</h3>
+					<p className='mx-auto mt-2 max-w-xl text-sm leading-6 text-[var(--site-muted)]'>
+						<Text text='page.main.knowledge.overviewDescription' />
+					</p>
+
+					<div className='mt-6 flex flex-wrap items-center justify-center'>
+						{groupedSkills.map((group, index) => (
+							<div
+								key={group.id}
+								className={cn(
+									'min-w-[110px] px-5 py-1',
+									index > 0 && 'border-l border-[var(--site-border)]',
+								)}
+							>
+								<p className='text-sm font-semibold tracking-wide'>
+									{group.items.length.toString().padStart(2, '0')}
+								</p>
+								<p className='mt-1 text-xs text-[var(--site-muted)]'>
+									{group.title}
+								</p>
+							</div>
+						))}
+					</div>
+
+					<p className='mt-5 text-[11px] tracking-wide text-[var(--site-muted)]'>
+						{totalSkills} <Text text='page.main.knowledge.skillsCountLabel' />
+					</p>
+				</motion.aside>
+			</div>
+
 			<AnimatePresence>
 				{selected && (
 					<motion.div
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
-						transition={{ duration: reduceMotion ? 0.1 : 0.2 }}
-						className='fixed inset-0 z-50 flex items-center justify-center p-4'
+						transition={{ duration: reduceMotion ? 0 : 0.2 }}
+						className='fixed inset-0 z-[120] flex items-center justify-center bg-black/45 p-4 backdrop-blur-sm'
 						onClick={() => setSelected(null)}
 					>
 						<motion.div
-							initial={{ scale: 0.9, y: 20, opacity: 0 }}
+							role='dialog'
+							aria-modal='true'
+							aria-labelledby='knowledge-dialog-title'
+							initial={
+								reduceMotion
+									? { opacity: 0 }
+									: { scale: 0.96, y: 16, opacity: 0 }
+							}
 							animate={{ scale: 1, y: 0, opacity: 1 }}
-							exit={{ scale: 0.9, y: 20, opacity: 0 }}
-							transition={{ 
+							exit={
+								reduceMotion
+									? { opacity: 0 }
+									: { scale: 0.96, y: 12, opacity: 0 }
+							}
+							transition={{
 								type: reduceMotion ? 'tween' : 'spring',
-								duration: reduceMotion ? 0.1 : undefined,
+								duration: reduceMotion ? 0.12 : undefined,
 								stiffness: 300,
-								damping: 25 
+								damping: 28,
 							}}
-							onClick={e => e.stopPropagation()}
-							className='relative max-w-md w-full bg-card rounded-3xl p-8 shadow-2xl border border-border gpu-accelerated'
+							onClick={event => event.stopPropagation()}
+							className='site-surface relative max-h-[min(80vh,640px)] w-full max-w-lg overflow-y-auto p-6 shadow-2xl sm:p-8'
 						>
 							<button
+								type='button'
 								onClick={() => setSelected(null)}
-								className='absolute top-4 right-4 text-foreground/50 hover:text-foreground hover:rotate-90 transition-all duration-300'
+								className='absolute right-4 top-4 rounded-md p-2 text-[var(--site-muted)] transition-colors hover:text-[var(--site-foreground)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--site-accent)]'
+								aria-label={String(
+									getFromDict(dict, 'page.main.knowledge.close'),
+								)}
 							>
 								<svg
-									className='w-6 h-6'
+									className='h-5 w-5'
 									fill='none'
 									stroke='currentColor'
 									viewBox='0 0 24 24'
+									aria-hidden='true'
 								>
 									<path
 										strokeLinecap='round'
 										strokeLinejoin='round'
-										strokeWidth={2}
+										strokeWidth={1.8}
 										d='M6 18L18 6M6 6l12 12'
 									/>
 								</svg>
 							</button>
 
-							<div className='flex items-center gap-4 mb-4'>
-								<div 
-									className='transition-transform duration-500 hover:scale-110 hover:rotate-12'
+							<div className='mb-5 flex items-center gap-4 pr-8'>
+								<div
+									className='shrink-0 [&>svg]:h-8 [&>svg]:w-8'
 									style={{ color: selected.color }}
+									aria-hidden='true'
 								>
 									{selected.icon}
 								</div>
-								<h3 className='text-2xl font-bold'>{selected.title}</h3>
+								<div>
+									<h3
+										id='knowledge-dialog-title'
+										className='text-xl font-semibold tracking-tight'
+									>
+										{selected.title}
+									</h3>
+									<p className='mt-1 text-xs text-[var(--site-muted)]'>
+										{getLevelLabel(selected.level)}
+									</p>
+								</div>
 							</div>
 
-							<div className='space-y-3 text-foreground/80'>
-								<p className='text-sm'>
-									<strong>Уровень:</strong>{' '}
-									<span
-										className={cn(
-											'transition-colors duration-300',
-											selected.level === 'Эксперт' && 'text-emerald-400',
-											selected.level === 'Продвинутый' && 'text-blue-400',
-											selected.level === 'Средний' && 'text-amber-400'
-										)}
-									>
-										{selected.level}
-									</span>
-								</p>
-								<p className='text-sm leading-relaxed'>
-									{selected.description}
-								</p>
-							</div>
+							<p className='text-sm leading-7 text-[var(--site-muted)]'>
+								{selected.description}
+							</p>
 						</motion.div>
 					</motion.div>
 				)}
 			</AnimatePresence>
-		</div>
+		</section>
 	);
 });
 
 Knowledge.displayName = 'Knowledge';
 
-export { Knowledge };	
+export { Knowledge };

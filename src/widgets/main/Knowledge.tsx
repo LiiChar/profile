@@ -236,7 +236,7 @@ const Knowledge = React.memo(() => {
 											</span>
 										</span>
 
-										<span className='block h-1.5 overflow-hidden rounded-full bg-[var(--site-border)]'>
+										<span aria-hidden='true' className='block h-1.5 overflow-hidden rounded-full bg-[var(--site-border)]'>
 											<motion.span
 												initial={reduceMotion ? false : { scaleX: 0 }}
 												whileInView={{ scaleX: 1 }}
@@ -246,7 +246,7 @@ const Knowledge = React.memo(() => {
 													delay: reduceMotion ? 0 : 0.12 * skillIndex,
 													ease: 'easeOut',
 												}}
-												className='block h-full origin-left rounded-full bg-[var(--site-accent)]'
+												className='block h-full origin-left rounded-full bg-[var(--site-foreground)]'
 												style={{
 													width: `${levelProgress[skill.level]}%`,
 												}}

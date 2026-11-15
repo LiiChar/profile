@@ -18,7 +18,24 @@
 				"items": []
 			},
 			"knowledge": {
-				"title": "Мои навыки"
+				"title": "Мои навыки",
+				"subtitle": "Технологии и инструменты, которые использую в разработке.",
+				"groups": {
+					"frontend": "Frontend-разработка",
+					"backend": "Backend и инструменты",
+					"platform": "Web-платформа"
+				},
+				"overviewTitle": "Структура стека",
+				"overviewDescription": "Основные направления и технологии в моём текущем стеке.",
+				"skillsCountLabel": "технологий в списке",
+				"openDetails": "Открыть подробное описание",
+				"close": "Закрыть",
+				"levels": {
+					"expert": "Эксперт",
+					"advanced": "Продвинутый",
+					"intermediate": "Средний",
+					"familiar": "Ознакомлен"
+				}
 			},
 			"blog": {
 				"title": "Блог"

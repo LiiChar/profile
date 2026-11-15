@@ -112,7 +112,14 @@ const KnowledgeData: Knowledge[] = [
 ];
 
 
-const levelKeys: Record<Knowledge['level'], string> = {\n\tЭксперт: 'expert',\n\tПродвинутый: 'advanced',\n\tСредний: 'intermediate',\n\tОзнакомлен: 'familiar',\n};\n\nconst skillGroups = [
+const levelKeys: Record<Knowledge['level'], string> = {
+	Эксперт: 'expert',
+	Продвинутый: 'advanced',
+	Средний: 'intermediate',
+	Ознакомлен: 'familiar',
+};
+
+const skillGroups = [
 	{
 		id: 'frontend',
 		titleKey: 'frontend',
@@ -223,7 +230,7 @@ const Knowledge = React.memo(() => {
 												{skill.title}
 											</span>
 											<span className='shrink-0 text-xs text-[var(--site-muted)]'>
-												{skill.level}
+												{getLevelLabel(skill.level)}
 											</span>
 										</span>
 
@@ -366,7 +373,7 @@ const Knowledge = React.memo(() => {
 										{selected.title}
 									</h3>
 									<p className='mt-1 text-xs text-[var(--site-muted)]'>
-										{selected.level}
+										{getLevelLabel(selected.level)}
 									</p>
 								</div>
 							</div>

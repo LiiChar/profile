@@ -66,8 +66,6 @@ export const Hero = () => {
 
       <div className="relative z-10 max-w-5xl">
         <motion.div {...fadeIn}>
-          <p className="site-eyebrow mb-7">Personal portfolio</p>
-
           <h1
             id="hero-title"
             className="gpu-accelerated max-w-5xl text-left"

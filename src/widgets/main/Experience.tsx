@@ -5,7 +5,7 @@ import { getFromDict } from '@/helpers/i18n-client';
 import { useDictionary } from '@/stores/lang/langProvider';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { motion } from 'framer-motion';
-import { ArrowUpRight, BriefcaseBusiness, MapPin } from 'lucide-react';
+import { ArrowUpRight, MapPin } from 'lucide-react';
 
 type ExperienceItem = {
 	position: string;
@@ -32,7 +32,7 @@ export const Experience = () => {
 					transition={{ duration: reduceMotion ? 0 : 0.65, ease: 'easeOut' }}
 					className='mb-10 md:mb-14'
 				>
-					<p className='site-eyebrow mb-4'>Career</p>
+					<p className='site-eyebrow mb-4'><Text text='page.main.experience.eyebrow' /></p>
 					<h2 className='site-section-title'>
 						<Text text='page.main.experience.title' />
 					</h2>

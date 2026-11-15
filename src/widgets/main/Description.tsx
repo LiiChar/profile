@@ -6,7 +6,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 
 export const Description = () => {
-	const containerRef = useRef<HTMLElement>(null);
+	const containerRef = useRef<HTMLElement | null>(null);
 	const reduceMotion = useReducedMotion();
 
 	const { scrollYProgress } = useScroll({
@@ -77,11 +77,11 @@ export const Description = () => {
 								delay: reduceMotion ? 0 : index * 0.25,
 								ease: 'easeOut',
 							}}
-							className='relative border-l border-[var(--site-border)] py-1 pl-5 text-[clamp(1.025rem,1.5vw,1.15rem)] leading-[1.9] text-[var(--site-muted)] transition-colors duration-300 hover:border-[var(--site-accent)] md:pl-7'
+							className='group relative border-l border-[var(--site-border)] py-1 pl-5 text-[clamp(1.025rem,1.5vw,1.15rem)] leading-[1.9] text-[var(--site-muted)] transition-colors duration-300 hover:border-[var(--site-accent)] md:pl-7'
 						>
 							<span
 								aria-hidden='true'
-								className='absolute -left-px top-1/2 h-8 w-px -translate-y-1/2 bg-[var(--site-accent)] opacity-35 transition-all duration-300 hover:opacity-100'
+								className='pointer-events-none absolute -left-px top-1/2 h-8 w-px -translate-y-1/2 bg-[var(--site-accent)] opacity-35 transition-all duration-300 group-hover:opacity-100'
 							/>
 							<Text text={key as any} />
 						</motion.p>

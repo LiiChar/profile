@@ -31,64 +31,71 @@ const ProjectBackground = ({
 	project,
 	className,
 	limitTag,
+	link,
 	...props
 }: ProjectCardProps) => {
 	return (
 		<article
 			{...props}
 			className={cn(
-				'relative rounded-lg text-white group overflow-hidden cursor-pointer hover-lift',
-				className
+				'group relative w-full overflow-hidden rounded-xl border border-[var(--site-border)] bg-[var(--site-surface)] transition-all duration-300 hover:-translate-y-1 hover:border-[var(--site-subtle)] hover:shadow-lg hover:shadow-black/[0.04] dark:hover:shadow-black/20',
+				className,
 			)}
 		>
-			{/* Блок с картинкой */}
-			<div className='relative w-full max-h-[300px] overflow-hidden'>
-				<Image
-					src={project.image ? getUrl(project.image) : DEFAULT_IMAGE}
-					alt={project.title}
-					width={800}
-					height={600}
-					className='w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110'
-				/>
-				{/* Animated overlay */}
-				<div className='absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500' />
-			</div>
+			<Link
+				href={link ?? `/projects/${project.id}`}
+				className='flex h-full flex-col outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--site-accent)] md:flex-row'
+			>
+				<div className='relative aspect-[16/9] w-full shrink-0 overflow-hidden bg-[var(--site-surface-raised)] md:aspect-auto md:min-h-[220px] md:w-[38%]'>
+					<Image
+						src={project.image ? getUrl(project.image) : DEFAULT_IMAGE}
+						alt={project.title}
+						fill
+						sizes='(max-width: 767px) 100vw, (max-width: 1200px) 50vw, 560px'
+						className='object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]'
+					/>
+					<div
+						aria-hidden='true'
+						className='pointer-events-none absolute inset-0 bg-gradient-to-t from-black/15 to-transparent opacity-60 transition-opacity duration-300 group-hover:opacity-100 md:bg-gradient-to-r'
+					/>
+				</div>
 
-			<div className='absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/70 to-transparent p-4 opacity-100 translate-y-4 transition-all duration-500 ease-out group-hover:opacity-0 group-hover:translate-y-0'>
-				<a href={`/projects/${project.id}`}>
-					<h2 className='font-bold text-lg m-0 p-0 border-0 mb-4'>
-						<Content data={project} field='title' />
-					</h2>
-				</a>
-			</div>
-
-			{/* Контент, который появляется при наведении */}
-			<div className='absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/70 to-transparent p-4 opacity-0 translate-y-6 transition-all duration-500 ease-out group-hover:opacity-100 group-hover:translate-y-0'>
-				<a href={`/projects/${project.id}`}>
-					<h2 className='font-bold m-0 p-0 border-0 transition-colors duration-300 group-hover:text-primary'>
-						<Content data={project} field='title' />
-					</h2>
-				</a>
-				{project.description ? (
-					<p className='my-3 transition-all duration-300 delay-75'>{project.description}</p>
-				) : (
-					<p className='line-clamp-3 my-3 transition-all duration-300 delay-75'>
-						<Content data={project} field='content' />
-					</p>
-				)}
-				{project.tags && (
-					<div className='transition-all duration-300 delay-150'>
-						<TagList
-							limit={limitTag}
-							variant='default'
-							tags={project.tags}
-							separator={''}
-							tagStyle='text-white'
-							prefix={''}
-						/>
+				<div className='flex min-w-0 flex-1 flex-col justify-center p-5 sm:p-6 md:p-7'>
+					<div className='mb-3 flex items-center justify-between gap-3'>
+						<span className='font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--site-muted)]'>
+							{String(project.id).padStart(2, '0')}
+						</span>
+						<span className='text-xs text-[var(--site-muted)] transition-colors group-hover:text-[var(--site-accent)]'>
+							Открыть проект ↗
+						</span>
 					</div>
-				)}
-			</div>
+
+					<h2 className='m-0 border-0 p-0 text-xl font-semibold tracking-tight transition-colors duration-300 group-hover:text-[var(--site-accent)] sm:text-2xl'>
+						<Content data={project} field='title' />
+					</h2>
+
+					<div className='mt-3 line-clamp-3 text-sm leading-6 text-[var(--site-muted)]'>
+						{project.description ? (
+							project.description
+						) : (
+							<Content data={project} field='content' />
+						)}
+					</div>
+
+					{project.tags && (
+						<div className='mt-5 flex flex-wrap gap-2'>
+							<TagList
+								limit={limitTag ?? 4}
+								variant='default'
+								tags={project.tags}
+								separator=''
+								tagStyle='text-[var(--site-muted)]'
+								prefix=''
+							/>
+						</div>
+					)}
+				</div>
+			</Link>
 		</article>
 	);
 };

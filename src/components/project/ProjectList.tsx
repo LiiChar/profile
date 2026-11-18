@@ -7,12 +7,7 @@ import { ProjectCard } from '@/components/project/ProjectCard';
 import { useMemo, useState } from 'react';
 import { useSticky } from '@/hooks/useSticky';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from '../ui/carousel';
-import AutoScroll from 'embla-carousel-auto-scroll';
+import { Button } from '../ui/button';
 
 type ProjectListVariant = 'grid' | 'column' | 'vertical' | 'column-2';
 
@@ -90,20 +85,17 @@ export const ProjectList = ({
 
   const renderTags = () =>
     tags.map(tag => (
-      <button
+      <Button
         type="button"
         onClick={() => handleTagClick(tag)}
         className={cn(
-          'px-2 py-1 border border-foreground/30 transition-all',
-          'bg-background/30 hover:bg-foreground hover:text-background',
-          'rounded-md backdrop-blur-[10px] h-min cursor-pointer',
-          'text-nowrap',
           currentTag === tag && 'text-background bg-foreground'
         )}
         key={tag}
+        variant={"secondary"}
       >
         {tag}
-      </button>
+      </Button>
     ));
 
   return (
@@ -125,49 +117,6 @@ export const ProjectList = ({
           >
             {renderTags()}
           </motion.div>
-
-          <Carousel
-            style={{
-              display: isSticky ? 'block' : 'none',
-            }}
-            plugins={[
-              AutoScroll({
-                speed: 0.5,
-                startDelay: 2000,
-                playOnInit: true,
-                stopOnMouseEnter: false,
-                stopOnFocusIn: false,
-                stopOnInteraction: false,
-              }),
-            ]}
-            opts={{
-              align: 'start',
-              dragFree: true,
-              loop: true,
-            }}
-            orientation="horizontal"
-            className="z-[100] fixed w-full top-[80px] left-0"
-          >
-            <CarouselContent className="ml-2">
-              {tags.map(tag => (
-                <CarouselItem
-                  onClick={() => handleTagClick(tag)}
-                  title={tag}
-                  key={tag}
-                  className={cn(
-                    'basis-auto mx-1 px-2 py-1',
-                    'border border-foreground/30 transition-all',
-                    'bg-background/30 hover:bg-foreground hover:text-background',
-                    'rounded-md backdrop-blur-[10px] h-min cursor-pointer',
-                    'text-nowrap z-[100] relative select-none',
-                    currentTag === tag && 'text-background bg-foreground'
-                  )}
-                >
-                  {tag}
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-          </Carousel>
         </>
       )}
 

@@ -220,7 +220,7 @@ export default async function ProjectPage({
 						<span>{author}</span>
 					</div>
 
-					<h1 className="  ">
+					<h1 className="py-12">
 						{title}
 					</h1>
 

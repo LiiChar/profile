@@ -1,4 +1,3 @@
-import { BASE_URL } from '@/const/url';
 
 export const getUrl = (url: string): string => {
 	if (url && (url.includes('http') || url.includes('https'))) {
@@ -7,7 +6,7 @@ export const getUrl = (url: string): string => {
 	if (url.startsWith('data:')) {
 		return url;
 	}
-	return joinUrl(BASE_URL, url);
+	return url;
 };
 
 export function joinUrl(...parts: string[]): string {
@@ -34,3 +33,22 @@ export const validateUrl = (url: string | undefined | null): boolean => {
 	if (!url) return false;
 	return url.startsWith('http://') || url.startsWith('https://');
 };
+
+export function normalizeImageUrl(url?: string | null) {
+  if (!url) return '/images/placeholder.png';
+
+  try {
+    const parsed = new URL(url, 'http://localhost');
+
+    if (
+      parsed.hostname === 'localhost' ||
+      parsed.hostname === '127.0.0.1'
+    ) {
+      return `${parsed.pathname}${parsed.search}`;
+    }
+
+    return url;
+  } catch {
+    return url;
+  }
+}

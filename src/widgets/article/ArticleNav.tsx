@@ -77,7 +77,7 @@ const getHeaders = (root: Element): ArticleNav[] => {
 		}
 		stack.push(node);
 	});
-	
+
 	return headers;
 };
 

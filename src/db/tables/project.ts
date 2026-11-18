@@ -17,7 +17,7 @@ export const projects = sqliteTable('projects', {
 	lang: text('lang', {
 		mode: 'json',
 	}).$type<ProjectLang>(),
-	gallery: text('gallery', { mode: 'json' }),
+	gallery: text('gallery'),
 	tags: text(),
 	createdAt: text('created_at')
 		.notNull()

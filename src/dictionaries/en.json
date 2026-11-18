@@ -5,7 +5,9 @@
 				"title": "Hello, I'm Maksim",
 				"description": "I'm a Frontend developer passionate about building modern web applications and interactive interfaces.",
 				"button1": "View Projects",
-				"button2": "Contact Me"
+				"button2": "Contact Me",
+        "eyebrow": "Frontend / Fullstack Developer",
+        "scroll": "Scroll to explore"
 			},
 			"description": {
 				"title": "About Me",
@@ -15,15 +17,19 @@
 			},
 			"portfolio": {
 				"title": "My Projects",
+				"eyebrow": "Porfolio",
+				"subtitle": "Projects I have worked on: from concept and design to implementation and launch.",
 				"items": []
 			},
 			"knowledge": {
 				"title": "My Skills",
 				"subtitle": "Technologies and tools I use to build web applications.",
+				"eyebrow": "Competion",
 				"groups": {
 					"frontend": "Frontend Development",
 					"backend": "Backend & Tools",
-					"platform": "Web Platform"
+					"platform": "Web Platform",
+					"tools": "Tools"
 				},
 				"overviewTitle": "Technology stack",
 				"overviewDescription": "The main areas and technologies in my current toolkit.",
@@ -38,7 +44,10 @@
 				}
 			},
 			"blog": {
-				"title": "Blog"
+				"title": "My posts",
+				"eyebrow": "Blog",
+        "subtitle": "Sharing insights, experience, and thoughts on software development.",
+        "empty": "No articles have been published yet."
 			},
 			"projects": {
 				"title": "Projects",
@@ -54,7 +63,7 @@
 				]
 			},
 			"experience": {
-				"title": "Work experience",
+				"title": "My experience",
 				"subtitle": "Professional experience in web application development and maintenance.",
 				"positions": [
 					{

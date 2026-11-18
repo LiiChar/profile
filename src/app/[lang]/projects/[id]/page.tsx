@@ -1,206 +1,408 @@
+
+import { cache } from 'react';
+import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
+import Image from 'next/image';
+
+import { ArrowUpRight, ExternalLink, Github } from 'lucide-react';
+
 import { db } from '@/db/db';
-import { eq } from 'drizzle-orm';
 import { projects } from '@/db/schema';
-import { TagList } from '@/components/tag/TagList';
-import { CommitTree } from '@/components/git/CommitTimeline';
-import { Button } from '@/components/ui/button';
-import { GrowArrow } from '@/components/ui/grow-arrow';
-import { Separator } from '@/components/ui/separator';
+import { eq } from 'drizzle-orm';
+
+import { locales } from '@/const/i18n';
+import { SITE_URL } from '@/const/url';
+
 import { getFieldLang } from '@/helpers/i18n';
 import { getCommits } from '@/action/git/getCommits';
-import { BackwardLink } from '@/components/ui/backward-link';
-import { ContentMetrics } from '@/components/metrics/ContentMetrics';
-import Image from 'next/image';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
+
 import { Lang } from '@/types/i18n';
-import type { Metadata } from 'next';
-import { SITE_URL } from '@/const/url';
+
+import { TagList } from '@/components/tag/TagList';
+import { CommitTree } from '@/components/git/CommitTimeline';
+import { ContentMetrics } from '@/components/metrics/ContentMetrics';
+import { MetricTracker } from '@/components/metrics/MetricTracker';
 import { ContentMarkdown } from '@/components/text/ContentMarkdown';
 import { ProjectAdminActions } from '@/components/project/ProjectAdminActions';
-import { MetricTracker } from '@/components/metrics/MetricTracker';
-import { locales } from '@/const/i18n';
+
+import { BackwardLink } from '@/components/ui/backward-link';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 
 export const revalidate = 3600;
 
+const getProject = cache(async (id: number) => {
+	return db.query.projects.findFirst({
+		where: eq(projects.id, id),
+		with: {
+			user: true,
+		},
+	});
+});
+
 export async function generateStaticParams() {
 	const items = await db.query.projects.findMany({
-		columns: { id: true },
+		columns: {
+			id: true,
+		},
 	});
 
 	return locales.flatMap(lang =>
-		items.map(item => ({
+		items.map(({ id }) => ({
 			lang,
-			id: String(item.id),
+			id: String(id),
 		}))
 	);
 }
 
-export const generateMetadata = async ({ params }: { params: Promise<{ id: string; lang: Lang }> }): Promise<Metadata> => {
+export async function generateMetadata({
+	params,
+}: {
+	params: Promise<{ id: string; lang: Lang }>;
+}): Promise<Metadata> {
 	const { id, lang } = await params;
 	const projectId = Number(id);
 
-	const project = await db.query.projects.findFirst({
-		where: () => eq(projects.id, projectId),
-	});
-
-	if (!project) {
+	if (!Number.isSafeInteger(projectId) || projectId <= 0) {
 		return {
 			title: 'Project Not Found',
 		};
 	}
 
+	const project = await getProject(projectId);
+
+	if (!project) {
+		return {
+			title: 'Project Not Found',
+			robots: {
+				index: false,
+				follow: false,
+			},
+		};
+	}
+
 	const title = getFieldLang(project, 'title', lang);
-	const description = project.description || title;
+	const description = (
+		getFieldLang(project, 'description', lang) || title
+	).slice(0, 160);
+
+	const canonical = `${SITE_URL}/${lang}/projects/${projectId}`;
 
 	return {
 		title: `${title} - Portfolio | Maksim Ivanov`,
-		description: description.substring(0, 160),
-		keywords: ['project', 'portfolio', title, 'Maksim Ivanov', 'Frontend Developer'],
+		description,
+		keywords: [
+			'project',
+			'portfolio',
+			title,
+			'Maksim Ivanov',
+			'Frontend Developer',
+		],
+		alternates: {
+			canonical,
+		},
 		openGraph: {
 			title: `${title} - Maksim Ivanov Portfolio`,
-			description: description.substring(0, 160),
-			url: `${SITE_URL}/${lang}/projects/${id}`,
+			description,
+			url: canonical,
 			siteName: 'Maksim Ivanov Portfolio',
 			locale: lang === 'en' ? 'en_US' : 'ru_RU',
 			type: 'article',
 			publishedTime: new Date(project.createdAt).toISOString(),
 			authors: [project.author],
+			images: project.image
+				? [
+						{
+							url: project.image,
+							alt: title,
+						},
+					]
+				: undefined,
 		},
 		twitter: {
-			card: 'summary',
-			title: `${title} - Maksim Ivanov Portfolio`,
+			card: project.image ? 'summary_large_image' : 'summary',
+			title,
 			description,
-		},
-		alternates: {
-			canonical: `${SITE_URL}/${lang}/projects/${projectId}`,
+			images: project.image ? [project.image] : undefined,
 		},
 	};
+}
+
+type ProjectPageProps = {
+	params: Promise<{
+		id: string;
+		lang: Lang;
+	}>;
 };
 
 export default async function ProjectPage({
 	params,
-}: {
-	params: Promise<{ id: string; lang: Lang }>;
-}) {
+}: ProjectPageProps) {
 	const { id, lang } = await params;
 	const projectId = Number(id);
-	
 
-	const project = await db.query.projects.findFirst({
-		where: () => eq(projects.id, projectId),
-		with: {
-			user: true,
-		},
-	});
-
-	if (!project) {
-		return (
-			<div className='text-center text-red-500 mt-10'>Project not found</div>
-		);
+	if (!Number.isSafeInteger(projectId) || projectId <= 0) {
+		notFound();
 	}
 
-	
+	const project = await getProject(projectId);
 
-	const { repoName, createdAt, tags, author, url, image } = project;
-	const commits = repoName ? await getCommits(repoName) : null;
+	if (!project) {
+		notFound();
+	}
 
-	const showImage = !!image;
+	const {
+		repoName,
+		createdAt,
+		tags,
+		author,
+		url,
+    image,
+		gallery
+	} = project;
+
+	const title = getFieldLang(project, 'title', lang);
+	const hasImage = Boolean(image);
+
+	const isRu = lang === 'ru';
+
+	const commits = repoName
+		? await getCommits(repoName).catch(() => null)
+		: null;
+
+	const formattedDate = new Intl.DateTimeFormat(
+		isRu ? 'ru-RU' : 'en-US',
+		{
+			day: 'numeric',
+			month: 'long',
+			year: 'numeric',
+		}
+	).format(new Date(createdAt));
+
+	const githubUrl = repoName
+		? `https://github.com/LiiChar/${encodeURIComponent(repoName)}`
+		: null;
 
 	return (
-		<main className='max-w-3xl mx-auto my-8 px-4 relative'>
-			<MetricTracker action='view' targetType='project' targetId={projectId} />
-			<BackwardLink href={`/${lang}/projects`} />
-				{url && (
-					<iframe
-						className='w-full mb-4 aspect-video rounded-lg border '
-						src={url}
-					></iframe>
-				)}
-			<Card className='relative gap-0 pt-0'>
-				<CardHeader
-					className={cn(
-						'p-0 relative mb-3 flex justify-center items-center',
-						showImage ? '' : 'flex-col'
-					)}
-				>
-					<div className='relative'>
-						{showImage && (
-							<div className=''>
-								<Image
-									fill={true}
-									src={image}
-									alt={`Обложка для ${getFieldLang(project, 'title', lang)}`}
-									className='w-full opacity-70 h-auto rounded-lg z-1 shadow-md object-cover'
-								/>
-							</div>
-						)}
-						<h1
-							className={cn(
-								'text-4xl font-bold px-16	 relative z-[2]',
-								showImage ? ' my-26' : 'my-14 pb-12'
-							)}
-						>
-							{getFieldLang(project, 'title', lang)}
-						</h1>
-						<div
-							className={cn(
-								'mb-6 absolute bottom-0 left-0 w-full px-2 py-2  z-[2]',
-								showImage ? 'px-2 mb-0' : ''
-							)}
-						>
-							<div className='flex justify-between items-center'>
-								<p className='text-sm text-card-foreground'>
-									Автор: {author} • {new Date(createdAt).toLocaleDateString()}
-								</p>
-								{repoName && (
-									<a
-										href={`https://github.com/LiiChar/${repoName}`}
-										target='_blank'
-										rel='noopener noreferrer'
-									>
-										<Button className='' variant={'secondary'}>
-											Посмотреть на GitHub <GrowArrow />
-										</Button>
-									</a>
-								)}
-							</div>
-						</div>
+		<main className="relative">
+			<MetricTracker
+				action="view"
+				targetType="project"
+				targetId={projectId}
+			/>
+
+			<div className="site-container mx-auto max-w-4xl px-4 py-10 sm:py-14">
+				{/* Navigation */}
+				<div className="mb-10">
+					<BackwardLink href={`/${lang}/projects`} />
+				</div>
+
+				{/* Header */}
+				<header className="mb-8">
+					<div className="mb-5 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--site-subtle)]">
+						<span>
+							{isRu ? 'Проект' : 'Project'}
+						</span>
+
+						<span
+							aria-hidden="true"
+							className="size-1 rounded-full bg-[var(--site-accent)]/60"
+						/>
+
+						<time dateTime={new Date(createdAt).toISOString()}>
+							{formattedDate}
+						</time>
+
+						<span
+							aria-hidden="true"
+							className="size-1 rounded-full bg-[var(--site-accent)]/60"
+						/>
+
+						<span>{author}</span>
 					</div>
-				</CardHeader>
-				<CardContent className='flex gap-4 px-4 sm:px-6 lg:px-8'>
-					<div className='w-full'>
-						<div className='prose prose-lg max-w-none markdrow-content '>
-							<ContentMarkdown data={project} field='content' />
+
+					<h1 className="  ">
+						{title}
+					</h1>
+
+				</header>
+
+				{/* Cover */}
+				{hasImage && !gallery && (
+					<div className="relative mb-10 aspect-[16/10] w-full overflow-hidden rounded-lg bg-[var(--site-border)] sm:aspect-video">
+						<Image
+							fill
+							src={image!}
+							alt={title}
+							sizes="(max-width: 768px) 100vw, 896px"
+							priority
+							className="object-cover"
+						/>
+					</div>
+        )}
+
+    {gallery && (
+          <Carousel className="w-full">
+               <CarouselContent className="-ml-1 ">
+                 {gallery!.split("|").map((g, index) => (
+                   <CarouselItem key={index} className="px-2">
+                     <div className="relative mb-10 aspect-[16/10] w-full overflow-hidden rounded-lg bg-[var(--site-border)] sm:aspect-video">
+          						<Image
+          							fill
+          							src={g!}
+          							alt={title + " - изображение " + index + 1}
+          							sizes="(max-width: 768px) 100vw, 896px"
+          							priority
+          							className="object-cover"
+          						/>
+          					</div>
+                   </CarouselItem>
+                 ))}
+               </CarouselContent>
+               <CarouselPrevious />
+               <CarouselNext />
+             </Carousel>
+
+)}
+
+				{/* Project links */}
+				{(url || githubUrl) && (
+					<div className="mb-10 flex flex-wrap items-center gap-3">
+						{url && (
+							<a
+								href={url}
+								target="_blank"
+								rel="noopener noreferrer"
+								className="group inline-flex items-center gap-2 rounded-md bg-[var(--site-foreground)] px-4 py-2.5 text-sm font-medium text-[var(--site-background)] transition-opacity hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--site-accent)] focus-visible:ring-offset-2"
+							>
+								{isRu ? 'Открыть проект' : 'Visit website'}
+
+								<ArrowUpRight className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+							</a>
+						)}
+
+						{githubUrl && (
+							<a
+								href={githubUrl}
+								target="_blank"
+								rel="noopener noreferrer"
+								className="group inline-flex items-center gap-2 rounded-md border border-[var(--site-border)] px-4 py-2.5 text-sm font-medium text-[var(--site-foreground)] transition-colors hover:border-[var(--site-accent)] hover:text-[var(--site-accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--site-accent)] focus-visible:ring-offset-2"
+							>
+								<Github className="size-4" />
+								GitHub
+								<ArrowUpRight className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+							</a>
+						)}
+					</div>
+				)}
+
+				{/* Content */}
+				<article className="min-w-0">
+					<div className="prose prose-lg max-w-none markdrow-content">
+						<ContentMarkdown
+							data={project}
+							field="content"
+						/>
+					</div>
+				</article>
+
+				{/* Live Preview */}
+				{url && (
+					<section className="mt-14">
+						<div className="mb-5 flex items-center justify-between gap-4">
+							<div>
+								<p className="mb-1 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--site-subtle)]">
+									{isRu ? 'В действии' : 'In action'}
+								</p>
+
+								<h2 className="text-xl font-semibold tracking-tight text-[var(--site-foreground)] sm:text-2xl">
+									{isRu ? 'Предпросмотр' : 'Live preview'}
+								</h2>
+							</div>
+
+							<a
+								href={url}
+								target="_blank"
+								rel="noopener noreferrer"
+								className="inline-flex shrink-0 items-center gap-1.5 text-xs font-medium text-[var(--site-muted)] transition-colors hover:text-[var(--site-accent)]"
+							>
+								{isRu ? 'Открыть отдельно' : 'Open separately'}
+								<ExternalLink className="size-3.5" />
+							</a>
 						</div>
 
-						<div className='flex items-center gap-3 mt-10'>
-							{tags && (
-								<div className='flex items-center min-w-[90%] w-full text-sm mt-auto'>
-									<TagList
-										className='flex-wrap w-full'
-										linkBase={`/${lang}/projects/tag/`}
-										tags={tags}
-										prefix={'#'}
-										variant='default'
-									/>
-									<Separator className='max-w-4 mx-2' />
-									<ContentMetrics contentId={project.id} type='project' />
-								</div>
-							)}
-							<Separator className='w-auto min-w-4' />
-							<div>
-								<ProjectAdminActions projectId={project.id} lang={lang} />
+						<div className="relative aspect-video overflow-hidden rounded-lg border border-[var(--site-border)] bg-[var(--site-border)]">
+							<iframe
+								src={url}
+								title={`${title} — live preview`}
+								loading="lazy"
+								referrerPolicy="strict-origin-when-cross-origin"
+								allowFullScreen
+								className="absolute inset-0 size-full border-0"
+							/>
+						</div>
+					</section>
+				)}
+
+				{/* Footer */}
+				<footer className="mt-12  pt-6">
+					<div className="flex flex-col gap-5">
+						<div className="flex flex-wrap items-center justify-between gap-4">
+							<div className="flex items-center gap-3  text-[var(--site-muted)]">
+								<span>
+									{isRu ? 'Автор' : 'Author'}:
+								</span>
+
+								<span className="font-medium text-[var(--site-foreground)]">
+									{author}
+								</span>
+							</div>
+
+							<div className="flex shrink-0 items-center gap-3">
+								<ContentMetrics
+									contentId={project.id}
+									type="project"
+								/>
+
+								<ProjectAdminActions
+									projectId={project.id}
+									lang={lang}
+								/>
 							</div>
 						</div>
-					</div>
-					{commits && (
-						<div>
-							<CommitTree commits={commits} />
+          </div>
+
+
+          {tags && tags.length > 0 && (
+						<div className="mt-6">
+							<TagList
+								className="flex flex-wrap gap-2"
+								linkBase={`/${lang}/projects/tag/`}
+								tags={tags}
+								prefix="#"
+								variant="default"
+							/>
 						</div>
 					)}
-				</CardContent>
-			</Card>
+				</footer>
+
+				{/* Git Commit Timeline */}
+				{commits && commits.length > 0 && (
+					<section className="mt-2 pt-8">
+						<div className="mb-6">
+							<h2 className="text-xl font-semibold tracking-tight text-[var(--site-foreground)] sm:text-2xl">
+								{isRu ? 'История коммитов' : 'Commit history'}
+							</h2>
+						</div>
+
+						<div className="min-w-0">
+							<CommitTree
+								variant="horizontal"
+								commits={commits}
+							/>
+						</div>
+					</section>
+				)}
+			</div>
 		</main>
 	);
 }

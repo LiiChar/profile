@@ -78,7 +78,7 @@ export const NavigationLinks = ({isAdmin}: {isAdmin?: boolean}) => {
 			<Link href={withLocale('/')} className='flex items-center' aria-label='Home'>
 				<Rounded
 					className={cn(
-						'h-10 w-10 flex items-center justify-center text-lg transition-all duration-500'
+						'h-9 w-9 my-[4px] flex items-center justify-center text-lg transition-all duration-500'
 					)}
 				>
 					ᚺᛙ

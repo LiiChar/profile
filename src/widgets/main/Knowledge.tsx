@@ -1,155 +1,253 @@
+
 'use client';
 
 import { Text } from '@/components/ui/text-client';
 import { getFromDict } from '@/helpers/i18n-client';
 import { useDictionary } from '@/stores/lang/langProvider';
-import { cn } from '@/lib/utils';
-import { motion, AnimatePresence } from 'framer-motion';
-import React, { useMemo, useState } from 'react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+
+import { motion, AnimatePresence } from 'framer-motion';
+import { X } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+
 import {
 	SiReact,
 	SiNextdotjs,
 	SiTypescript,
+	SiJavascript,
 	SiNodedotjs,
 	SiNestjs,
+	SiExpress,
 	SiLaravel,
 	SiPhp,
 	SiHtml5,
 	SiCss,
-	SiSqlite,
+	SiTailwindcss,
+	SiRedux,
+	SiPostgresql,
+	SiDocker,
+	SiGit,
+    SiStoryblok,
 } from '@icons-pack/react-simple-icons';
 
 type Knowledge = {
 	icon: React.ReactNode;
 	title: string;
-	level: 'Эксперт' | 'Продвинутый' | 'Средний' | 'Ознакомлен';
+	level: number;
 	description: string;
 	color: string;
 };
 
 const KnowledgeData: Knowledge[] = [
+	// Frontend
 	{
 		icon: <SiReact />,
 		title: 'React',
-		level: 'Эксперт',
+		level: 80,
 		description:
-			'Глубокое понимание жизненного цикла, хуков (useEffect, useMemo, custom hooks), Concurrent Mode, Suspense + React Query/TanStack Query, Server Components (RSC), оптимизация ререндеров через React.memo, Profiler, Concurrent Rendering. Создание масштабируемых дизайн-систем, интеграция с Zustand, Redux Toolkit, Context API.',
-		color: '#0fdbfe',
+			'Разработка интерактивных интерфейсов, функциональные компоненты, Hooks, Context API, управление состоянием, оптимизация ререндеров, React.memo, useMemo, useCallback, работа с жизненным циклом компонентов и собственными хуками.',
+		color: '#61dafb',
 	},
 	{
 		icon: <SiNextdotjs />,
 		title: 'Next.js',
-		level: 'Продвинутый',
+		level: 75,
 		description:
-			'Полное владение App Router (React 18+), Server Components, Server Actions, Streaming SSR, Partial Prerendering (PPR), Middleware, Route Handlers, динамический роутинг, параллельные маршруты, intercepting routes, Turbopack, оптимизация изображений (next/image), встроенный кэш и revalidation (ISR, SSR, SSG). Деплой на Vercel с preview-ветками.',
-		color: 'var(--foreground)',
+			'App Router, Server и Client Components, SSR, SSG, ISR, динамическая маршрутизация, Route Handlers, Middleware, работа с серверными и клиентскими данными, оптимизация изображений и SEO.',
+		color: 'var(--site-foreground)',
 	},
 	{
 		icon: <SiTypescript />,
 		title: 'TypeScript',
-		level: 'Продвинутый',
+		level: 78,
 		description:
-			'Продвинутое использование: conditional types, infer, mapped types, template literal types, utility types, branded types. Работа с Zod, Yup, Valibot для runtime validation. tRPC + React Query для end-to-end type safety. Создание строгих, масштабируемых типов для монолитов и микросервисов. TypeScript + ESLint + Prettier в CI/CD.',
+			'Статическая типизация, интерфейсы, generics, utility types, unions, intersections, narrowing, type guards, работа с типизацией API, создание переиспользуемых типов и типизация сложных React-компонентов.',
 		color: '#3178c6',
 	},
 	{
+		icon: <SiJavascript />,
+		title: 'JavaScript',
+		level: 85,
+		description:
+			'ES6+, замыкания, прототипы, контекст this, Event Loop, Promise, async/await, обработка ошибок, асинхронное выполнение, работа с DOM, модули, структуры данных и основные алгоритмы.',
+		color: '#f7df1e',
+	},
+	{
+		icon: <SiTailwindcss />,
+		title: 'Tailwind CSS',
+		level: 85,
+		description:
+			'Разработка адаптивных интерфейсов, utility-first подход, responsive design, кастомизация конфигурации, работа с темами, CSS-переменными, анимациями и дизайн-системами.',
+		color: '#38bdf8',
+	},
+	{
+		icon: <SiStoryblok />,
+		title: 'Zustand',
+		level: 80,
+		description:
+			'Управление глобальным состоянием приложения, создание независимых хранилищ, selectors, actions, middleware, persist, разделение логики состояния и интеграция с React.',
+		color: '#d9a066',
+	},
+	{
+		icon: <SiRedux />,
+		title: 'Redux Toolkit',
+		level: 55,
+		description:
+			'Основы Redux, создание slices, reducers, actions, работа с configureStore, useSelector, useDispatch и организация централизованного управления состоянием.',
+		color: '#764abc',
+	},
+
+	// Data fetching
+	{
+		icon: <SiReact />,
+		title: 'TanStack Query',
+		level: 60,
+		description:
+			'Работа с серверным состоянием, useQuery, useMutation, query keys, кэширование, инвалидация запросов, синхронизация данных, обработка загрузки и ошибок.',
+		color: '#ff4154',
+	},
+
+	// Backend
+	{
 		icon: <SiNodedotjs />,
 		title: 'Node.js',
-		level: 'Продвинутый',
+		level: 70,
 		description:
-			'Опыт построения высоконагруженных бэкендов на Express, Fastify (в 3–5 раз быстрее), работа с WebSocket (Socket.io, ws), создание REST/GraphQL API, микросервисная архитектура, очереди (BullMQ, Redis), rate limiting, кластеризация, потоковая обработка данных, интеграция с внешними API.',
-		color: '#95ca56',
+			'Асинхронная модель выполнения, Event Loop, работа с модулями, файловой системой, HTTP, обработка ошибок, создание серверных приложений и интеграция со сторонними API.',
+		color: '#83cd29',
+	},
+	{
+		icon: <SiExpress />,
+		title: 'Express',
+		level: 65,
+		description:
+			'Создание REST API, middleware, маршрутизация, обработка запросов и ошибок, подключение баз данных, валидация входящих данных и организация серверной архитектуры.',
+		color: '#a3a3a3',
 	},
 	{
 		icon: <SiNestjs />,
 		title: 'NestJS',
-		level: 'Средний',
+		level: 60,
 		description:
-			'Архитектура уровня enterprise: Dependency Injection, модульная структура, Guards, Interceptors, Pipes, Exception Filters, кастомные декораторы. GraphQL (Apollo + Code-first), WebSocket gateways, микросервисы (TCP, Redis, MQTT), интеграция с TypeORM, Prisma, Swagger (OpenAPI), Passport.js (JWT, OAuth2).',
-		color: '#eb354e',
-	},
-	{
-		icon: <SiLaravel />,
-		title: 'Laravel',
-		level: 'Средний',
-		description:
-			'Глубокое знание Eloquent ORM, Query Builder, миграции, сиды, фабрики, события/слушатели, очереди (Redis, Horizon), Laravel Octane (Swoole/RoadRunner), Nova + Filament админки, Laravel Sanctum + Passport, кэширование (Redis, Memcached), тестирование (Pest + PHPUnit), Livewire + Inertia.js.',
-		color: '#f13e39',
+			'Модульная архитектура, Dependency Injection, Controllers, Providers, Services, Guards, Pipes, Interceptors, DTO, валидация данных и интеграция с базами данных.',
+		color: '#e0234e',
 	},
 	{
 		icon: <SiPhp />,
 		title: 'PHP',
-		level: 'Средний',
+		level: 55,
 		description:
-			'Современный PHP 8.1–8.3: атрибуты, enums, readonly классы, union types, match expression. Работа с Composer, PSR стандарты (PSR-12, PSR-4, PSR-7), Symfony компоненты (HttpFoundation, EventDispatcher), паттерны проектирования, чистый код, рефакторинг легаси, миграция с PHP 5.6 → 8.x.',
-		color: '#9199c1',
+			'Объектно-ориентированное программирование, работа с классами, интерфейсами, наследованием, обработка HTTP-запросов, Composer, интеграция с базами данных и поддержка существующих проектов.',
+		color: '#777bb4',
+	},
+	{
+		icon: <SiLaravel />,
+		title: 'Laravel',
+		level: 40,
+		description:
+			'Основы MVC, маршрутизация, контроллеры, Eloquent ORM, миграции, модели, middleware, работа с базами данных и создание серверной логики.',
+		color: '#ff2d20',
+	},
+	{
+		icon: <SiPostgresql />,
+		title: 'PostgreSQL',
+		level: 65,
+		description:
+			'Проектирование реляционных баз данных, SQL, JOIN, индексы, связи между таблицами, транзакции, ограничения, оптимизация запросов и интеграция с backend-приложениями.',
+		color: '#4169e1',
+	},
+
+	// Tools
+	{
+		icon: <SiDocker />,
+		title: 'Docker',
+		level: 50,
+		description:
+			'Создание Dockerfile, работа с образами и контейнерами, Docker Compose, настройка окружения разработки, подключение баз данных и управление зависимостями сервисов.',
+		color: '#2496ed',
+	},
+	{
+		icon: <SiGit />,
+		title: 'Git',
+		level: 80,
+		description:
+			'Ведение истории изменений, branching, merging, rebase, cherry-pick, разрешение конфликтов, работа с удалёнными репозиториями и организация командной разработки.',
+		color: '#f05032',
 	},
 	{
 		icon: <SiHtml5 />,
 		title: 'HTML',
-		level: 'Эксперт',
+		level: 90,
 		description:
-			'Семантическая разметка (article, section, nav, aside), микроразметка (Schema.org), доступность (ARIA: roles, labels, live regions), прогрессивное улучшение, работа с Canvas, SVG, Web Components, оптимизация для SEO и Core Web Vitals (LCP, CLS), поддержка старых браузеров через polyfills.',
-		color: '#e75833',
+			'Семантическая разметка, доступность (ARIA), формы, SEO, метатеги, структурирование контента, работа с DOM и создание доступных интерфейсов.',
+		color: '#e34f26',
 	},
 	{
 		icon: <SiCss />,
 		title: 'CSS',
-		level: 'Эксперт',
+		level: 90,
 		description:
-			'Flexbox, Grid, Container Queries, :has(), каскадные слои (@layer), переменные (--css-vars), современные анимации (cubic-bezier, scroll-driven), Tailwind CSS (JIT, plugins), PostCSS, CSS-in-JS (styled-components, emotion), дизайн-системы, BEM/ITCSS, оптимизация под 60+ FPS.',
-		color: '#2b6cb5',
-	},
-	{
-		icon: <SiSqlite />,
-		title: 'SQLite',
-		level: 'Средний',
-		description:
-			'Использование в десктопных и мобильных приложениях (Tauri, Expo), миграции через Drizzle ORM и Prisma, интеграция с Next.js (в edge runtime), легковесные бэкенды, работа с JSON1 расширением, индексы, транзакции, оптимизация запросов, экспорт/импорт баз.',
-		color: '#4ba5dc',
+			'Flexbox, Grid, адаптивная вёрстка, CSS-анимации, transitions, псевдоклассы, CSS variables, media queries, работа с дизайн-системами и кроссбраузерная совместимость.',
+		color: '#1572b6',
 	},
 ];
-
-
-const levelKeys: Record<Knowledge['level'], string> = {
-	Эксперт: 'expert',
-	Продвинутый: 'advanced',
-	Средний: 'intermediate',
-	Ознакомлен: 'familiar',
-};
 
 const skillGroups = [
 	{
 		id: 'frontend',
 		titleKey: 'frontend',
-		skills: ['React', 'Next.js', 'TypeScript'],
+		skills: [
+			'React',
+			'Next.js',
+			'TypeScript',
+			'JavaScript',
+			'Tailwind CSS',
+			'Zustand',
+			'Redux Toolkit',
+			'TanStack Query',
+			'HTML',
+			'CSS',
+		],
 	},
 	{
 		id: 'backend',
 		titleKey: 'backend',
-		skills: ['Node.js', 'NestJS', 'Laravel', 'PHP', 'SQLite'],
+		skills: [
+			'Node.js',
+			'Express',
+			'NestJS',
+			'PHP',
+			'Laravel',
+			'PostgreSQL',
+		],
 	},
 	{
-		id: 'platform',
-		titleKey: 'platform',
-		skills: ['HTML', 'CSS'],
+		id: 'tools',
+		titleKey: 'tools',
+		skills: ['Docker', 'Git'],
 	},
 ] as const;
 
-const levelProgress: Record<Knowledge['level'], number> = {
-	Эксперт: 95,
-	Продвинутый: 80,
-	Средний: 62,
-	Ознакомлен: 38,
-};
+const animationProps = (reduceMotion: boolean) =>
+	reduceMotion
+		? {
+				initial: false as const,
+				whileInView: undefined,
+				transition: { duration: 0 },
+			}
+		: {
+				initial: { opacity: 0, y: 20 },
+				whileInView: { opacity: 1, y: 0 },
+				transition: { duration: 0.55, ease: 'easeOut' as const },
+			};
 
 const Knowledge = React.memo(() => {
 	const [selected, setSelected] = useState<Knowledge | null>(null);
+
 	const { dict } = useDictionary();
 	const reduceMotion = useReducedMotion();
 
-	const groupedSkills = useMemo(
+	const groups = useMemo(
 		() =>
 			skillGroups.map(group => ({
 				...group,
@@ -158,100 +256,203 @@ const Knowledge = React.memo(() => {
 					`page.main.knowledge.groups.${group.titleKey}`,
 				) as string,
 				items: group.skills
-					.map(title => KnowledgeData.find(skill => skill.title === title))
+					.map(title =>
+						KnowledgeData.find(skill => skill.title === title),
+					)
 					.filter((skill): skill is Knowledge => Boolean(skill)),
 			})),
 		[dict],
 	);
 
-	const totalSkills = KnowledgeData.length;
-	const getLevelLabel = (level: Knowledge['level']) =>
-		getFromDict(dict, `page.main.knowledge.levels.${levelKeys[level]}`) as string;
-
 	return (
-		<section
-			id='knowledge'
-			className='site-section contain-layout'
-		>
-			<div className='site-container'>
-				<motion.header
-					initial={reduceMotion ? {} : { opacity: 0, y: 24 }}
-					whileInView={{ opacity: 1, y: 0 }}
+		<section id="knowledge" className="site-section contain-layout">
+			<div className="site-container">
+				{/* Heading */}
+				<motion.div
+					{...animationProps(reduceMotion)}
 					viewport={{ once: true }}
-					transition={{
-						duration: reduceMotion ? 0 : 0.65,
-						ease: 'easeOut',
-					}}
-					className='mb-10 text-center md:mb-14'
+					className="mb-12 md:mb-16"
 				>
-					<h2 className='site-section-title'>
-						<Text text='page.main.knowledge.title' />
-					</h2>
-					<div
-						aria-hidden='true'
-						className='mx-auto mt-3 h-px w-16 bg-[var(--site-foreground)]'
-					/>
-					<p className='site-section-description mx-auto'>
-						<Text text='page.main.knowledge.subtitle' />
-					</p>
-				</motion.header>
+					<p className="site-eyebrow mb-4">
+            <Text text="page.main.knowledge.eyebrow" />
+            <span className="
+                h-px w-8 bg-[var(--site-border)]
+            " />
 
-				<div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
-					{groupedSkills.map((group, groupIndex) => (
+            <span>03 / 05</span>
+					</p>
+
+
+          <div className="
+						flex flex-col gap-5
+						sm:flex-row sm:items-end
+						sm:justify-between
+					">
+						<div>
+							<h2 className="site-section-title">
+								<Text text="page.main.knowledge.title" />
+							</h2>
+
+							<p className="site-section-description">
+								<Text text="page.main.knowledge.subtitle" />
+							</p>
+						</div>
+
+						<div className="
+							flex shrink-0 items-center gap-3 mb-1
+							font-mono text-xs
+							tracking-wider
+							text-[var(--site-subtle)]
+						">
+							<span className="
+								h-1.5 w-1.5 rounded-full
+								bg-[var(--site-accent)]
+							"/>
+
+							<span>
+								{KnowledgeData.length} SKILLS
+							</span>
+            </div>
+
+					</div>
+				</motion.div>
+
+				{/* Skill groups */}
+				<div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+					{groups.map((group, groupIndex) => (
 						<motion.section
 							key={group.id}
-							initial={reduceMotion ? {} : { opacity: 0, y: 22 }}
-							whileInView={{ opacity: 1, y: 0 }}
-							viewport={{ once: true, margin: '-60px' }}
-							transition={{
-								duration: reduceMotion ? 0 : 0.55,
-								delay: reduceMotion ? 0 : groupIndex * 0.1,
-								ease: 'easeOut',
+							{...animationProps(reduceMotion)}
+							viewport={{
+								once: true,
+								margin: '-60px',
 							}}
-							className='site-surface min-w-0 p-5 sm:p-6'
+							transition={{
+								...animationProps(reduceMotion).transition,
+								delay: reduceMotion ? 0 : groupIndex * 0.1,
+							}}
+							className="
+								relative min-w-0 overflow-hidden
+								rounded-xl border border-[var(--site-border)]
+								bg-white/[0.015] p-5
+								sm:p-7
+							"
 							aria-labelledby={`knowledge-${group.id}`}
 						>
-							<h3
-								id={`knowledge-${group.id}`}
-								className='mb-6 text-center text-base font-medium tracking-tight'
-							>
-								{group.title}
-							</h3>
+							{/* Group accent */}
+							<div
+								aria-hidden="true"
+								className="
+									absolute left-0 top-0 h-12 w-px
+									bg-[var(--site-accent)] opacity-60
+								"
+							/>
 
-							<div className='space-y-4'>
+							<div className="mb-7 flex items-center justify-between gap-3">
+								<h3
+									id={`knowledge-${group.id}`}
+									className="text-lg font-semibold tracking-tight"
+								>
+									{group.title}
+								</h3>
+
+								<span className="
+									font-mono text-xs tracking-wider
+									text-[var(--site-subtle)]
+								">
+									{String(group.items.length).padStart(2, '0')} /{' '}
+									{String(KnowledgeData.length).padStart(2, '0')}
+								</span>
+							</div>
+
+							<div className="grid gap-5 sm:grid-cols-2">
 								{group.items.map((skill, skillIndex) => (
 									<button
 										key={skill.title}
-										type='button'
+										type="button"
 										onClick={() => setSelected(skill)}
-										className='group/skill block w-full rounded-md text-left outline-none focus-visible:ring-2 focus-visible:ring-[var(--site-accent)] focus-visible:ring-offset-4 focus-visible:ring-offset-[var(--site-surface)]'
-										aria-label={`${skill.title}: ${getLevelLabel(skill.level)}. ${getFromDict(dict, 'page.main.knowledge.openDetails')}`}
+										aria-label={`${skill.title}: ${skill.level}%`}
+										className="
+											group/skill min-w-0 rounded-lg
+											text-left outline-none
+											focus-visible:ring-2
+											focus-visible:ring-[var(--site-accent)]
+											focus-visible:ring-offset-4
+											focus-visible:ring-offset-[var(--site-background)]
+										"
 									>
-										<span className='mb-1.5 flex items-center justify-between gap-3 text-sm'>
-											<span className='font-medium text-[var(--site-foreground)] transition-colors group-hover/skill:text-[var(--site-accent)]'>
-												{skill.title}
-											</span>
-											<span className='shrink-0 text-xs text-[var(--site-muted)]'>
-												{getLevelLabel(skill.level)}
-											</span>
-										</span>
+										<div className="mb-3 flex items-center gap-3">
+											<div
+												className="
+													flex h-9 w-9 shrink-0
+													items-center justify-center
+													rounded-lg border
+													border-[var(--site-border)]
+													bg-white/[0.025]
+													transition-all duration-300
+													group-hover/skill:border-[var(--site-accent)]/40
+													group-hover/skill:bg-white/[0.05]
+													[&>svg]:h-4 [&>svg]:w-4
+												"
+												style={{ color: skill.color }}
+												aria-hidden="true"
+											>
+												{skill.icon}
+											</div>
 
-										<span aria-hidden='true' className='block h-1.5 overflow-hidden rounded-full bg-[var(--site-border)]'>
-											<motion.span
-												initial={reduceMotion ? false : { scaleX: 0 }}
+											<div className="min-w-0 flex-1">
+												<p className="
+													truncate text-sm font-medium
+													transition-colors
+													group-hover/skill:text-[var(--site-accent)]
+												">
+													{skill.title}
+												</p>
+											</div>
+
+											<span className="
+												shrink-0 font-mono text-xs
+												tabular-nums
+												text-[var(--site-muted)]
+											">
+												{skill.level}%
+											</span>
+										</div>
+
+										<div
+											className="
+												h-1 overflow-hidden rounded-full
+												bg-[var(--site-border)]
+											"
+											aria-hidden="true"
+										>
+											<motion.div
+												initial={
+													reduceMotion
+														? false
+														: { scaleX: 0 }
+												}
 												whileInView={{ scaleX: 1 }}
 												viewport={{ once: true }}
 												transition={{
 													duration: reduceMotion ? 0 : 0.8,
-													delay: reduceMotion ? 0 : 0.12 * skillIndex,
+													delay: reduceMotion
+														? 0
+														: skillIndex * 0.06,
 													ease: 'easeOut',
 												}}
-												className='block h-full origin-left rounded-full bg-[var(--site-foreground)]'
+												className="
+													h-full origin-left rounded-full
+													bg-[var(--site-accent)]
+													opacity-80
+													transition-opacity
+													group-hover/skill:opacity-100
+												"
 												style={{
-													width: `${levelProgress[skill.level]}%`,
+													width: `${skill.level}%`,
 												}}
 											/>
-										</span>
+										</div>
 									</button>
 								))}
 							</div>
@@ -259,130 +460,148 @@ const Knowledge = React.memo(() => {
 					))}
 				</div>
 
-				<motion.aside
-					initial={reduceMotion ? {} : { opacity: 0, y: 20 }}
-					whileInView={{ opacity: 1, y: 0 }}
-					viewport={{ once: true, margin: '-60px' }}
-					transition={{
-						duration: reduceMotion ? 0 : 0.65,
-						delay: reduceMotion ? 0 : 0.15,
-					}}
-					className='site-surface mx-auto mt-8 max-w-3xl px-5 py-7 text-center sm:px-8 sm:py-8'
-				>
-					<h3 className='text-lg font-medium tracking-tight'>
-						<Text text='page.main.knowledge.overviewTitle' />
-					</h3>
-					<p className='mx-auto mt-2 max-w-xl text-sm leading-6 text-[var(--site-muted)]'>
-						<Text text='page.main.knowledge.overviewDescription' />
-					</p>
 
-					<div className='mt-6 flex flex-wrap items-center justify-center'>
-						{groupedSkills.map((group, index) => (
-							<div
-								key={group.id}
-								className={cn(
-									'min-w-[110px] px-5 py-1',
-									index > 0 && 'border-l border-[var(--site-border)]',
-								)}
-							>
-								<p className='text-sm font-semibold tracking-wide'>
-									{group.items.length.toString().padStart(2, '0')}
-								</p>
-								<p className='mt-1 text-xs text-[var(--site-muted)]'>
-									{group.title}
-								</p>
-							</div>
-						))}
-					</div>
-
-					<p className='mt-5 text-[11px] tracking-wide text-[var(--site-muted)]'>
-						{totalSkills} <Text text='page.main.knowledge.skillsCountLabel' />
-					</p>
-				</motion.aside>
 			</div>
 
+			{/* Skill details */}
 			<AnimatePresence>
 				{selected && (
 					<motion.div
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
-						transition={{ duration: reduceMotion ? 0 : 0.2 }}
-						className='fixed inset-0 z-[120] flex items-center justify-center bg-black/45 p-4 backdrop-blur-sm'
+						transition={{
+							duration: reduceMotion ? 0 : 0.2,
+						}}
+						className="
+							fixed inset-0 z-[120]
+							flex items-center justify-center
+							bg-black/50 p-4 backdrop-blur-sm
+						"
 						onClick={() => setSelected(null)}
 					>
 						<motion.div
-							role='dialog'
-							aria-modal='true'
-							aria-labelledby='knowledge-dialog-title'
+							role="dialog"
+							aria-modal="true"
+							aria-labelledby="knowledge-dialog-title"
 							initial={
 								reduceMotion
 									? { opacity: 0 }
-									: { scale: 0.96, y: 16, opacity: 0 }
+									: { opacity: 0, scale: 0.96, y: 16 }
 							}
-							animate={{ scale: 1, y: 0, opacity: 1 }}
+							animate={{ opacity: 1, scale: 1, y: 0 }}
 							exit={
 								reduceMotion
 									? { opacity: 0 }
-									: { scale: 0.96, y: 12, opacity: 0 }
+									: { opacity: 0, scale: 0.96, y: 12 }
 							}
 							transition={{
 								type: reduceMotion ? 'tween' : 'spring',
-								duration: reduceMotion ? 0.12 : undefined,
 								stiffness: 300,
 								damping: 28,
 							}}
 							onClick={event => event.stopPropagation()}
-							className='site-surface relative max-h-[min(80vh,640px)] w-full max-w-lg overflow-y-auto p-6 shadow-2xl sm:p-8'
+							className="
+								relative w-full max-w-lg
+								max-h-[min(80vh,640px)] overflow-y-auto
+								rounded-xl border
+								border-[var(--site-border)]
+								bg-[var(--site-background)]
+								p-6 shadow-2xl sm:p-8
+							"
 						>
 							<button
-								type='button'
+								type="button"
 								onClick={() => setSelected(null)}
-								className='absolute right-4 top-4 rounded-md p-2 text-[var(--site-muted)] transition-colors hover:text-[var(--site-foreground)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--site-accent)]'
+								className="
+									absolute right-4 top-4 rounded-lg p-2
+									text-[var(--site-muted)]
+									transition-colors
+									hover:bg-white/[0.05]
+									hover:text-[var(--site-foreground)]
+									focus-visible:outline-none
+									focus-visible:ring-2
+									focus-visible:ring-[var(--site-accent)]
+								"
 								aria-label={String(
-									getFromDict(dict, 'page.main.knowledge.close'),
+									getFromDict(
+										dict,
+										'page.main.knowledge.close',
+									),
 								)}
 							>
-								<svg
-									className='h-5 w-5'
-									fill='none'
-									stroke='currentColor'
-									viewBox='0 0 24 24'
-									aria-hidden='true'
-								>
-									<path
-										strokeLinecap='round'
-										strokeLinejoin='round'
-										strokeWidth={1.8}
-										d='M6 18L18 6M6 6l12 12'
-									/>
-								</svg>
+								<X className="h-5 w-5" />
 							</button>
 
-							<div className='mb-5 flex items-center gap-4 pr-8'>
+							<div className="mb-6 flex items-center gap-4 pr-8">
 								<div
-									className='shrink-0 [&>svg]:h-8 [&>svg]:w-8'
+									className="
+										flex h-12 w-12 shrink-0
+										items-center justify-center
+										rounded-xl border
+										border-[var(--site-border)]
+										bg-white/[0.025]
+										[&>svg]:h-6 [&>svg]:w-6
+									"
 									style={{ color: selected.color }}
-									aria-hidden='true'
+									aria-hidden="true"
 								>
 									{selected.icon}
 								</div>
-								<div>
+
+								<div className="min-w-0 flex-1">
 									<h3
-										id='knowledge-dialog-title'
-										className='text-xl font-semibold tracking-tight'
+										id="knowledge-dialog-title"
+										className="text-xl font-semibold tracking-tight"
 									>
 										{selected.title}
 									</h3>
-									<p className='mt-1 text-xs text-[var(--site-muted)]'>
-										{getLevelLabel(selected.level)}
+
+									<p className="
+										mt-1 font-mono text-xs
+										text-[var(--site-accent)]
+									">
+										{selected.level}% / 100
 									</p>
 								</div>
 							</div>
 
-							<p className='text-sm leading-7 text-[var(--site-muted)]'>
-								{selected.description}
-							</p>
+							<div className="
+								mb-6 h-1.5 overflow-hidden rounded-full
+								bg-[var(--site-border)]
+							">
+								<motion.div
+									initial={{ width: 0 }}
+									animate={{ width: `${selected.level}%` }}
+									transition={{
+										duration: reduceMotion ? 0 : 0.6,
+									}}
+									className="
+										h-full rounded-full
+										bg-[var(--site-accent)]
+									"
+								/>
+							</div>
+
+							<div className="
+								border-t border-[var(--site-border)]
+								pt-5
+							">
+								<p className="
+									font-mono text-[10px] uppercase
+									tracking-[0.16em]
+									text-[var(--site-subtle)]
+								">
+									Описание навыка
+								</p>
+
+								<p className="
+									mt-4 text-sm leading-7
+									text-[var(--site-muted)]
+								">
+									{selected.description}
+								</p>
+							</div>
 						</motion.div>
 					</motion.div>
 				)}

@@ -160,7 +160,7 @@
 
 /* Subtle hover lift effect */
 .hover-lift {
-	transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
+	transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
 	            box-shadow 0.3s ease;
 }
 
@@ -368,10 +368,10 @@
 
 /* Subtle background pulse for cards */
 @keyframes subtle-pulse {
-	0%, 100% { 
+	0%, 100% {
 		box-shadow: 0 0 0 0 oklch(from var(--primary) l c h / 0);
 	}
-	50% { 
+	50% {
 		box-shadow: 0 0 20px 0 oklch(from var(--primary) l c h / 0.1);
 	}
 }
@@ -420,16 +420,16 @@
 		@apply bg-foreground;
 	}
 	h1 {
-		@apply scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance;
+		@apply scroll-m-20 text-center text-2xl font-extrabold tracking-tight text-balance;
 	}
 	h2 {
-		@apply scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0;
+		@apply scroll-m-20 border-b pb-2 text-xl font-semibold tracking-tight first:mt-0;
 	}
 	h3 {
-		@apply scroll-m-20 text-2xl font-semibold tracking-tight;
+		@apply scroll-m-20 text-lg font-semibold tracking-tight;
 	}
 	h4 {
-		@apply scroll-m-20 text-xl font-semibold tracking-tight;
+		@apply scroll-m-20 text-sm font-semibold tracking-tight;
 	}
 	p {
 		@apply leading-7 [&:not(:first-child)]:mt-6;
@@ -533,11 +533,11 @@
 	border-radius: 40% 42% 45% 55%;
 }
 
-.scrollbar-transparent::-webkit-scrollbar { 
+.scrollbar-transparent::-webkit-scrollbar {
     width: 0 !important;
 		-ms-overflow-style: none;
 		overflow: -moz-scrollbars-none;
-    background: transparent;  
+    background: transparent;
 }
 
 .goTo {
@@ -614,3 +614,355 @@
 @import '../../styles/highlight-js/github-dark.css';
 @import '../../styles/highlight-js/github.css';
 
+
+/* ========================================
+   Markdown Content
+======================================== */
+
+.markdrow-content {
+  --md-text: var(--site-foreground);
+  --md-muted: var(--site-muted);
+  --md-subtle: var(--site-subtle);
+  --md-border: var(--site-border);
+  --md-accent: var(--site-accent);
+
+  width: 100%;
+  min-width: 0;
+  color: var(--md-text);
+  font-size: 15px;
+  line-height: 1.85;
+  overflow-wrap: break-word;
+}
+
+/* Paragraphs */
+
+.markdrow-content p {
+  margin: 0 0 1.25em;
+  line-height: 1.85;
+}
+
+.markdrow-content p:last-child {
+  margin-bottom: 0;
+}
+
+/* Headings */
+
+.markdrow-content h1,
+.markdrow-content h2,
+.markdrow-content h3,
+.markdrow-content h4,
+.markdrow-content h5,
+.markdrow-content h6 {
+  color: var(--md-text);
+  font-weight: 650;
+  line-height: 1.3;
+  letter-spacing: -0.035em;
+  scroll-margin-top: 6rem;
+}
+
+.markdrow-content h1 {
+  margin: 2em 0 0.8em;
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+}
+
+.markdrow-content h2 {
+  margin: 1.4em 0 0.6em;
+  padding-bottom: 0.55em;
+  border-bottom: 1px solid var(--md-border);
+  font-size: clamp(1.45rem, 3vw, 1.85rem);
+}
+
+.markdrow-content h3 {
+  margin: 1.8em 0 0.65em;
+  font-size: 1.3rem;
+}
+
+.markdrow-content h4 {
+  margin: 1.5em 0 0.6em;
+  font-size: 1.1rem;
+}
+
+.markdrow-content h5,
+.markdrow-content h6 {
+  margin: 1.4em 0 0.5em;
+  font-size: 1rem;
+}
+
+/* First heading */
+
+.markdrow-content > h1:first-child,
+.markdrow-content > h2:first-child,
+.markdrow-content > h3:first-child {
+  margin-top: 0;
+}
+
+/* Links */
+
+.markdrow-content a {
+  color: var(--md-accent);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: color-mix(
+    in srgb,
+    var(--md-accent) 40%,
+    transparent
+  );
+  text-underline-offset: 3px;
+  transition:
+    color 180ms ease,
+    text-decoration-color 180ms ease;
+}
+
+.markdrow-content a:hover {
+  text-decoration-color: var(--md-accent);
+}
+
+.markdrow-content a:focus-visible {
+  outline: 2px solid var(--md-accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Bold and italic */
+
+.markdrow-content strong {
+  color: var(--md-text);
+  font-weight: 650;
+}
+
+.markdrow-content em {
+  color: var(--md-text);
+}
+
+/* Lists */
+
+.markdrow-content ul,
+.markdrow-content ol {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+  margin: 1.1em 0 1.5em;
+  padding-left: 1.6em;
+}
+
+.markdrow-content ul {
+  list-style: disc;
+}
+
+.markdrow-content ol {
+  list-style: decimal;
+}
+
+.markdrow-content li {
+  padding-left: 0.3em;
+  line-height: 1.8;
+}
+
+.markdrow-content li::marker {
+  color: var(--md-accent);
+}
+
+.markdrow-content li > p {
+  margin: 0.25em 0;
+}
+
+.markdrow-content li > ul,
+.markdrow-content li > ol {
+  margin: 0.5em 0;
+}
+
+/* Task lists */
+
+.markdrow-content input[type="checkbox"] {
+  width: 1em;
+  height: 1em;
+  margin-right: 0.55em;
+  accent-color: var(--md-accent);
+  vertical-align: middle;
+}
+
+/* Blockquote */
+
+.markdrow-content blockquote {
+  margin: 1.75em 0;
+  padding: 0.9em 1.25em;
+  border-left: 3px solid var(--md-accent);
+  border-radius: 0 6px 6px 0;
+  background: color-mix(
+    in srgb,
+    var(--md-accent) 5%,
+    transparent
+  );
+}
+
+.markdrow-content blockquote p {
+  color: var(--md-text);
+}
+
+.markdrow-content blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+/* Inline code */
+
+.markdrow-content :not(pre) > code {
+  padding: 0.2em 0.45em;
+  border: 1px solid var(--md-border);
+  border-radius: 5px;
+  background: color-mix(
+    in srgb,
+    var(--md-text) 5%,
+    transparent
+  );
+  color: var(--md-accent);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.86em;
+  font-weight: 500;
+}
+
+/* Code blocks */
+
+.markdrow-content pre {
+  max-width: 100%;
+  margin: 1.5em 0;
+  padding: 1.15em 1.25em;
+  overflow-x: auto;
+  border: 1px solid var(--md-border);
+  border-radius: 8px;
+  background: var(--site-background);
+  color: var(--md-text);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.85rem;
+  line-height: 1.75;
+  tab-size: 2;
+  scrollbar-width: thin;
+  scrollbar-color: var(--md-border) transparent;
+}
+
+.markdrow-content pre code {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font-size: inherit;
+  font-weight: 400;
+}
+
+/* Horizontal rule */
+
+.markdrow-content hr {
+  height: 1px;
+  margin: 2.5em 0;
+  border: 0;
+  background: var(--md-border);
+}
+
+/* Images */
+
+.markdrow-content img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1.75em auto;
+  border: 1px solid var(--md-border);
+  border-radius: 8px;
+}
+
+/* Tables */
+
+.markdrow-content table {
+  display: block;
+  width: 100%;
+  margin: 1.75em 0;
+  overflow-x: auto;
+  border-collapse: collapse;
+  border-spacing: 0;
+  font-size: 0.9em;
+  scrollbar-width: thin;
+}
+
+.markdrow-content thead {
+  background: color-mix(
+    in srgb,
+    var(--md-text) 5%,
+    transparent
+  );
+}
+
+.markdrow-content th,
+.markdrow-content td {
+  min-width: 120px;
+  padding: 0.8em 1em;
+  border: 1px solid var(--md-border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.markdrow-content th {
+  color: var(--md-text);
+  font-weight: 600;
+}
+
+.markdrow-content td {
+  color: var(--md-muted);
+}
+
+.markdrow-content tbody tr {
+  transition: background 150ms ease;
+}
+
+.markdrow-content tbody tr:hover {
+  background: color-mix(
+    in srgb,
+    var(--md-text) 3%,
+    transparent
+  );
+}
+
+/* Keyboard */
+
+.markdrow-content kbd {
+  padding: 0.2em 0.5em;
+  border: 1px solid var(--md-border);
+  border-radius: 4px;
+  background: color-mix(
+    in srgb,
+    var(--md-text) 5%,
+    transparent
+  );
+  color: var(--md-text);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8em;
+}
+
+/* Small screens */
+
+@media (max-width: 640px) {
+  .markdrow-content {
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  .markdrow-content pre {
+    padding: 1em;
+    font-size: 0.8rem;
+  }
+
+  .markdrow-content blockquote {
+    padding: 0.75em 1em;
+  }
+
+  .markdrow-content h2 {
+    margin-top: 1.8em;
+  }
+}
+
+/* Reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  .markdrow-content a,
+  .markdrow-content tbody tr {
+    transition: none;
+  }
+}

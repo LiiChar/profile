@@ -21,7 +21,7 @@ const ScrollProgressBorderComponent = memo(({
 		const now = Date.now();
 		// Throttle updates - more aggressive on reduced motion
 		const throttleTime = reduceMotion ? 100 : 16;
-		
+
 		if (now - lastUpdateRef.current < throttleTime) {
 			return;
 		}
@@ -66,12 +66,12 @@ const ScrollProgressBorderComponent = memo(({
 			}
 		};
 	}, []);
-	
+
 	return (
 		<BorderProgress
-			strokeColor='#ffffff'
+			strokeColor='rgba(255, 255, 255, 0.40)'
 			strokeWidth={2}
-			progress={progress + 0.0005}
+			progress={progress}
 			className={cn('rounded-2xl', className)}
 			{...props}
 		>

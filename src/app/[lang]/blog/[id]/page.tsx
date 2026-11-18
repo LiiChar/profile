@@ -1,40 +1,75 @@
 
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
+import { cache } from 'react';
+import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
+import Image from 'next/image';
+import { eq } from 'drizzle-orm';
+
 import { db } from '@/db/db';
 import { blogs } from '@/db/schema';
-import { getDate } from '@/helpers/date';
-import { eq } from 'drizzle-orm';
-import Image from 'next/image';
-import { Metadata } from 'next';
+
+import { locales } from '@/const/i18n';
+import { Lang } from '@/types/i18n';
+
 import { getFieldLang } from '@/helpers/i18n';
+import { normalizeImageUrl } from '@/helpers/url';
+
 import { TagList } from '@/components/tag/TagList';
-import { BackwardLink } from '@/components/ui/backward-link';
 import { ContentMetrics } from '@/components/metrics/ContentMetrics';
-import { cn } from '@/lib/utils';
+import { MetricTracker } from '@/components/metrics/MetricTracker';
 import { ContentMarkdown } from '@/components/text/ContentMarkdown';
+
 import { BlogAdminActions } from '@/components/blog/BlogAdminActions';
 import { BlogLikeWithUser } from '@/components/blog/BlogLikeWithUser';
 import { CommentsListWithUser } from '@/components/comments/CommentsListWithUser';
-import { MetricTracker } from '@/components/metrics/MetricTracker';
-import { locales } from '@/const/i18n';
-import { Lang } from '@/types/i18n';
+
+import { BackwardLink } from '@/components/ui/backward-link';
 import ArticleNav from '@/widgets/article/ArticleNav';
 
 export const revalidate = 3600;
 
+/* -------------------------------------------------------------------------- */
+/*                                   Data                                     */
+/* -------------------------------------------------------------------------- */
+
+const getBlog = cache(async (id: number) => {
+	return db.query.blogs.findFirst({
+		where: eq(blogs.id, id),
+		with: {
+			user: true,
+			likes: true,
+			comments: {
+				with: {
+					user: true,
+				},
+				orderBy: (blog, { desc }) => [desc(blog.id)],
+			},
+		},
+	});
+});
+
+/* -------------------------------------------------------------------------- */
+/*                                Static params                               */
+/* -------------------------------------------------------------------------- */
+
 export async function generateStaticParams() {
 	const items = await db.query.blogs.findMany({
-		columns: { id: true },
+		columns: {
+			id: true,
+		},
 	});
 
 	return locales.flatMap(lang =>
-		items.map(item => ({
+		items.map(({ id }) => ({
 			lang,
-			id: String(item.id),
+			id: String(id),
 		}))
 	);
 }
+
+/* -------------------------------------------------------------------------- */
+/*                                  Metadata                                  */
+/* -------------------------------------------------------------------------- */
 
 export async function generateMetadata({
 	params,
@@ -43,123 +78,242 @@ export async function generateMetadata({
 }): Promise<Metadata> {
 	const { id, lang } = await params;
 	const blogId = Number(id);
-	const blog = await db.query.blogs.findFirst({
-		where: () => eq(blogs.id, blogId),
-		with: {
-			user: true,
-			likes: true,
-			comments: {
-				with: {
-					user: true,
-				},
-				orderBy: (b, { desc }) => [desc(b.id)],
-			},
-		},
-	});
+
+	if (!Number.isSafeInteger(blogId) || blogId <= 0) {
+		return {
+			title: 'Blog Not Found',
+		};
+	}
+
+	const blog = await getBlog(blogId);
 
 	if (!blog) {
-		return {};
+		return {
+			title: 'Blog Not Found',
+			robots: {
+				index: false,
+				follow: false,
+			},
+		};
 	}
 
 	const title = getFieldLang(blog, 'title', lang);
 
 	return {
-		title: `${title} | Profile`,
+		title: `${title} | Blog - Maksim Ivanov`,
+		openGraph: {
+			title,
+			type: 'article',
+			publishedTime: new Date(blog.createdAt).toISOString(),
+			authors: [blog.user.name],
+			images: blog.image
+				? [
+						{
+							url: normalizeImageUrl(blog.image),
+							alt: title,
+						},
+					]
+				: undefined,
+		},
+		twitter: {
+			card: blog.image ? 'summary_large_image' : 'summary',
+			title,
+			images: blog.image
+				? [normalizeImageUrl(blog.image)]
+				: undefined,
+		},
 	};
 }
 
-export default async function Page({
+/* -------------------------------------------------------------------------- */
+/*                                    Page                                    */
+/* -------------------------------------------------------------------------- */
+
+type BlogPageProps = {
+	params: Promise<{
+		id: string;
+		lang: Lang;
+	}>;
+};
+
+export default async function BlogPage({
 	params,
-}: {
-	params: Promise<{ id: string; lang: Lang }>;
-}) {
+}: BlogPageProps) {
 	const { id, lang } = await params;
 	const blogId = Number(id);
-	const blog = await db.query.blogs.findFirst({
-		where: () => eq(blogs.id, blogId),
-		with: {
-			user: true,
-			likes: true,
-			comments: {
-				with: {
-					user: true,
-				},
-				orderBy: (b, { desc }) => [desc(b.id)],
-			},
-			
-		},
-	});
 
-	if (!blog) {
-		return 'Not found';
+	if (!Number.isSafeInteger(blogId) || blogId <= 0) {
+		notFound();
 	}
 
-	const { image, user, title, createdAt, tags } = blog;
+	const blog = await getBlog(blogId);
+
+	if (!blog) {
+		notFound();
+	}
+
+	const {
+		id: contentId,
+		user,
+		createdAt,
+		image,
+		tags,
+		likes,
+		comments,
+	} = blog;
+
+	const title = getFieldLang(blog, 'title', lang);
+
+	const isRu = lang === 'ru';
+
+	const formattedDate = new Intl.DateTimeFormat(
+		isRu ? 'ru-RU' : 'en-US',
+		{
+			day: 'numeric',
+			month: 'long',
+			year: 'numeric',
+		}
+	).format(new Date(createdAt));
 
 	return (
-		<main className='max-w-3xl mx-auto my-8 px-4 relative'>
-			<MetricTracker action='view' targetType='blog' targetId={blogId} />
-			<BackwardLink href={`/${lang}/blog`} />
-			<Card className='relative blog-detail-card'>
-				<CardHeader
-					className={cn(
-						'px-4 sm:px-6 lg:px-8 relative',
-						image ? 'pb-4 -mt-6' : '',
-					)}
-				>
-					{image && (
-						<div className='px-4 sm:px-6 lg:px-8 mb-6'>
-							<Image
-								fill={true}
-								src={image}
-								alt={`Обложка для ${title}`}
-								className='w-full opacity-70 h-auto rounded-lg z-1 shadow-md object-cover'
-							/>
-						</div>
-					)}
-					<h1 className='text-4xl font-bold my-10 relative z-[2]  sm:text-5xl'>
-						{getFieldLang(blog, 'title', lang)}
-					</h1>
-					<div className='flex w-full justify-between items-center mt-4 gap-4 relative z-[2]'>
-						<div className='flex text-nowrap items-center space-x-2  text-foreground/60 text-sm'>
-							<span>{user.name}</span>
-							<span>·</span>
-							<time dateTime={createdAt}>{getDate(createdAt)}</time>
-						</div>
-						<Separator className='px-3' />
-						<div>
-							<BlogAdminActions blogId={blog.id} lang={lang} />
-						</div>
-					</div>
-				</CardHeader>
+		<main className="relative">
+			<MetricTracker
+				action="view"
+				targetType="blog"
+				targetId={blogId}
+			/>
 
-				{/* Контент статьи */}
-				<CardContent className='px-0'>
-					<div className=' max-w-3xl z-[100000000000] top-[50%] w-full pr-8 flex justify-end translate-y-[-50%] fixed pointer-events-none'>
-						<ArticleNav
-							className='max-w-64 overflow-auto shrink-0 relative min-[1250px]:translate-x-[100%] pointer-events-auto'
-							targetSelect='.markdrow-content'
+			<div className="site-container mx-auto max-w-4xl px-4 py-10 sm:py-14">
+
+				{/* Navigation */}
+				<div className="mb-10">
+					<BackwardLink href={`/${lang}/blog`} />
+				</div>
+
+				{/* Header */}
+				<header className="mb-8">
+					<div className="mb-5 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--site-subtle)]">
+						<span>
+							{isRu ? 'Статья' : 'Article'}
+						</span>
+
+						<span
+							aria-hidden="true"
+							className="size-1 rounded-full bg-[var(--site-accent)]/60"
+						/>
+
+						<time dateTime={new Date(createdAt).toISOString()}>
+							{formattedDate}
+						</time>
+
+						<span
+							aria-hidden="true"
+							className="size-1 rounded-full bg-[var(--site-accent)]/60"
+						/>
+
+						<span>{user.name}</span>
+					</div>
+
+					<h1 className="py-12">
+						{title}
+					</h1>
+				</header>
+
+				{/* Cover */}
+				{image && (
+					<div className="relative mb-10 aspect-[16/10] w-full overflow-hidden rounded-lg bg-[var(--site-border)] sm:aspect-video">
+						<Image
+							fill
+							src={normalizeImageUrl(image)}
+							alt={title}
+							sizes="(max-width: 768px) 100vw, 896px"
+							priority
+							className="object-cover"
 						/>
 					</div>
-					<div className='prose prose-lg max-w-none markdrow-content px-4 sm:px-6 lg:px-8'>
-						<ContentMarkdown data={blog} field='content' />
-					</div>
-				</CardContent>
-
-				{tags && (
-					<div className='flex gap-3 px-8 items-center text-sm mt-auto'>
-						<TagList tags={tags} linkBase={`/${lang}/blog/tag/`} />
-						<Separator />
-						<ContentMetrics contentId={blog.id} type='blog' />
-						<BlogLikeWithUser likes={blog.likes} blogId={blog.id} />
-					</div>
 				)}
-			</Card>
-			<CommentsListWithUser
-				className='mt-8'
-				blogId={blogId}
-				comments={blog.comments}
-			/>
+
+				{/* Content */}
+				<article className="relative min-w-0">
+					{/* Article navigation */}
+					<div className="pointer-events-none fixed top-1/2 z-20 flex w-full max-w-4xl -translate-y-1/2 justify-end pr-8">
+						<ArticleNav
+							className="pointer-events-auto relative hidden max-w-64 shrink-0 overflow-auto min-[1250px]:block min-[1250px]:translate-x-full"
+							targetSelect=".markdrow-content"
+						/>
+					</div>
+
+					<div className="prose prose-lg markdrow-content max-w-none">
+						<ContentMarkdown
+							data={blog}
+							field="content"
+						/>
+					</div>
+				</article>
+
+				{/* Footer */}
+				<footer className="mt-12 border-t border-[var(--site-border)] pt-6">
+					<div className="flex flex-col gap-5">
+
+						{/* Author and actions */}
+						<div className="flex flex-wrap items-center justify-between gap-4">
+							<div className="flex items-center gap-3 text-sm text-[var(--site-muted)]">
+								<span>
+									{isRu ? 'Автор' : 'Author'}:
+								</span>
+
+								<span className="font-medium text-[var(--site-foreground)]">
+									{user.name}
+								</span>
+							</div>
+
+							<div className="flex shrink-0 items-center gap-3">
+								<ContentMetrics
+									contentId={contentId}
+									type="blog"
+								/>
+
+								<BlogLikeWithUser
+									likes={likes}
+									blogId={contentId}
+								/>
+
+								<BlogAdminActions
+									blogId={contentId}
+									lang={lang}
+								/>
+							</div>
+						</div>
+
+						{/* Tags */}
+						{tags && tags.length > 0 && (
+							<div className="mt-2">
+								<TagList
+									className="flex flex-wrap gap-2"
+									linkBase={`/${lang}/blog/tag/`}
+									tags={tags}
+									prefix="#"
+									variant="default"
+								/>
+							</div>
+						)}
+					</div>
+				</footer>
+
+				{/* Comments */}
+				<section className="mt-12 border-t border-[var(--site-border)] pt-8">
+					<div className="mb-6">
+						<h2 className="text-xl font-semibold tracking-tight text-[var(--site-foreground)] sm:text-2xl">
+							{isRu ? 'Обсуждение' : 'Discussion'}
+						</h2>
+					</div>
+
+					<CommentsListWithUser
+						blogId={blogId}
+						comments={comments}
+					/>
+				</section>
+			</div>
 		</main>
 	);
 }

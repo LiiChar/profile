@@ -54,7 +54,12 @@ export const Experience = () => {
 					className="mb-12 md:mb-16"
 				>
 					<p className="site-eyebrow mb-4">
-						<Text text="page.main.experience.eyebrow" />
+            <Text text="page.main.experience.eyebrow" />
+            <span className="
+                h-px w-8 bg-[var(--site-border)]
+            " />
+
+            <span>02 / 05</span>
 					</p>
 
 					<h2 className="site-section-title">

@@ -1,21 +1,41 @@
+
 'use client';
 
-import { cn } from '@/lib/utils';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+	Monitor,
+	LayoutDashboard,
+	Book,
+	Brain,
+	BriefcaseBusiness,
+} from 'lucide-react';
 import { motion } from 'framer-motion';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Monitor, LayoutDashboard, Book, Brain, BriefcaseBusiness } from 'lucide-react';
+
+import { cn } from '@/lib/utils';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import Portal from '@/components/ui/portal';
 
 const MainComponents = {
-	hero: { title: 'Главная', icon: <Monitor className='w-5 h-5' /> },
-	experience: { title: 'Опыт', icon: <BriefcaseBusiness className='w-5 h-5' /> },
-	knowledge: { title: 'Навыки', icon: <Brain className='w-5 h-5' /> },
+	hero: {
+		title: 'Главная',
+		icon: <Monitor className="h-5 w-5" />,
+	},
+	experience: {
+		title: 'Опыт',
+		icon: <BriefcaseBusiness className="h-5 w-5" />,
+	},
+	knowledge: {
+		title: 'Навыки',
+		icon: <Brain className="h-5 w-5" />,
+	},
 	portfolio: {
 		title: 'Портфолио',
-		icon: <LayoutDashboard className='w-5 h-5' />,
+		icon: <LayoutDashboard className="h-5 w-5" />,
 	},
-	blog: { title: 'Блог', icon: <Book className='w-5 h-5' /> },
+	blog: {
+		title: 'Блог',
+		icon: <Book className="h-5 w-5" />,
+	},
 } as const;
 
 type Components = typeof MainComponents;
@@ -25,162 +45,271 @@ type NavigationProps = {
 	components?: Partial<Components>;
 };
 
-export const Navigation = React.memo(({
-	children,
-	components = MainComponents,
-}: React.PropsWithChildren<NavigationProps>) => {
-	const [currentSection, setCurrentSection] = useState<string>('hero');
-	const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
-	const reduceMotion = useReducedMotion();
+export const Navigation = React.memo(
+	({
+		children,
+		components = MainComponents,
+	}: React.PropsWithChildren<NavigationProps>) => {
+		const [currentSection, setCurrentSection] =
+			useState<ComponentKey>('hero');
 
-	useEffect(() => {
-		const thresholds = reduceMotion ? [0, 0.5, 1] : [0, 0.25, 0.5, 0.75, 1];
+		const reduceMotion = useReducedMotion();
 
-		const observer = new IntersectionObserver(
-			entries => {
-				let best: IntersectionObserverEntry | null = null;
-
-				entries.forEach(entry => {
-					if (entry.isIntersecting) {
-						if (!best || entry.intersectionRatio > best.intersectionRatio) {
-							best = entry;
-						}
-					}
-				});
-
-				if (best) {
-					setCurrentSection(prev =>
-						prev === best!.target.id ? prev : best!.target.id
-					);
-				}
-			},
-			{
-				rootMargin: '-20% 0px -80% 0px',
-				threshold: thresholds,
-			}
+		const componentEntries = useMemo(
+			() =>
+				Object.entries(components) as [
+					ComponentKey,
+					Components[ComponentKey],
+				][],
+			[components],
 		);
 
-		Object.keys(components).forEach(key => {
-			const el = document.getElementById(key);
-			if (el) {
-				sectionRefs.current[key] = el;
-				observer.observe(el);
-			}
-		});
+		const navigationId = React.useId();
 
-		return () => observer.disconnect();
-	}, [components, reduceMotion]);
+		// Scroll to section
+		const scrollToSection = useCallback(
+			(id: ComponentKey) => {
+				const element = document.getElementById(id);
 
-	const scrollToSection = useCallback((id: ComponentKey) => {
-		sectionRefs.current[id]?.scrollIntoView({
-			behavior: 'smooth',
-			block: 'start',
-		});
-	}, []);
+				if (!element) return;
 
-	const componentEntries = useMemo(() => Object.entries(components), [components]);
+				element.scrollIntoView({
+					behavior: reduceMotion ? 'instant' : 'smooth',
+					block: 'start',
+				});
+			},
+			[reduceMotion],
+		);
 
-	useEffect(() => {
-		const componentKeys = Object.keys(components) as ComponentKey[];
-		if (componentKeys.length === 0) return;
+		// Detect active section
+		useEffect(() => {
+			if (!componentEntries.length) return;
 
-		let frameId: number | null = null;
+			const sectionElements = componentEntries
+				.map(([key]) => ({
+					key,
+					element: document.getElementById(key),
+				}))
+				.filter(
+					(
+						item,
+					): item is {
+						key: ComponentKey;
+						element: HTMLElement;
+					} => item.element !== null,
+				);
 
-		const handleScroll = () => {
-			if (frameId !== null) return;
-			frameId = requestAnimationFrame(() => {
+			if (!sectionElements.length) return;
+
+			let frameId: number | null = null;
+
+			const updateActiveSection = () => {
 				frameId = null;
-				const scrollEl = document.documentElement;
-				const scrollable = scrollEl.scrollHeight - window.innerHeight;
-				if (scrollable <= 0) return;
+
+				const viewportHeight = window.innerHeight;
+				const anchor = viewportHeight * 0.4;
 
 				const isAtBottom =
-					window.scrollY + window.innerHeight >= scrollEl.scrollHeight - 4;
+					window.scrollY + viewportHeight >=
+					document.documentElement.scrollHeight - 4;
 
 				if (isAtBottom) {
-					setCurrentSection(componentKeys[componentKeys.length - 1]);
+					setCurrentSection(
+						sectionElements[sectionElements.length - 1].key,
+					);
+					return;
 				}
+
+				let activeSection = sectionElements[0];
+				let minDistance = Infinity;
+
+				for (const section of sectionElements) {
+					const rect = section.element.getBoundingClientRect();
+
+					// Section contains the active viewport anchor.
+					if (rect.top <= anchor && rect.bottom > anchor) {
+						activeSection = section;
+						minDistance = 0;
+						break;
+					}
+
+					// Find the closest section if the anchor
+					// is currently between two sections.
+					const distance =
+						rect.top > anchor
+							? rect.top - anchor
+							: anchor - rect.bottom;
+
+					if (distance < minDistance) {
+						minDistance = distance;
+						activeSection = section;
+					}
+				}
+
+				setCurrentSection((previous) =>
+					previous === activeSection.key
+						? previous
+						: activeSection.key,
+				);
+			};
+
+			const handleScroll = () => {
+				if (frameId !== null) return;
+
+				frameId = requestAnimationFrame(updateActiveSection);
+			};
+
+			updateActiveSection();
+
+			window.addEventListener('scroll', handleScroll, {
+				passive: true,
 			});
-		};
 
-		window.addEventListener('scroll', handleScroll, { passive: true });
-		handleScroll();
+			window.addEventListener('resize', handleScroll);
 
-		return () => {
-			window.removeEventListener('scroll', handleScroll);
-			if (frameId !== null) {
-				cancelAnimationFrame(frameId);
-			}
-		};
-	}, [components]);
+			return () => {
+				window.removeEventListener('scroll', handleScroll);
+				window.removeEventListener('resize', handleScroll);
 
-	return (
-		<>
-			{children}
+				if (frameId !== null) {
+					cancelAnimationFrame(frameId);
+				}
+			};
+		}, [componentEntries]);
 
-			<Portal>
-				<aside
-					className='fixed w-12 z-[100] top-1/2 -translate-y-1/2 right-4 min-[980px]:right-[calc((100%-896px)/4)] translate-x-3 min-[980px]:flex hidden group gap-2 flex-col'
-					style={{ transform: 'translateY(-50%)' }}
-				>
-					<div className='relative flex flex-col gap-0 bg-background/70 backdrop-blur-lg rounded-full border border-border/40 shadow-2xl transition-shadow duration-300 hover:shadow-primary/10 py-1'>
-						<motion.div
-							layoutId='sidebar-marker'
-							className='absolute inset-0 -z-10 rounded-full bg-secondary/10 backdrop-blur-md border border-foreground'
-							transition={{
-								type: reduceMotion ? 'tween' : 'spring',
-								stiffness: 400,
-								damping: 35,
-								duration: reduceMotion ? 0.1 : undefined,
-							}}
-						/>
+		return (
+			<>
+				{children}
 
-						{componentEntries.map(([key, { title, icon }]) => {
-							const isActive = currentSection === key;
+				<Portal>
+					<aside
+						aria-label="Навигация по разделам"
+						className="
+							group fixed top-1/2 -translate-y-1/2 right-4 min-[980px]:right-[calc((100%-896px)/4)] translate-x-3 z-[100]
+							hidden
+							min-[980px]:flex
+						"
+					>
+						<nav
+							className="
+								relative flex flex-col gap-1
+								rounded-full
+								border border-[var(--site-border)]
+								bg-background/5
+								p-1.5
+								shadow-lg shadow-black/5
+								backdrop-blur-xl
+							"
+						>
+							{componentEntries.map(
+								([key, { title, icon }]) => {
+									const isActive = currentSection === key;
 
-							return (
-								<div key={key} className='relative group/nav'>
-									<div className='absolute right-full top-1/2  -translate-y-1/2 ml-4 -mt-[1px] opacity-0 pointer-events-none lg:group-hover/nav:opacity-100 lg:group-hover/nav:-translate-x-2 transition-all duration-300 whitespace-nowrap '>
-										<span
-											className={cn(
-												'text-sm font-medium px-2 py-1 rounded-md bg-background/80 backdrop-blur-sm border border-border/50',
-											)}
+									return (
+										<div
+											key={key}
+											className="group/nav relative"
 										>
-											{title}
-										</span>
-									</div>
-									<div
-										role='button'
-										tabIndex={0}
-										onClick={() => scrollToSection(key as ComponentKey)}
-										onKeyDown={e =>
-											e.key === 'Enter' && scrollToSection(key as ComponentKey)
-										}
-										aria-current={isActive ? 'true' : 'false'}
-										aria-label={`Перейти к разделу ${title}`}
-										className={cn(
-											'relative z-10 p-3 w-full translate-x-[1px] rounded-full transition-all duration-300',
-											isActive
-												? 'text-primary scale-110'
-												: 'text-muted-foreground hover:text-primary hover:scale-105',
-										)}
-									>
-										<span
-											className={cn(
-												'block transition-transform duration-300'
-											)}
-										>
-											{icon}
-										</span>
-									</div>
-								</div>
-							);
-						})}
-					</div>
-				</aside>
-			</Portal>
-		</>
-	);
-});
+											{/* Tooltip */}
+											<div
+												aria-hidden="true"
+												className="
+													pointer-events-none absolute
+													right-full top-1/2 z-20
+													-translate-x-2 -translate-y-1/2
+													whitespace-nowrap pr-3
+													opacity-0
+													transition-all duration-200
+													group-hover/nav:translate-x-0
+													group-hover/nav:opacity-100
+													group-focus-within/nav:translate-x-0
+													group-focus-within/nav:opacity-100
+												"
+											>
+												<span
+													className="
+														block rounded-lg
+														border border-[var(--site-border)]
+														bg-background/90
+														px-3 py-2
+														text-xs font-medium
+														text-foreground
+														shadow-lg
+														backdrop-blur-xl
+													"
+												>
+													{title}
+												</span>
+											</div>
+
+											{/* Navigation button */}
+											<button
+												type="button"
+												onClick={() => scrollToSection(key)}
+												aria-current={
+													isActive ? 'location' : undefined
+												}
+												aria-label={`Перейти к разделу ${title}`}
+												title={title}
+												className={cn(
+													'relative z-10 flex h-10 w-10',
+													'items-center justify-center',
+													'rounded-full outline-none',
+													'transition-colors duration-200',
+													'focus-visible:ring-2',
+													'focus-visible:ring-[var(--site-accent)]',
+													'focus-visible:ring-offset-2',
+													'focus-visible:ring-offset-background',
+													isActive
+														? 'text-[var(--site-accent)]'
+														: 'text-[var(--site-muted)] hover:text-foreground',
+												)}
+											>
+												{/* Active indicator */}
+												{isActive && (
+													<motion.span
+														layoutId={`navigation-marker-${navigationId}`}
+														aria-hidden="true"
+														className="
+															absolute inset-0
+															rounded-full
+															border border-[var(--site-accent)]/30
+															bg-[var(--site-accent)]/10
+														"
+														transition={{
+															type: reduceMotion
+																? 'tween'
+																: 'spring',
+															stiffness: 400,
+															damping: 35,
+															duration: reduceMotion
+																? 0
+																: undefined,
+														}}
+													/>
+												)}
+
+												<span
+													className={cn(
+														'relative z-10 transition-transform duration-200',
+														isActive
+															? 'scale-110'
+															: 'group-hover/nav:scale-105',
+													)}
+												>
+													{icon}
+												</span>
+											</button>
+										</div>
+									);
+								},
+							)}
+						</nav>
+					</aside>
+				</Portal>
+			</>
+		);
+	},
+);
 
 Navigation.displayName = 'Navigation';
